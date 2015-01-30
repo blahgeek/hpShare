@@ -3,14 +3,18 @@
 # Created by i@BlahGeek.com at 2015-01-29
 
 from django.db import models
-import uuid
-import time
+from shortuuid import ShortUUID
 
-def get_file_path(instance, filename):
-    return 'uploads/%s-%s/%s' % (time.strftime('%Y%m%d-%H%M'), 
-                                 str(uuid.uuid4()).split('-')[0], 
-                                 filename)
+class Storage(models.Model):
+    id = models.CharField(max_length=255, primary_key=True,
+                          default=lambda: ShortUUID().random(8))
+    filename = models.CharField(max_length=1024)
+    permit_time = models.DateTimeField(auto_now=True)
+    uploaded = models.BooleanField(default=False)
+    size = models.IntegerField(default=0) # File size in bytes
+    mimetype = models.CharField(max_length=255, default='application/octet-stream')
+    view_count = models.IntegerField(default=0)
+    dowload_count = models.IntegerField(default=0)
 
-class UploadedFile(models.Model):
-    file = models.FileField(upload_to=get_file_path)
-    date = models.DateTimeField(auto_now=True)
+    def get_key(self):
+        return '/'.join([self.id, self.filename])

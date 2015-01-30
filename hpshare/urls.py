@@ -7,5 +7,8 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^upload/', 'hpshare.views.upload', name='upload'),
+    url(r'^permit/', 'hpshare.views.permit', name='permit'), 
+    url(r'^callback/', 'hpshare.views.callback', name='callback'),
+    url(r'^f/(?P<id>[0-9a-zA-Z]+)/(?P<filename>[^/]+)', 'hpshare.views.viewfile', name='viewfile'),
+    # url(r'^upload/', 'hpshare.views.upload', name='upload'),
 )
