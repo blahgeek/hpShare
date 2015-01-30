@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        {% load staticfiles %}
+        <link rel="stylesheet" type="text/css" href="{% static "bootstrap.min.css"%}">
+        <link rel="stylesheet" type="text/css" href="{% static "main.css"%}">
+        <title>{{filename}} - hpShare</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">hpShare</a>
+                </div>
+                <div class="navbar-collapse">
+                    <p class="navbar-text">a sharing service using qiniu.com</p>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="row center-block wrapper">
+                <div class="file-type">
+                    <span class="extension">{{extension}}</span>
+                </div>
+                <p class="filename">{{filename}}</p>
+                <p class="filesize">{{size}}</p>
+                <a class="btn btn-primary download-btn center-block" href="{{url}}">Download</a>
+            </div>
+        </div>
+    </body>
+</html>

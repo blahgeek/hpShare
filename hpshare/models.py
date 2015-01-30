@@ -13,6 +13,7 @@ class Storage(models.Model):
     uploaded = models.BooleanField(default=False)
     size = models.IntegerField(default=0) # File size in bytes
     mimetype = models.CharField(max_length=255, default='application/octet-stream')
+    extension = models.CharField(max_length=255, default='')
     view_count = models.IntegerField(default=0)
     download_count = models.IntegerField(default=0)
 

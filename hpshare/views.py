@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest, JsonResponse, HttpResponseRedirect
 from django.views.decorators.http import require_POST
 from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from .models import Storage
 from .forms import PermitForm, CallbackForm
 import logging
@@ -29,7 +29,7 @@ def permit(req):
     token = qn.upload_token(config.BUCKET_NAME, model.get_key(), 360, 
                             {
                                 'callbackUrl': req.build_absolute_uri(reverse('callback')),
-                                'callbackBody': "mimetype=$(mimeType)&size=$(fsize)&key=$(key)",
+                                'callbackBody': "extension=$(ext)&mimetype=$(mimeType)&size=$(fsize)&key=$(key)",
                             })
     return JsonResponse({'token': token, 'key': model.get_key()})
 
@@ -46,6 +46,7 @@ def callback(req):
     model.uploaded = True
     model.size = data['size']
     model.mimetype = data['mimetype']
+    model.extension = data['extension']
     model.save()
 
     return JsonResponse({'url': req.build_absolute_uri(reverse('viewfile', args=[id, filename]))})
@@ -54,11 +55,20 @@ def viewfile(req, id, filename):
     model = get_object_or_404(Storage, id=id)
     model.view_count += 1
     model.save()
-    return JsonResponse({
-                            'url': req.build_absolute_uri(reverse('downloadfile', args=[id, filename])),
-                            'mimetype': model.mimetype,
-                            'size': model.size,
-                        })
+    def pretty_size(n):
+        if n < 1024:
+            return '%dB' % n
+        elif n / 1024 < 1024:
+            return '%.2fKB' % (n / 1024.0)
+        elif n / 1024 / 1024 < 1024:
+            return '%.2fMB' % (n / 1024.0 / 1024.0)
+        return '%.2fGB' % (n / 1024.0 / 1024.0 / 1024.0)
+    return render(req, 'viewfile.html', {
+                    'url': req.build_absolute_uri(reverse('downloadfile', args=[id, filename])),
+                    'filename': model.filename,
+                    'size': pretty_size(model.size),
+                    'extension': model.extension,
+                  })
 
 def downloadfile(req, id, filename):
     model = get_object_or_404(Storage, id=id)
