@@ -14,7 +14,7 @@ class Storage(models.Model):
     size = models.IntegerField(default=0) # File size in bytes
     mimetype = models.CharField(max_length=255, default='application/octet-stream')
     view_count = models.IntegerField(default=0)
-    dowload_count = models.IntegerField(default=0)
+    download_count = models.IntegerField(default=0)
 
     def get_key(self):
         return '/'.join([self.id, self.filename])
