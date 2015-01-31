@@ -12,6 +12,8 @@
 
 ![web](screenshots/web.png)
 
+![admin](screenshots/admin.png)
+
 ## How-To
 
 - Prepare python environment, `pip install -r requirements.txt`
@@ -23,8 +25,16 @@
 
 ## Clients
 
+**Change `f.blaa.ml` to your domain!**
+
 - CLI: see `clients/python/hpShare.py`
 - DropZone script: see `clients/hpShare.dzbundle`, double-click it to install (you need to install `DropZone` first)
+
+## Admin 
+
+Goto `http://your.domain.com/admin/`
+
+Run `./manage.py purge_storage` to delete old files. Add it to a cron job!
 
 
 # TODO
