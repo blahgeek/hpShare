@@ -10,11 +10,11 @@ import qiniu
 
 @admin.register(Storage)
 class StorageAdmin(admin.ModelAdmin):
-    list_display = ('get_key', 'size', 'permit_time')
+    list_display = ('get_key', 'size', 'permit_time', 'uploaded')
     actions = ('delete_storage', )
 
     def delete_storage(self, req, models):
-        to_delete = [x.get_key() for x in models]
+        to_delete = [x.get_key().encode('utf8') for x in models]
         ops = qiniu.build_batch_delete(BUCKET_NAME, to_delete)
         qn_bucket_mng.batch(ops)
         models.delete()
