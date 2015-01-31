@@ -7,7 +7,7 @@ import base64
 import hmac
 from hashlib import sha1
 import config
-from django.http import HttpResponseBadRequest, HttpResponseForbidden
+from django.http import HttpResponseForbidden
 from django.contrib.auth import authenticate
 
 def qn_callback_auth(func):
@@ -18,7 +18,7 @@ def qn_callback_auth(func):
         data = req.path + '\n' + req.body
         verify_data = hmac.new(config.SECRET_KEY, data, sha1).digest()
         if base64.urlsafe_b64encode(verify_data) != encoded_data:
-            return HttpResponseBadRequest()
+            return HttpResponseForbidden()
         return func(req, *args, **kwargs)
     return wrap
 

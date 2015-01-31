@@ -37,7 +37,10 @@ def permit(req):
                                 'callbackUrl': req.build_absolute_uri(reverse('callback')),
                                 'callbackBody': "extension=$(ext)&mimetype=$(mimeType)&size=$(fsize)&key=$(key)",
                             })
-    return JsonResponse({'token': token, 'key': model.get_key()})
+    return JsonResponse({
+                            'token': token, 
+                            'key': model.get_key(),
+                        })
 
 @require_POST
 @csrf_exempt
