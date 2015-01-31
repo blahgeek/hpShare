@@ -25,3 +25,9 @@
 
 - CLI: see `clients/python/hpShare.py`
 - DropZone script: see `clients/hpShare.dzbundle`, double-click it to install (you need to install `DropZone` first)
+
+
+# TODO
+
+- Mime-Type
+- Upload directory (Zip it first) via DropZone
