@@ -78,9 +78,9 @@ def dragged
   file_path = file_path.gsub('"', '\"')
   $dz.begin("Uploading #{filename}...")
 
-  permit = curl_it("-u #{ENV['username']}:#{ENV['password']} -F filename=#{filename} http://f.blaa.ml/permit/")
+  permit = curl_it("-u #{ENV['username']}:#{ENV['password']} -F \"filename=#{filename}\" http://f.blaa.ml/permit/")
   $dz.determinate(true)
-  ret = curl_it("-F token=#{permit['token']} -F key=#{permit['key']} -F \"file=@#{file_path}\" http://up.qiniu.com")
+  ret = curl_it("-F token=#{permit['token']} -F \"key=#{permit['key']}\" -F \"file=@#{file_path}\" http://up.qiniu.com")
   $dz.determinate(false)
 
   $dz.finish("Done, ID=#{ret['id']}, URL Copied.")
