@@ -11,6 +11,9 @@ class PermitForm(ModelForm):
         model = Storage
         fields = ['filename', ]
 
+    def clean_filename(self):
+        return self.cleaned_data['filename'].split('/')[-1]
+
 
 class CallbackForm(Form):
     key = forms.CharField()

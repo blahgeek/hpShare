@@ -28,7 +28,10 @@ def permit(req):
     form = PermitForm(req.POST)
     if not form.is_valid():
         return HttpResponseBadRequest()
-    model = form.save()
+    model = form.save(commit=False)
+    model.user = req.user
+    model.save()
+    
     token = qn.upload_token(config.BUCKET_NAME, model.get_key(), 360, 
                             {
                                 'callbackUrl': req.build_absolute_uri(reverse('callback')),
