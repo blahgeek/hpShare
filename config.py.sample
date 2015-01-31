@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # Created by i@BlahGeek.com at 2015-01-30
 
+from datetime import timedelta
+
 BUCKET_NAME = ''
 
 # Copy from '账号设置 － 密钥'
@@ -10,3 +12,5 @@ SECRET_KEY = ''
 
 ＃ Copy from '空间设置 － 域名设置'
 DOWNLOAD_URL = 'http://xxxx.xxx.xx.glb.clouddn.com/'
+
+STORAGE_EXPIRE = timedelta(days=30)
