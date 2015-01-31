@@ -12,7 +12,6 @@ from django.shortcuts import get_object_or_404, render
 from .models import Storage
 from .forms import PermitForm, CallbackForm
 import logging
-import urllib
 import config
 import hmac
 import base64
@@ -44,8 +43,8 @@ def qn_callback_auth(func):
     def wrap(req, *args, **kwargs):
         auth = req.META.get('HTTP_AUTHORIZATION', '')
         _, encoded_data = auth.split(':')
-        data = req.path + '\n' + urllib.urlencode(req.body)
-        verify_data = hmac.new(config.SECRET_KEY, data, sha1).hexdigest()
+        data = req.path + '\n' + req.body
+        verify_data = hmac.new(config.SECRET_KEY, data, sha1).digest()
         if base64.urlsafe_b64encode(verify_data) != encoded_data:
             return HttpResponseBadRequest()
         return func(req, *args, **kwargs)
