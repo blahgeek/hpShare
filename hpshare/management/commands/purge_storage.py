@@ -18,7 +18,7 @@ class Command(BaseCommand):
         for model in models:
             print 'Deleting', model.get_key(), 
             print (datetime.utcnow().replace(tzinfo=utc) - model.permit_time).days, 'days old'
-            to_delete.append(model.get_key())
+            to_delete.append(model.get_key().encode('utf8'))
         if not to_delete:
             print 'Nothing to delete'
             return

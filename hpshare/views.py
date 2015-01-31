@@ -32,7 +32,7 @@ def permit(req):
     model.user = req.user
     model.save()
 
-    token = qn.upload_token(config.BUCKET_NAME, model.get_key(), 360, 
+    token = qn.upload_token(config.BUCKET_NAME, model.get_key().encode('utf8'), 360, 
                             {
                                 'callbackUrl': req.build_absolute_uri(reverse('callback')),
                                 'callbackBody': "extension=$(ext)&mimetype=$(mimeType)&size=$(fsize)&key=$(key)",
@@ -85,7 +85,7 @@ def downloadfile(req, id, filename):
     model.download_count += 1
     model.save()
 
-    url = config.DOWNLOAD_URL + model.get_key()
+    url = config.DOWNLOAD_URL + model.get_key().encode('utf8')
     return HttpResponseRedirect(qn.private_download_url(url, expires=3600))
 
 
@@ -94,7 +94,7 @@ def downloadfile(req, id, filename):
 @http_basic_auth
 def deletefile(req):
     model = get_object_or_404(Storage, id=req.POST.get('id', ''))
-    ret, info = qn_bucket_mng.delete(config.BUCKET_NAME, model.get_key())
+    ret, info = qn_bucket_mng.delete(config.BUCKET_NAME, model.get_key().encode('utf8'))
     model.delete()
     return JsonResponse({
                             'success': ret is None,
