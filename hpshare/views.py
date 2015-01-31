@@ -13,11 +13,8 @@ from .models import Storage
 from .forms import PermitForm, CallbackForm
 import logging
 import config
-import hmac
-import base64
-from hashlib import sha1
 import qiniu
-import functools
+from .auth import qn_callback_auth, http_basic_auth
 
 qn = qiniu.Auth(config.ACCESS_KEY, config.SECRET_KEY)
 qn_bucket_mng = qiniu.BucketManager(qn)
@@ -26,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 @require_POST
 @csrf_exempt
+@http_basic_auth
 def permit(req):
     form = PermitForm(req.POST)
     if not form.is_valid():
@@ -37,18 +35,6 @@ def permit(req):
                                 'callbackBody': "extension=$(ext)&mimetype=$(mimeType)&size=$(fsize)&key=$(key)",
                             })
     return JsonResponse({'token': token, 'key': model.get_key()})
-
-def qn_callback_auth(func):
-    @functools.wraps(func)
-    def wrap(req, *args, **kwargs):
-        auth = req.META.get('HTTP_AUTHORIZATION', '')
-        _, encoded_data = auth.split(':')
-        data = req.path + '\n' + req.body
-        verify_data = hmac.new(config.SECRET_KEY, data, sha1).digest()
-        if base64.urlsafe_b64encode(verify_data) != encoded_data:
-            return HttpResponseBadRequest()
-        return func(req, *args, **kwargs)
-    return wrap
 
 @require_POST
 @csrf_exempt
@@ -102,6 +88,7 @@ def downloadfile(req, id, filename):
 
 @require_POST
 @csrf_exempt
+@http_basic_auth
 def deletefile(req):
     model = get_object_or_404(Storage, id=req.POST.get('id', ''))
     ret, info = qn_bucket_mng.delete(config.BUCKET_NAME, model.get_key())
