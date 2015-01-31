@@ -18,7 +18,7 @@
 - Get a [QiNui](http://qiniu.com) (free) account
 - `mv config.py.sample config.py`, fill it up
 - Adjust `hpshare/settings.py` as you need
-- Prepare Django project by running `./manage.py syncdb`
+- Prepare Django project by running `./manage.py syncdb`, `./manage.py collectstatic`
 - Run it! `uwsgi --module=hpshare.wsgi:application --master --socket=uwsgi.sock --processes=4 --daemonize=uwsgi.log` Also see `nginx.conf`. 
 
 ## Clients
