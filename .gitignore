@@ -84,6 +84,7 @@ Temporary Items
 *.sqlite3
 
 media/
+static/
 
 config.py
 
