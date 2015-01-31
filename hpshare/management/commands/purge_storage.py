@@ -7,6 +7,7 @@ from hpshare.models import Storage
 from hpshare.views import qn_bucket_mng
 import qiniu
 from datetime import datetime
+from django.utils.timezone import utc
 from config import STORAGE_EXPIRE, BUCKET_NAME
 
 class Command(BaseCommand):
@@ -16,13 +17,13 @@ class Command(BaseCommand):
         to_delete = list()
         for model in models:
             print 'Deleting', model.get_key(), 
-            print (datetime.now() - model.permit_time).days, 'days old'
+            print (datetime.utcnow().replace(tzinfo=utc) - model.permit_time).days, 'days old'
             to_delete.append(model.get_key())
         if not to_delete:
             print 'Nothing to delete'
             return
         ops = qiniu.build_batch_delete(BUCKET_NAME, to_delete)
         ret, info = qn_bucket_mng.batch(ops)
+        models.delete()
         print info
-        assert ret is None
 
