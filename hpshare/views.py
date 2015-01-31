@@ -81,6 +81,7 @@ def viewfile(req, id):
                     'filename': model.filename,
                     'size': pretty_size(model.size),
                     'extension': model.extension,
+                    'time': model.permit_time,
                   })
 
 def downloadfile(req, id, filename):

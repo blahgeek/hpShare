@@ -4,30 +4,24 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% load staticfiles %}
-        <link rel="stylesheet" type="text/css" href="{% static "bootstrap.min.css"%}">
         <link rel="stylesheet" type="text/css" href="{% static "main.css"%}">
         <title>{{filename}} - hpShare</title>
     </head>
     <body>
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="https://github.com/blahgeek/hpShare">hpShare</a>
-                </div>
-                <div class="navbar-collapse">
-                    <p class="navbar-text">a sharing service using qiniu.com</p>
-                </div>
-            </div>
+        <nav class="topbar">
+            <a href="https://github.com/blahgeek/hpShare"><img alt="Logo" src="{% static "logo.png" %}"></a>
+            <h1>{{filename}}</h1>
         </nav>
-        <div class="container">
-            <div class="row center-block wrapper">
-                <div class="file-type">
-                    <span class="extension">{{extension}}</span>
-                </div>
-                <p class="filename">{{filename}}</p>
-                <p class="filesize">{{size}}</p>
-                <a class="btn btn-primary download-btn center-block" href="{{url}}">Download</a>
+        <div class="wrapper">
+            <div class="file-type">
+                <span class="extension">{{extension}}</span>
             </div>
+            <p class="filename">{{filename}}</p>
+            <p class="extrainfo">
+                <span class="filesize">{{size}}</span>&nbsp;•&nbsp;
+                <span class="filetime">{{time|date:"D, M d Y"}}
+            </p>
+            <a class="download-btn" href="{{url}}">Download</a>
         </div>
     </body>
 </html>

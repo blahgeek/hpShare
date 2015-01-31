@@ -1,5 +1,53 @@
+html {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+}
+a {
+  text-decoration: none;
+}
 .wrapper {
-  margin-top: 120px;
+  margin: 65px auto;
+}
+
+.topbar {
+  overflow: visible;
+  z-index: 1000;
+  background: #f9f9f9;
+  border-bottom: 1px solid #e8e8e8;
+  width: 100%;
+  height: 46px;
+  position: relative;
+  text-align: center;
+}
+
+.topbar h1 {
+  display: block;
+  margin: 0px auto;
+  padding-top: 5px;
+  font-size: 13px;
+  line-height: 38px;
+  font-weight: 400;
+  color: #6a6f75;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.topbar a {
+  position: absolute;
+  left: 14px;
+  top: 4px;
+}
+
+.topbar a img {
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  height:38px;
 }
 
 .file-type {
@@ -28,17 +76,66 @@
 }
 
 .download-btn {
+  margin: 0 auto;
   width: 150px;
+  display: block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 4px;
+  color: #ffffff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+.download-btn:focus,
+.download-btn:active:focus {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.download-btn:hover,
+.download-btn:focus{
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #286090;
+  border-color: #204d74;
+}
+.download-btn:active{
+  outline: 0;
+  background-image: none;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 
 .filename {
+  white-space: nowrap;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 300;
+  color: #6a6f75;
   text-align: center;
-  font-weight: bold;
   margin-top: 4px;
-  margin-bottom: 4px;
+  margin-bottom: 0px;
 }
-.filesize {
-  margin-top: 4px;
-  margin-bottom: 25px;
+
+.extrainfo {
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 200;
+  color: #babec2;
   text-align: center;
+  margin-top: 0px;
+  margin-bottom: 30px;
 }
+
