@@ -25,6 +25,8 @@
 
 ## Clients
 
+**Change `f.blaa.ml` to your domain!**
+
 - CLI: see `clients/python/hpShare.py`
 - DropZone script: see `clients/hpShare.dzbundle`, double-click it to install (you need to install `DropZone` first)
 
