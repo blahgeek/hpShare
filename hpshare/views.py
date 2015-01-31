@@ -12,10 +12,16 @@ from django.shortcuts import get_object_or_404, render
 from .models import Storage
 from .forms import PermitForm, CallbackForm
 import logging
+import urllib
 import config
+import hmac
+import base64
+from hashlib import sha1
 import qiniu
+import functools
 
 qn = qiniu.Auth(config.ACCESS_KEY, config.SECRET_KEY)
+qn_bucket_mng = qiniu.BucketManager(qn)
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +39,21 @@ def permit(req):
                             })
     return JsonResponse({'token': token, 'key': model.get_key()})
 
+def qn_callback_auth(func):
+    @functools.wraps(func)
+    def wrap(req, *args, **kwargs):
+        auth = req.META.get('HTTP_AUTHORIZATION', '')
+        _, encoded_data = auth.split(':')
+        data = req.path + '\n' + urllib.urlencode(req.body)
+        verify_data = hmac.new(config.SECRET_KEY, data, sha1).hexdigest()
+        if base64.urlsafe_b64encode(verify_data) != encoded_data:
+            return HttpResponseBadRequest()
+        return func(req, *args, **kwargs)
+    return wrap
+
 @require_POST
 @csrf_exempt
+@qn_callback_auth
 def callback(req):
     form = CallbackForm(req.POST)
     if not form.is_valid():
@@ -49,7 +68,10 @@ def callback(req):
     model.extension = data['extension']
     model.save()
 
-    return JsonResponse({'url': req.build_absolute_uri(reverse('viewfile', args=[id, filename]))})
+    return JsonResponse({
+                            'url': req.build_absolute_uri(reverse('viewfile', args=[id, filename])),
+                            'id': id,
+                        })
 
 def viewfile(req, id, filename):
     model = get_object_or_404(Storage, id=id)
@@ -64,7 +86,7 @@ def viewfile(req, id, filename):
             return '%.2fMB' % (n / 1024.0 / 1024.0)
         return '%.2fGB' % (n / 1024.0 / 1024.0 / 1024.0)
     return render(req, 'viewfile.html', {
-                    'url': req.build_absolute_uri(reverse('downloadfile', args=[id, filename])),
+                    'url': reverse('downloadfile', args=[id, filename]),
                     'filename': model.filename,
                     'size': pretty_size(model.size),
                     'extension': model.extension,
@@ -74,4 +96,17 @@ def downloadfile(req, id, filename):
     model = get_object_or_404(Storage, id=id)
     model.download_count += 1
     model.save()
-    return HttpResponseRedirect(config.DOWNLOAD_URL + model.get_key())
+
+    url = config.DOWNLOAD_URL + model.get_key()
+    return HttpResponseRedirect(qn.private_download_url(url, expires=3600))
+
+
+@require_POST
+@csrf_exempt
+def deletefile(req):
+    model = get_object_or_404(Storage, id=req.POST.get('id', ''))
+    ret, info = qn_bucket_mng.delete(config.BUCKET_NAME, model.get_key())
+    model.delete()
+    return JsonResponse({
+                            'success': ret is None,
+                        })
