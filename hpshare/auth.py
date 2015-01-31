@@ -8,7 +8,7 @@ import hmac
 from hashlib import sha1
 import config
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 
 def qn_callback_auth(func):
     @functools.wraps(func)
@@ -31,7 +31,7 @@ def http_basic_auth(func):
             username, password = auth.split(':', 1)
             user = authenticate(username=username, password=password)
             if user:
-                login(req, user)
+                req.user = user
         if not req.user.is_authenticated():
             return HttpResponseForbidden()
         return func(req, *args, **kwargs)

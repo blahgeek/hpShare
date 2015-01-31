@@ -31,7 +31,7 @@ def permit(req):
     model = form.save(commit=False)
     model.user = req.user
     model.save()
-    
+
     token = qn.upload_token(config.BUCKET_NAME, model.get_key(), 360, 
                             {
                                 'callbackUrl': req.build_absolute_uri(reverse('callback')),
@@ -57,11 +57,11 @@ def callback(req):
     model.save()
 
     return JsonResponse({
-                            'url': req.build_absolute_uri(reverse('viewfile', args=[id, filename])),
+                            'url': req.build_absolute_uri(reverse('viewfile', args=[id, ])),
                             'id': id,
                         })
 
-def viewfile(req, id, filename):
+def viewfile(req, id):
     model = get_object_or_404(Storage, id=id)
     model.view_count += 1
     model.save()
@@ -74,7 +74,7 @@ def viewfile(req, id, filename):
             return '%.2fMB' % (n / 1024.0 / 1024.0)
         return '%.2fGB' % (n / 1024.0 / 1024.0 / 1024.0)
     return render(req, 'viewfile.html', {
-                    'url': reverse('downloadfile', args=[id, filename]),
+                    'url': reverse('downloadfile', args=[id, model.filename]),
                     'filename': model.filename,
                     'size': pretty_size(model.size),
                     'extension': model.extension,
