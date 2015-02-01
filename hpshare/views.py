@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from .models import Storage
 from .forms import PermitForm, CallbackForm
+import urllib
 import logging
 import config
 import qiniu
@@ -89,7 +90,8 @@ def downloadfile(req, id, filename):
     model.download_count += 1
     model.save()
 
-    url = config.DOWNLOAD_URL + model.get_key().encode('utf8')
+    url = config.DOWNLOAD_URL + urllib.quote(model.get_key().encode('utf8'))
+    url += '?download/'
     return HttpResponseRedirect(qn.private_download_url(url, expires=3600))
 
 

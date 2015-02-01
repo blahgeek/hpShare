@@ -10,7 +10,7 @@ a {
   text-decoration: none;
 }
 .wrapper {
-  margin: 65px auto;
+  margin: 65px auto 10px;
 }
 
 .topbar {
@@ -37,7 +37,12 @@ a {
   overflow: hidden;
 }
 
-.topbar a {
+.topbar h1 a {
+  color: #7c7c7c;
+  font-weight: bold;
+}
+
+.topbar > a {
   position: absolute;
   left: 14px;
   top: 4px;
@@ -125,8 +130,10 @@ a {
   font-weight: 300;
   color: #6a6f75;
   text-align: center;
-  margin-top: 4px;
-  margin-bottom: 0px;
+  margin: 4px auto 0px;
+  max-width: 90%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .extrainfo {
