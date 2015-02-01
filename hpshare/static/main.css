@@ -80,6 +80,12 @@ a {
   white-space: nowrap;
 }
 
+.file-preview {
+  max-width: 100%;
+  margin: 0 20px 33px;
+  text-align: center;
+}
+
 .download-btn {
   margin: 0 auto;
   width: 150px;

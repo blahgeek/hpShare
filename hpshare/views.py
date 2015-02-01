@@ -71,27 +71,39 @@ def viewfile(req, id):
     model.save()
     def pretty_size(n):
         if n < 1024:
-            return '%dB' % n
+            return '%d B' % n
         elif n / 1024 < 1024:
-            return '%.2fKB' % (n / 1024.0)
+            return '%.2f KB' % (n / 1024.0)
         elif n / 1024 / 1024 < 1024:
-            return '%.2fMB' % (n / 1024.0 / 1024.0)
-        return '%.2fGB' % (n / 1024.0 / 1024.0 / 1024.0)
+            return '%.2f MB' % (n / 1024.0 / 1024.0)
+        return '%.2f GB' % (n / 1024.0 / 1024.0 / 1024.0)
     return render(req, 'viewfile.html', {
-                    'url': reverse('downloadfile', args=[id, model.filename]),
-                    'filename': model.filename,
-                    'size': pretty_size(model.size),
-                    'extension': model.extension,
-                    'time': model.permit_time,
+                    'download_url': reverse('downloadfile', args=[id, model.filename]),
+                    'preview_url': reverse('previewfile', args=[id, model.filename]),
+                    'model': model,
+                    'pretty_size': pretty_size(model.size),
+                    # 'filename': model.filename,
+                    # 'size': pretty_size(model.size),
+                    # 'extension': model.extension,
+                    # 'time': model.permit_time,
                   })
 
+
 def downloadfile(req, id, filename):
+    return download_preview_file(req, id, filename, True)
+
+def previewfile(req, id, filename):
+    return download_preview_file(req, id, filename, False)
+
+def download_preview_file(req, id, filename, download=True):
     model = get_object_or_404(Storage, id=id)
-    model.download_count += 1
-    model.save()
+    if download:
+        model.download_count += 1
+        model.save()
 
     url = config.DOWNLOAD_URL + urllib.quote(model.get_key().encode('utf8'))
-    url += '?download/'
+    if download:
+        url += '?download/'
     return HttpResponseRedirect(qn.private_download_url(url, expires=3600))
 
 

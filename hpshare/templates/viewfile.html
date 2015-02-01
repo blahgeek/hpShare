@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% load staticfiles %}
         <link rel="stylesheet" type="text/css" href="{% static "main.css"%}">
-        <title>{{filename}} - hpShare</title>
+        <title>{{model.filename}} - hpShare</title>
     </head>
     <body>
         <nav class="topbar">
@@ -13,15 +13,22 @@
             <h1>Shared with <a href="https://github.com/blahgeek/hpShare">hpShare</a></h1>
         </nav>
         <div class="wrapper">
-            <div class="file-type">
-                <span class="extension">{{extension}}</span>
+            {% if "image/" in model.mimetype %}
+            <div class="file-preview">
+                <img alt="Preview" src="{{preview_url}}">
             </div>
-            <p class="filename">{{filename}}</p>
+            {% else %}
+            <div class="file-type">
+                <span class="extension">{{model.extension}}</span>
+            </div>
+            {% endif %}
+            <p class="filename">{{model.filename}}</p>
             <p class="extrainfo">
-                <span class="filesize">{{size}}</span>&nbsp;•&nbsp;
-                <span class="filetime">{{time|date:"D, M d Y"}}
+                <span class="filesize">{{pretty_size}}</span> 
+                &nbsp;•&nbsp;
+                <span class="filetime">{{model.permit_time|date:"D, M d Y"}}
             </p>
-            <a class="download-btn" href="{{url}}">Download</a>
+            <a class="download-btn" href="{{download_url}}">Download</a>
         </div>
     </body>
 </html>
