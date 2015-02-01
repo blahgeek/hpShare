@@ -82,8 +82,12 @@ a {
 
 .file-preview {
   max-width: 100%;
-  margin: 0 20px 33px;
+  margin: -25px 20px 33px;
   text-align: center;
+}
+
+.file-preview img {
+  max-width: 100%;
 }
 
 .download-btn {
