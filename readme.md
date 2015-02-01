@@ -39,5 +39,4 @@ Run `./manage.py purge_storage` to delete old files. Add it to a cron job!
 
 # TODO
 
-- Mime-Type
 - Upload directory (Zip it first) via DropZone
