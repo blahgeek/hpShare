@@ -66,7 +66,10 @@ def callback(req):
                         })
 
 def viewfile(req, id):
-    model = get_object_or_404(Storage, id=id)
+    try:
+        model = Storage.objects.get(id=id)
+    except Storage.DoesNotExist:
+        return render(req, 'notfound.html')
     model.view_count += 1
     model.save()
     def pretty_size(n):
@@ -82,10 +85,6 @@ def viewfile(req, id):
                     'preview_url': reverse('previewfile', args=[id, model.filename]),
                     'model': model,
                     'pretty_size': pretty_size(model.size),
-                    # 'filename': model.filename,
-                    # 'size': pretty_size(model.size),
-                    # 'extension': model.extension,
-                    # 'time': model.permit_time,
                   })
 
 

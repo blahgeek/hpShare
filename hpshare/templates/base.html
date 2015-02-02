@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% load staticfiles %}
+        <link rel="stylesheet" type="text/css" href="{% static "main.css"%}">
+        {% block title %}
+        <title>hpShare</title>
+        {% endblock %}
+    </head>
+    <body>
+        <nav class="topbar">
+            <a href="http://blahgeek.com"><img alt="Logo" src="{% static "logo.png" %}"></a>
+            <h1>Shared with <a href="https://github.com/blahgeek/hpShare">hpShare</a></h1>
+        </nav>
+        <div class="wrapper">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

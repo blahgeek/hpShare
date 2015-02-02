@@ -1,34 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        {% load staticfiles %}
-        <link rel="stylesheet" type="text/css" href="{% static "main.css"%}">
-        <title>{{model.filename}} - hpShare</title>
-    </head>
-    <body>
-        <nav class="topbar">
-            <a href="http://blahgeek.com"><img alt="Logo" src="{% static "logo.png" %}"></a>
-            <h1>Shared with <a href="https://github.com/blahgeek/hpShare">hpShare</a></h1>
-        </nav>
-        <div class="wrapper">
-            {% if "image/" in model.mimetype %}
-            <div class="file-preview">
-                <img alt="Preview" src="{{preview_url}}">
-            </div>
-            {% else %}
-            <div class="file-type">
-                <span class="extension">{{model.extension}}</span>
-            </div>
-            {% endif %}
-            <p class="filename">{{model.filename}}</p>
-            <p class="extrainfo">
-                <span class="filesize">{{pretty_size}}</span> 
-                &nbsp;•&nbsp;
-                <span class="filetime">{{model.permit_time|date:"D, M d Y"}}
-            </p>
-            <a class="download-btn" href="{{download_url}}">Download</a>
-        </div>
-    </body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}
+    <title>{{model.filename}} - hpShare</title>
+{% endblock %}
+
+{% block content %}
+    {% if "image/" in model.mimetype %}
+    <div class="file-preview">
+        <img alt="Preview" src="{{preview_url}}">
+    </div>
+    {% else %}
+    <div class="file-type">
+        <span class="extension">{{model.extension}}</span>
+    </div>
+    {% endif %}
+    <p class="filename">{{model.filename}}</p>
+    <p class="extrainfo">
+        <span class="filesize">{{pretty_size}}</span> 
+        &nbsp;•&nbsp;
+        <span class="filetime">{{model.permit_time|date:"D, M d Y"}}
+    </p>
+    <a class="download-btn" href="{{download_url}}">Download</a>
+{% endblock %}
