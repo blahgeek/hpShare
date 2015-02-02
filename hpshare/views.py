@@ -97,7 +97,7 @@ def previewfile(req, id, filename):
 
 def download_preview_file(req, id, filename, download=True):
     model = get_object_or_404(Storage, id=id)
-    if download:
+    if download and req.method == 'GET':  # Do not count 'HEAD'
         model.download_count += 1
         model.save()
 

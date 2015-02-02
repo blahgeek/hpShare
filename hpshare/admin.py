@@ -10,7 +10,7 @@ import qiniu
 
 @admin.register(Storage)
 class StorageAdmin(admin.ModelAdmin):
-    list_display = ('get_key', 'size', 'permit_time', 'uploaded')
+    list_display = ('get_key', 'size', 'permit_time', 'uploaded', 'view_count', 'download_count')
     actions = ('delete_storage', )
 
     def delete_storage(self, req, models):
