@@ -9,6 +9,24 @@
     <div class="file-preview">
         <img alt="Preview" src="{{preview_url}}">
     </div>
+    {% elif "video/" in model.mimetype %}
+    <div class="file-preview">
+        <video controls autoplay loop>
+            <source src="{{preview_url}}" type="{{model.mimetype}}"/>
+            <div class="file-type">
+                <span class="extension">{{model.extension}}</span>
+            </div>
+        </video>
+        <script type="text/javascript">
+        var v = document.getElementsByTagName("video")[0];
+        if(!v.canPlayType("{{model.mimetype}}")) {
+            var d = document.createElement('div');
+            d.innerHTML = v.innerHTML;
+            v.parentNode.replaceChild(d, v);
+            d.parentNode.classList.remove("file-preview");
+        }
+        </script>
+    </div>
     {% else %}
     <div class="file-type">
         <span class="extension">{{model.extension}}</span>

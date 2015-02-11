@@ -90,6 +90,10 @@ a {
   max-width: 100%;
 }
 
+.file-preview video {
+  max-width: 100%;
+}
+
 .download-btn {
   margin: 0 auto;
   width: 150px;
