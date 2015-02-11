@@ -2,13 +2,12 @@
 # Name: hpShare
 # Description: Share file via hpShare.
 # Handles: Files
-# Events: Dragged
+# Events: Clicked, Dragged
 # Creator: BlahGeek
 # URL: https://github.com/blahgeek/hpShare
 # OptionsNIB: Login
-# KeyModifiers: Option
 # LoginTitle: Authorization
-# Version: 1.0
+# Version: 1.1
 # RunsSandboxed: Yes
 # MinDropzoneVersion: 3.0
 
@@ -85,4 +84,9 @@ def dragged
 
   $dz.finish("Done, ID=#{ret['id']}, URL Copied.")
   $dz.url(ret["url"])
+end
+
+
+def clicked
+  `open http://f.blaa.ml/admin/hpshare/storage/`
 end
