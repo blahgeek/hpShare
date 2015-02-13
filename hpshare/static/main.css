@@ -94,6 +94,11 @@ a {
   max-width: 100%;
 }
 
+.file-preview audio {
+  width: 250px;
+  margin-top: 75px;
+}
+
 .download-btn {
   margin: 0 auto;
   width: 150px;

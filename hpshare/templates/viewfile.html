@@ -5,20 +5,21 @@
 {% endblock %}
 
 {% block content %}
-    {% if "image/" in model.mimetype %}
+    {% if "image" == shortmime %}
     <div class="file-preview">
         <img alt="Preview" src="{{preview_url}}">
     </div>
-    {% elif "video/" in model.mimetype %}
+    {% elif model.size < 10000000 and "video" == shortmime or model.size < 5000000 and "audio" == shortmime %}
     <div class="file-preview">
-        <video controls autoplay loop>
+        <{{shortmime}} controls {% if "video" == shortmime %}autoplay loop{% endif %}>
             <source src="{{preview_url}}" type="{{model.mimetype}}"/>
             <div class="file-type">
                 <span class="extension">{{model.extension}}</span>
             </div>
-        </video>
+        </{{shortmime}}>
+
         <script type="text/javascript">
-        var v = document.getElementsByTagName("video")[0];
+        var v = document.getElementsByTagName("{{shortmime}}")[0];
         if(!v.canPlayType("{{model.mimetype}}")) {
             var d = document.createElement('div');
             d.innerHTML = v.innerHTML;

@@ -84,6 +84,7 @@ def viewfile(req, id):
                     'download_url': reverse('downloadfile', args=[id, model.filename]),
                     'preview_url': reverse('previewfile', args=[id, model.filename]),
                     'model': model,
+                    'shortmime': model.mimetype.split('/')[0],
                     'pretty_size': pretty_size(model.size),
                   })
 
