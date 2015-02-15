@@ -6,7 +6,7 @@
 
 `hpShare` is written in [Django](http://http://djangoproject.com).
 
-## Screenshorts & GIFs
+## Screenshots & GIFs
 
 ![Demo](screenshots/demo.gif)
 
@@ -17,7 +17,7 @@
 ## How-To
 
 - Prepare python environment, `pip install -r requirements.txt`
-- Get a [QiNui](http://qiniu.com) (free) account
+- Get a [QiNiu](http://qiniu.com) (free) account
 - `mv config.py.sample config.py`, fill it up
 - Adjust `hpshare/settings.py` as you need
 - Prepare Django project by running `./manage.py syncdb`, `./manage.py collectstatic`
