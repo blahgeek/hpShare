@@ -5,20 +5,19 @@
 from django.core.management.base import BaseCommand
 from hpshare.models import Storage
 from hpshare.views import qn_bucket_mng
+from django import timezone
 import qiniu
-from datetime import datetime
-from django.utils.timezone import utc
 from config import STORAGE_EXPIRE, BUCKET_NAME
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        models = Storage.objects.filter(permit_time__lt=datetime.now()-STORAGE_EXPIRE,
+        models = Storage.objects.filter(permit_time__lt=timezone.now()-STORAGE_EXPIRE,
                                         persist=False).all()
         to_delete = list()
         for model in models:
-            print 'Deleting', model.get_key(), 
-            print (datetime.utcnow().replace(tzinfo=utc) - model.permit_time).days, 'days old'
-            to_delete.append(model.get_key().encode('utf8'))
+            print 'Deleting', model.key_name, 
+            print (timezone.now() - model.permit_time).days, 'days old'
+            to_delete.append(model.key_name.encode('utf8'))
         if not to_delete:
             print 'Nothing to delete'
             return
