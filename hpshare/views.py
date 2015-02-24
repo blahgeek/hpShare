@@ -38,8 +38,11 @@ def previewfile(req, id, filename):
 
 def download_preview_file(req, id, filename, download=True):
     model = get_object_or_404(Storage, id=id)
-    if download and req.method == 'GET':  # Do not count 'HEAD'
-        model.download_count += 1
+    if req.method == 'GET':  # Do not count 'HEAD'
+        if download:
+            model.download_count += 1
+        else:
+            model.preview_count += 1
         model.save()
 
     url = config.DOWNLOAD_URL + urllib.quote(model.key_name.encode('utf8'))
