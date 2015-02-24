@@ -4,8 +4,8 @@
 
 from django.contrib import admin
 from .models import Storage
-from .views import qn_bucket_mng
 from config import BUCKET_NAME
+from . import qn_bucket_mng
 import qiniu
 
 @admin.register(Storage)
