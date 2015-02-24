@@ -29,7 +29,7 @@ def permit(req):
                                   else config.KEY_LENGTH_PUBLIC)
     model.save()
 
-    token = qn.upload_token(config.BUCKET_NAME, model.key_name.encode('utf8'), model.UPLOAD_TIME_LIMIT, {
+    token = qn.upload_token(config.BUCKET_NAME, model.key_name.encode('utf8'), config.UPLOAD_TIME_LIMIT, {
                                 'callbackUrl': req.build_absolute_uri(reverse('callback')),
                                 'callbackBody': "extension=$(ext)&mimetype=$(mimeType)&size=$(fsize)&key=$(key)",
                             })
