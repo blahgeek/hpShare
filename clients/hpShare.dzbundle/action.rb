@@ -7,7 +7,8 @@
 # URL: https://github.com/blahgeek/hpShare
 # OptionsNIB: Login
 # LoginTitle: Authorization
-# Version: 1.1
+# KeyModifiers: Option
+# Version: 1.2.1
 # RunsSandboxed: Yes
 # MinDropzoneVersion: 3.0
 
@@ -26,7 +27,7 @@ def handle_errors(line)
 end
 
 
-def curl_it(cmd)
+def curl_it(cmd, progress=true)
 
   begin
     require 'json'
@@ -54,7 +55,7 @@ def curl_it(cmd)
         if file_percent_raw != nil
           file_percent = file_percent_raw.to_i
           if last_output != file_percent
-            $dz.percent(file_percent) 
+            $dz.percent(file_percent) if progress == true
             # $dz.determinate(false) if file_percent == 100
           end
           last_output = file_percent
@@ -77,7 +78,12 @@ def dragged
   file_path = file_path.gsub('"', '\"')
   $dz.begin("Uploading #{filename}...")
 
-  permit = curl_it("-u #{ENV['username']}:#{ENV['password']} -F \"filename=#{filename}\" http://f.blaa.ml/permit/")
+  private_ = false
+  if ENV["KEY_MODIFIERS"] == "Option"
+    private_ = true
+  end
+
+  permit = curl_it("-u #{ENV['username']}:#{ENV['password']} -F \"filename=#{filename}\" -F private=#{private_} http://f.blaa.ml/permit/", false)
   $dz.determinate(true)
   ret = curl_it("-F token=#{permit['token']} -F \"key=#{permit['key']}\" -F \"file=@#{file_path}\" http://up.qiniu.com")
   $dz.determinate(false)
