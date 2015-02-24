@@ -13,7 +13,7 @@ import qiniu
 @admin.register(Storage)
 class StorageAdmin(admin.ModelAdmin):
     list_display = ('key_name', 'link', 'user', 'readable_size', 'permit_time', 
-                    'uploaded', 'view_count', 'download_count', 'persist')
+                    'uploaded', 'view_count', 'preview_count', 'download_count', 'persist')
     actions = ('delete_storage', )
     ordering = ('permit_time', )
 
