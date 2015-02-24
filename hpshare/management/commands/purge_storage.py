@@ -15,9 +15,9 @@ class Command(BaseCommand):
                                         persist=False).all()
         to_delete = list()
         for model in models:
-            print 'Deleting', model.get_key(), 
+            print 'Deleting', model.key_name, 
             print (timezone.now() - model.permit_time).days, 'days old'
-            to_delete.append(model.get_key().encode('utf8'))
+            to_delete.append(model.key_name.encode('utf8'))
         if not to_delete:
             print 'Nothing to delete'
             return

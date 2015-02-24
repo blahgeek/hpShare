@@ -22,20 +22,11 @@ def viewfile(req, id):
         return render(req, 'notfound.html')
     model.view_count += 1
     model.save()
-    def pretty_size(n):
-        if n < 1024:
-            return '%d B' % n
-        elif n / 1024 < 1024:
-            return '%.2f KB' % (n / 1024.0)
-        elif n / 1024 / 1024 < 1024:
-            return '%.2f MB' % (n / 1024.0 / 1024.0)
-        return '%.2f GB' % (n / 1024.0 / 1024.0 / 1024.0)
     return render(req, 'viewfile.html', {
                     'download_url': reverse('downloadfile', args=[id, model.filename]),
                     'preview_url': reverse('previewfile', args=[id, model.filename]),
                     'model': model,
                     'shortmime': model.mimetype.split('/')[0],
-                    'pretty_size': pretty_size(model.size),
                   })
 
 
@@ -51,7 +42,7 @@ def download_preview_file(req, id, filename, download=True):
         model.download_count += 1
         model.save()
 
-    url = config.DOWNLOAD_URL + urllib.quote(model.get_key().encode('utf8'))
+    url = config.DOWNLOAD_URL + urllib.quote(model.key_name.encode('utf8'))
     if download:
         url += '?download/'
     return HttpResponseRedirect(qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT))

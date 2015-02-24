@@ -29,11 +29,11 @@ def permit(req):
                                   else config.KEY_LENGTH_PUBLIC)
     model.save()
 
-    token = qn.upload_token(config.BUCKET_NAME, model.get_key().encode('utf8'), model.UPLOAD_TIME_LIMIT, {
+    token = qn.upload_token(config.BUCKET_NAME, model.key_name.encode('utf8'), model.UPLOAD_TIME_LIMIT, {
                                 'callbackUrl': req.build_absolute_uri(reverse('callback')),
                                 'callbackBody': "extension=$(ext)&mimetype=$(mimeType)&size=$(fsize)&key=$(key)",
                             })
-    return JsonResponse({'token': token, 'key': model.get_key()})
+    return JsonResponse({'token': token, 'key': model.key_name})
 
 @require_POST
 @csrf_exempt
@@ -43,7 +43,7 @@ def callback(req):
     if not form.is_valid():
         return HttpResponseBadRequest()
     id, filename = form.cleaned_data['key'].split('/')
-    
+
     model = get_object_or_404(Storage, id=id)
     model.uploaded = True
     for key in ('size', 'mimetype', 'extension'):
@@ -60,7 +60,7 @@ def callback(req):
 @http_basic_auth
 def deletefile(req):
     model = get_object_or_404(Storage, id=req.POST.get('id', ''))
-    ret, info = qn_bucket_mng.delete(config.BUCKET_NAME, model.get_key().encode('utf8'))
+    ret, info = qn_bucket_mng.delete(config.BUCKET_NAME, model.key_name.encode('utf8'))
     model.delete()
     return JsonResponse({
                             'success': ret is None,

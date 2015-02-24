@@ -16,7 +16,7 @@ DOWNLOAD_URL = 'http://xxxx.xxx.xx.glb.clouddn.com/'
 STORAGE_EXPIRE = timedelta(days=30)
 
 # 地址随机字符串的长度
-KEY_LENGTH_PUBLIC = 8
+KEY_LENGTH_PUBLIC = 6
 KEY_LENGTH_PRIVATE = 20
 
 # 得到token后的上传时间限制，单位为秒

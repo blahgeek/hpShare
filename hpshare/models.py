@@ -19,5 +19,18 @@ class Storage(models.Model):
     view_count = models.IntegerField(default=0)
     download_count = models.IntegerField(default=0)
 
-    def get_key(self):
+    @property
+    def key_name(self):
         return '/'.join([self.id, self.filename])
+
+    @property
+    def readable_size(self):
+        n = self.size
+        if n < 1024:
+            return '%d B' % n
+        elif n / 1024 < 1024:
+            return '%.2f KB' % (n / 1024.0)
+        elif n / 1024 / 1024 < 1024:
+            return '%.2f MB' % (n / 1024.0 / 1024.0)
+        return '%.2f GB' % (n / 1024.0 / 1024.0 / 1024.0)
+    

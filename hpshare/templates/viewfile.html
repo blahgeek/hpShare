@@ -35,7 +35,7 @@
     {% endif %}
     <p class="filename">{{model.filename}}</p>
     <p class="extrainfo">
-        <span class="filesize">{{pretty_size}}</span> 
+        <span class="filesize">{{model.readable_size}}</span> 
         &nbsp;•&nbsp;
         <span class="filetime">{{model.permit_time|date:"D, M d Y"}}
     </p>
