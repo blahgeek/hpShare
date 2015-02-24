@@ -54,5 +54,5 @@ def download_preview_file(req, id, filename, download=True):
     url = config.DOWNLOAD_URL + urllib.quote(model.get_key().encode('utf8'))
     if download:
         url += '?download/'
-    return HttpResponseRedirect(qn.private_download_url(url, expires=3600))
+    return HttpResponseRedirect(qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT))
 

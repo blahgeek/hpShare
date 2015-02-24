@@ -2,14 +2,12 @@
 # -*- coding: utf-8 -*-
 # Created by i@BlahGeek.com at 2015-01-30
 
-from django.forms import ModelForm, Form
+from django.forms import Form
 from django import forms
-from .models import Storage
 
-class PermitForm(ModelForm):
-    class Meta:
-        model = Storage
-        fields = ['filename', ]
+class PermitForm(Form):
+    private = forms.BooleanField(required=False)
+    filename = forms.CharField()
 
     def clean_filename(self):
         return self.cleaned_data['filename'].split('/')[-1]

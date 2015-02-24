@@ -4,17 +4,16 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from shortuuid import ShortUUID
 
 class Storage(models.Model):
-    id = models.CharField(max_length=255, primary_key=True,
-                          default=lambda: ShortUUID().random(8))
+    id = models.CharField(max_length=255, primary_key=True)
     user = models.ForeignKey(User)
     filename = models.CharField(max_length=1024)
+
     permit_time = models.DateTimeField(auto_now_add=True)
     persist = models.BooleanField(default=False)
     uploaded = models.BooleanField(default=False)
-    size = models.IntegerField(default=0) # File size in bytes
+    size = models.IntegerField(default=0)  # File size in bytes
     mimetype = models.CharField(max_length=255, default='application/octet-stream')
     extension = models.CharField(max_length=255, default='')
     view_count = models.IntegerField(default=0)

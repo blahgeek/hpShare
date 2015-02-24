@@ -3,6 +3,7 @@
 # Created by i@BlahGeek.com at 2015-02-24
 
 import config
+from shortuuid import ShortUUID
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest, JsonResponse
@@ -20,19 +21,19 @@ def permit(req):
     form = PermitForm(req.POST)
     if not form.is_valid():
         return HttpResponseBadRequest()
-    model = form.save(commit=False)
+    model = Storage()
+    model.filename = form.cleaned_data['filename']
     model.user = req.user
+    model.id = ShortUUID().random(config.KEY_LENGTH_PRIVATE 
+                                  if form.cleaned_data['private'] 
+                                  else config.KEY_LENGTH_PUBLIC)
     model.save()
 
-    token = qn.upload_token(config.BUCKET_NAME, model.get_key().encode('utf8'), 360, 
-                            {
+    token = qn.upload_token(config.BUCKET_NAME, model.get_key().encode('utf8'), model.UPLOAD_TIME_LIMIT, {
                                 'callbackUrl': req.build_absolute_uri(reverse('callback')),
                                 'callbackBody': "extension=$(ext)&mimetype=$(mimeType)&size=$(fsize)&key=$(key)",
                             })
-    return JsonResponse({
-                            'token': token, 
-                            'key': model.get_key(),
-                        })
+    return JsonResponse({'token': token, 'key': model.get_key()})
 
 @require_POST
 @csrf_exempt
@@ -41,14 +42,12 @@ def callback(req):
     form = CallbackForm(req.POST)
     if not form.is_valid():
         return HttpResponseBadRequest()
-    data = form.cleaned_data
-    id, filename = data['key'].split('/')
+    id, filename = form.cleaned_data['key'].split('/')
+    
     model = get_object_or_404(Storage, id=id)
-
     model.uploaded = True
-    model.size = data['size']
-    model.mimetype = data['mimetype']
-    model.extension = data['extension']
+    for key in ('size', 'mimetype', 'extension'):
+        setattr(model, key, form.cleaned_data[key])
     model.save()
 
     return JsonResponse({
