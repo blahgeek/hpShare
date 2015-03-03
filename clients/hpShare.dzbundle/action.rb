@@ -5,10 +5,9 @@
 # Events: Clicked, Dragged
 # Creator: BlahGeek
 # URL: https://github.com/blahgeek/hpShare
-# OptionsNIB: Login
-# LoginTitle: Authorization
+# OptionsNIB: ExtendedLogin
 # KeyModifiers: Option
-# Version: 1.2.1
+# Version: 1.3
 # RunsSandboxed: Yes
 # MinDropzoneVersion: 3.0
 
@@ -83,7 +82,7 @@ def dragged
     private_ = true
   end
 
-  permit = curl_it("-u #{ENV['username']}:#{ENV['password']} -F \"filename=#{filename}\" -F private=#{private_} http://f.blaa.ml/permit/", false)
+  permit = curl_it("-u #{ENV['username']}:#{ENV['password']} -F \"filename=#{filename}\" -F private=#{private_} http://#{ENV['server']}/permit/", false)
   $dz.determinate(true)
   ret = curl_it("-F token=#{permit['token']} -F \"key=#{permit['key']}\" -F \"file=@#{file_path}\" http://up.qiniu.com")
   $dz.determinate(false)
@@ -94,5 +93,5 @@ end
 
 
 def clicked
-  `open http://f.blaa.ml/admin/hpshare/storage/`
+  `open http://#{ENV['server']}/admin/hpshare/storage/`
 end
