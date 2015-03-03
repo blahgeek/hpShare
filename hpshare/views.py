@@ -16,10 +16,7 @@ from . import qn
 logger = logging.getLogger(__name__)
 
 def viewfile(req, id):
-    try:
-        model = Storage.objects.get(id=id)
-    except Storage.DoesNotExist:
-        return render(req, 'notfound.html')
+    model = get_object_or_404(Storage, id=id, uploaded=True)
     model.view_count += 1
     model.save()
     return render(req, 'viewfile.html', {
@@ -37,7 +34,7 @@ def previewfile(req, id, filename):
     return download_preview_file(req, id, filename, False)
 
 def download_preview_file(req, id, filename, download=True):
-    model = get_object_or_404(Storage, id=id)
+    model = get_object_or_404(Storage, id=id, uploaded=True)
     if req.method == 'GET':  # Do not count 'HEAD'
         if download:
             model.download_count += 1
