@@ -4,8 +4,8 @@
 
 from django.core.management.base import BaseCommand
 from hpshare.models import Storage
-from hpshare.views import qn_bucket_mng
-from django import timezone
+from hpshare import qn_bucket_mng
+from django.utils import timezone
 import qiniu
 from config import STORAGE_EXPIRE, BUCKET_NAME
 
