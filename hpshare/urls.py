@@ -2,12 +2,14 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.contrib import admin
 from django.conf.urls.static import static
+from django.views.generic import RedirectView
 
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'hpshare.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
+    url('^$', RedirectView.as_view(url='admin/', permanent=False), name='index_redirect'),
     # APIs
     url(r'^admin/', include(admin.site.urls)),
     url(r'^permit/', 'hpshare.apis.permit', name='permit'), 
