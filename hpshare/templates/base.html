@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        {% load staticfiles %}
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!--[if lt IE 9]>
             <script src="{% static "html5shiv-printshiv.min.js" %}"></script>
         <![endif]-->
-        {% load staticfiles %}
         <link rel="stylesheet" type="text/css" href="{% static "main.css"%}">
         {% block title %}
         <title>hpShare</title>
