@@ -17,6 +17,11 @@ class StorageAdmin(admin.ModelAdmin):
     actions = ('delete_storage', )
     ordering = ('permit_time', )
 
+    def get_actions(self, req):
+        actions = super(StorageAdmin, self).get_actions(req)
+        del actions['delete_selected']
+        return actions
+
     def link(self, obj):
         url = reverse('viewfile', args=[obj.id, ])
         return format_html('<a href="{0}">link</a>', url)
