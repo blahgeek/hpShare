@@ -1,0 +1,69 @@
+{% extends "admin/change_list.html" %}
+{% block object-tools-items %}
+<li>
+    <input type="file" id="add_hpshare_input" style="display: block; height: 0; width: 0;" />
+</li>
+<li>
+    <a href="#" class="addlink" id="add_hpshare">Add</a>
+    <script type="text/javascript">
+    (function($) {
+        var btn = $('#add_hpshare');
+        var input = $('#add_hpshare_input');
+
+        btn.click(function(e){
+            e.preventDefault();
+            input.trigger('click');
+        });
+
+        var update_progress = function(e){
+            if(e.lengthComputable){
+                var progress = 100.0 * e.loaded / e.total;
+                btn.text("Uploading... " + progress.toFixed(0) + "%");
+            }
+        };
+
+        var do_upload = function(file, key, token) {
+            btn.text("Uploading to " + key + "...");
+            var data = new FormData();
+            data.append("file", file);
+            data.append("key", key);
+            data.append("token", token);
+            $.ajax({
+                url: "http://up.qiniu.com",
+                type: "POST",
+                xhr: function() {  // Custom XMLHttpRequest
+                    var myXhr = $.ajaxSettings.xhr();
+                    if(myXhr.upload) // Check if upload property exists
+                        myXhr.upload.addEventListener('progress', update_progress, false);
+                    return myXhr;
+                },
+                data: data,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function() {location.reload(); },
+                error: function(err) {
+                    alert("Upload error: " + err["error"]); 
+                }
+            });
+        };
+
+        input.change(function(e){
+            var filename = $(this).val();
+            var basename = (filename.split('/').pop()).split('\\').pop();
+            var file = e.target.files[0];
+
+            btn.text("Requesting...");
+
+            $.post("{% url 'permit' %}", {
+                "filename": basename,
+            }, function(data) {
+                do_upload(file, data["key"], data["token"]);
+            }).fail(function() {
+                alert("Error: request to upload.");
+            });
+        });
+    })(django.jQuery);
+    </script>
+</li>
+{% endblock %}
