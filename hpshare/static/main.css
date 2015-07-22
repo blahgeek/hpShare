@@ -24,6 +24,12 @@ a {
   text-align: center;
 }
 
+@media only screen and (max-width: 600px) {
+  .topbar h1 {
+    display: none;
+  }
+}
+
 .topbar h1 {
   display: block;
   margin: 0px auto;

@@ -7,8 +7,6 @@
 {% block topbar_extra %}
     {% if enable_preview %}
         <a class="download-btn" href="{{download_url}}">Download</a>
-    {% else %}
-        {{ block.super }}
     {% endif %}
 {% endblock %}
 
