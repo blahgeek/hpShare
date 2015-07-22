@@ -16,5 +16,5 @@ class PermitForm(Form):
 class CallbackForm(Form):
     key = forms.CharField()
     mimetype = forms.CharField()
-    extension = forms.CharField()
+    extension = forms.CharField(required=False)
     size = forms.IntegerField()
