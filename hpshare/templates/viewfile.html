@@ -4,13 +4,21 @@
     <title>{{model.filename}} - hpShare</title>
 {% endblock %}
 
+{% block topbar_extra %}
+    {% if enable_preview %}
+        <a class="download-btn" href="{{download_url}}">Download</a>
+    {% else %}
+        {{ block.super }}
+    {% endif %}
+{% endblock %}
+
 {% block content %}
-    {% if "image" == shortmime %}
+
+    {% if enable_preview %}
     <div class="file-preview">
+        {% if "image" == shortmime %}
         <img alt="Preview" src="{{preview_url}}">
-    </div>
-    {% elif model.size < 10000000 and "video" == shortmime or model.size < 5000000 and "audio" == shortmime %}
-    <div class="file-preview">
+        {% else %}
         <{{shortmime}} controls {% if "video" == shortmime %}autoplay loop{% endif %}>
             <source src="{{preview_url}}" type="{{model.mimetype}}"/>
             <div class="file-type">
@@ -27,17 +35,21 @@
             d.parentNode.classList.remove("file-preview");
         }
         </script>
+        {% endif %}
     </div>
     {% else %}
     <div class="file-type">
         <span class="extension">{{model.extension}}</span>
     </div>
     {% endif %}
+
     <p class="filename">{{model.filename}}</p>
     <p class="extrainfo">
         <span class="filesize">{{model.readable_size}}</span> 
         &nbsp;•&nbsp;
         <span class="filetime">{{model.permit_time|date:"D, M d Y"}}
     </p>
+    {% if not enable_preview %}
     <a class="download-btn" href="{{download_url}}">Download</a>
+    {% endif %}
 {% endblock %}

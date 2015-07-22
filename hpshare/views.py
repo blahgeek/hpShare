@@ -19,11 +19,16 @@ def viewfile(req, id):
     model = get_object_or_404(Storage, id=id, uploaded=True)
     model.view_count += 1
     model.save()
+
+    shortmime = model.mimetype.split('/')[0]
     return render(req, 'viewfile.html', {
                     'download_url': reverse('downloadfile', args=[id, model.filename]),
                     'preview_url': reverse('previewfile', args=[id, model.filename]),
                     'model': model,
-                    'shortmime': model.mimetype.split('/')[0],
+                    'shortmime': shortmime,
+                    "enable_preview": (shortmime == "image" or 
+                                       (shortmime == "video" and model.size < 10e6) or
+                                       (shortmime == "audio" and model.size < 5e6))
                   })
 
 

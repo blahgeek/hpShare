@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.contrib import admin
 from django.conf.urls.static import static
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, TemplateView
 
 urlpatterns = patterns('',
     # Examples:
@@ -15,6 +15,9 @@ urlpatterns = patterns('',
     url(r'^permit/', 'hpshare.apis.permit', name='permit'), 
     url(r'^callback/', 'hpshare.apis.callback', name='callback'),
     url(r'^delete/', 'hpshare.apis.deletefile', name='deletefile'),
+
+    # Debug :P
+    url(r'^404$', TemplateView.as_view(template_name='404.html')),
 
     # Views
     url(r'^(?P<id>[0-9a-zA-Z]+)/?$', 'hpshare.views.viewfile', name='viewfile'),

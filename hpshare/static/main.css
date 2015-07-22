@@ -42,17 +42,26 @@ a {
   font-weight: bold;
 }
 
-.topbar > a {
+.topbar a.logo {
   position: absolute;
   left: 14px;
   top: 4px;
 }
 
-.topbar a img {
+.topbar a.logo img {
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   border-radius: 50%;
   height:38px;
+}
+
+.topbar .download-btn {
+  position: absolute;
+  right: 10px;
+  top: 7px;
+  width: 65px;
+  height: 20px;
+  padding: 5px 8px;
 }
 
 .file-type {
@@ -117,8 +126,8 @@ a {
   line-height: 1.42857143;
   border-radius: 4px;
   color: #ffffff;
-  background-color: #337ab7;
-  border-color: #2e6da4;
+  background-color: #409ae7;
+  border-color: #3a89ce;
 }
 
 .download-btn:focus,
@@ -131,8 +140,8 @@ a {
 .download-btn:focus{
   color: #ffffff;
   text-decoration: none;
-  background-color: #286090;
-  border-color: #204d74;
+  background-color: #3682c2;
+  border-color: #2b6598;
 }
 .download-btn:active{
   outline: 0;
