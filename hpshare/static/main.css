@@ -24,8 +24,8 @@ a {
   text-align: center;
 }
 
-@media only screen and (max-width: 600px) {
-  .topbar h1 {
+@media only screen and (max-width: 768px) {
+  .download-btn + h1.title {
     display: none;
   }
 }
@@ -97,7 +97,7 @@ a {
 
 .file-preview {
   max-width: 100%;
-  margin: -25px 20px 33px;
+  margin: -25px 10px 33px;
   text-align: center;
 }
 
