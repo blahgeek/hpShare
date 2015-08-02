@@ -6,9 +6,7 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 from .models import Storage, ConvertedStorage
-from config import BUCKET_NAME
-from . import qn_bucket_mng
-import qiniu
+from .management.commands.purge_storage import batch_delete
 
 @admin.register(ConvertedStorage)
 class ConvertedStorageAdmin(admin.ModelAdmin):
@@ -37,10 +35,7 @@ class StorageAdmin(admin.ModelAdmin):
     readable_size.admin_order_field = 'size'
 
     def delete_storage(self, req, models):
-        to_delete = [x.key_name.encode('utf8') for x in models]
-        ops = qiniu.build_batch_delete(BUCKET_NAME, to_delete)
-        qn_bucket_mng.batch(ops)
-        models.delete()
-        self.message_user(req, '%d files deleted' % len(to_delete))
+        ret, info = batch_delete(models)
+        self.message_user(req, info)
 
     delete_storage.short_description = 'Remove files and delete records'
