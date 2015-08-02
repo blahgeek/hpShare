@@ -7,7 +7,7 @@ import json
 from shortuuid import ShortUUID
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponseBadRequest, JsonResponse, HttpResponseServerError
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from django.utils.http import urlsafe_base64_encode
@@ -73,10 +73,10 @@ def callback(req):
 @csrf_exempt
 def persistent_callback(req):
     data = json.loads(req.body)
-    if not data['items']:
-        return HttpResponseBadRequest()
-    source = get_object_or_404(Storage, 
-                               id=data['items'][0].get('get', '').split('/')[0])
+    try:
+        source = Storage.get(persistentId=data['id'])
+    except Storage.DoesNotExist:
+        return HttpResponseServerError("Not found, try later.")
     persistents = get_persistents(source)
     def find_suffix_desc(cmd):
         for p in persistents:
