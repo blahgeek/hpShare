@@ -19,3 +19,7 @@ class CallbackForm(Form):
     extension = forms.CharField(required=False)
     size = forms.IntegerField()
     persistentId = forms.CharField(required=False)
+
+    def clean_extension(self):
+        if self.cleaned_data['extension'][0] == '.':
+            return self.cleaned_data['extension'][1:]
