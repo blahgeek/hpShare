@@ -7,7 +7,7 @@
 # URL: https://github.com/blahgeek/hpShare
 # OptionsNIB: ExtendedLogin
 # KeyModifiers: Option
-# Version: 1.3
+# Version: 1.4
 # RunsSandboxed: Yes
 # MinDropzoneVersion: 3.0
 
@@ -84,7 +84,7 @@ def dragged
 
   permit = curl_it("-u #{ENV['username']}:#{ENV['password']} -F \"filename=#{filename}\" -F private=#{private_} http://#{ENV['server']}/permit/", false)
   $dz.determinate(true)
-  ret = curl_it("-F token=#{permit['token']} -F \"key=#{permit['key']}\" -F \"file=@#{file_path}\" http://up.qiniu.com")
+  ret = curl_it("-F token=#{permit['token']} -F \"file=@#{file_path}\" http://up.qiniu.com")
   $dz.determinate(false)
 
   $dz.finish("Done, ID=#{ret['id']}, URL Copied.")
