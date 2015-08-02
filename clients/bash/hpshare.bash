@@ -41,10 +41,11 @@ if [[ ! -f $FILE ]]; then
     exit 1
 fi
 
-TOKEN=$(curl -s -X POST -u "$USERNAME" \
-        "http://$SERVER/permit/" \
-        -d "filename=$FILE" \
-        -d "private=$PRIVATE")
+PERMIT_OUTPUT=$(curl -s -X POST -u "$USERNAME" \
+                "http://$SERVER/permit/" \
+                -d "filename=$FILE" \
+                -d "private=$PRIVATE")
+TOKEN=$(echo $PERMIT_OUTPUT | jsawk "return this.token")
 
 if [[ -z $TOKEN ]]; then
     echo "Permit error."
@@ -52,6 +53,12 @@ if [[ -z $TOKEN ]]; then
 fi
 echo "Uploading..."
 
-curl --progress-bar "http://up.qiniu.com" \
-     -F token="$TOKEN" \
-     -F "file=@$FILE"
+UPLOAD_OUTPUT=$(curl --progress-bar "http://up.qiniu.com" \
+                -F token="$TOKEN" \
+                -F "file=@$FILE")
+URL=$(echo $UPLOAD_OUTPUT | jsawk "return this.url")
+if [[ -n $URL ]]; then
+    echo "Upload done, URL: $URL"
+else
+    echo "Upload error: $UPLOAD_OUTPUT"
+fi

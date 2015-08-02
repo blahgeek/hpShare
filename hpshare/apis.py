@@ -6,15 +6,13 @@ import config
 from shortuuid import ShortUUID
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from .models import Storage
 from .forms import PermitForm, CallbackForm
 from .auth import qn_callback_auth, http_basic_auth
 from . import qn, qn_bucket_mng
-
-PlainResponse = lambda x: HttpResponse(x, content_type='text/plain')
 
 @require_POST
 @csrf_exempt
@@ -38,7 +36,7 @@ def permit(req):
                                 'callbackUrl': req.build_absolute_uri(reverse('callback')),
                                 'callbackBody': "extension=$(ext)&mimetype=$(mimeType)&size=$(fsize)&key=$(key)",
                             })
-    return PlainResponse(token)
+    return JsonResponse({'token': token})
 
 @require_POST
 @csrf_exempt
