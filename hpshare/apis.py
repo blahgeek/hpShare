@@ -73,7 +73,10 @@ def callback(req):
 @csrf_exempt
 def persistent_callback(req):
     data = json.loads(req.body)
-    source = get_object_or_404(Storage, persistentId=data['id'])
+    if not data['items']:
+        return HttpResponseBadRequest()
+    source = get_object_or_404(Storage, 
+                               id=data['items'][0].get('get', '').split('/')[0])
     persistents = get_persistents(source)
     def find_suffix_desc(cmd):
         for p in persistents:
