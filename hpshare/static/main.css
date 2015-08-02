@@ -10,7 +10,7 @@ a {
   text-decoration: none;
 }
 .wrapper {
-  margin: 65px auto 10px;
+  margin: 65px auto 40px;
 }
 
 .topbar {
@@ -115,7 +115,7 @@ a {
 }
 
 .download-btn {
-  margin: 0 auto 30px;
+  margin: 0 auto 10px;
   width: 150px;
   display: block;
   font-weight: normal;

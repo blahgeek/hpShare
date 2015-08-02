@@ -10,4 +10,6 @@ def get_persistents(storage):
                "ppt", "pptx", "odp", "dps", 
                "xls", "xlsx", "ods", "csv", "et"):
         ops.append(('yifangyun_preview', '.pdf', 'PDF'))
+    if ext in ('markdown', 'md', 'mkd'):
+        ops.append(('md2html', '.html', 'HTML'))
     return ops
