@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Created by i@BlahGeek.com at 2015-01-29
 
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -42,6 +43,8 @@ class Storage(models.Model):
 
 
 class ConvertedStorage(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+
     source = models.ForeignKey(Storage, db_index=True, 
                                related_name='converted_storage')
     success = models.BooleanField()
@@ -51,5 +54,12 @@ class ConvertedStorage(models.Model):
     cmd = models.CharField(max_length=255)
 
     complete_time = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=255, default='')
+    suffix = models.CharField(max_length=255, default='')
 
     download_count = models.IntegerField(default=0)
+
+    @property
+    def filename(self):
+        return self.source.filename + self.suffix
+    

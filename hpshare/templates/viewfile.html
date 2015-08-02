@@ -6,7 +6,7 @@
 
 {% block topbar_extra %}
     {% if enable_preview %}
-        <a class="download-btn" href="{{download_url}}">Download</a>
+        <a class="download-btn" href="{% url 'downloadfile' model.id model.filename %}">Download</a>
     {% endif %}
 {% endblock %}
 
@@ -15,10 +15,10 @@
     {% if enable_preview %}
     <div class="file-preview">
         {% if "image" == shortmime %}
-        <img alt="Preview" src="{{preview_url}}">
+        <img alt="Preview" src="{% url 'previewfile' model.id model.filename %}">
         {% else %}
         <{{shortmime}} controls {% if "video" == shortmime %}autoplay loop{% endif %}>
-            <source src="{{preview_url}}" type="{{model.mimetype}}"/>
+            <source src="{% url 'previewfile' model.id model.filename %}" type="{{model.mimetype}}"/>
             <div class="file-type">
                 <span class="extension">{{model.extension}}</span>
             </div>
@@ -48,6 +48,9 @@
         <span class="filetime">{{model.permit_time|date:"D, M d Y"}}
     </p>
     {% if not enable_preview %}
-    <a class="download-btn" href="{{download_url}}">Download</a>
+    <a class="download-btn" href="{% url 'downloadfile' model.id model.filename %}">Download</a>
+    {% for p in model.converted_storage %}
+        <a class="download-btn" href="{% url 'downloadfile_persistent' p.id p.filename %}">Download as {{p.description}}</a>
+    {% endfor %}
     {% endif %}
 {% endblock %}

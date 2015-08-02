@@ -5,9 +5,8 @@
 from __future__ import absolute_import
 
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
-from .models import Storage
+from .models import Storage, ConvertedStorage
 import urllib
 import logging
 import config
@@ -21,16 +20,24 @@ def viewfile(req, id):
     model.save()
 
     shortmime = model.mimetype.split('/')[0]
+    enable_preview = (shortmime == "image" or
+                      (shortmime == "video" and model.size < 10e6) or
+                      (shortmime == "audio" and model.size < 5e6))
     return render(req, 'viewfile.html', {
-                    'download_url': reverse('downloadfile', args=[id, model.filename]),
-                    'preview_url': reverse('previewfile', args=[id, model.filename]),
                     'model': model,
                     'shortmime': shortmime,
-                    "enable_preview": (shortmime == "image" or 
-                                       (shortmime == "video" and model.size < 10e6) or
-                                       (shortmime == "audio" and model.size < 5e6))
+                    "enable_preview": enable_preview,
                   })
 
+def downloadfile_persistent(req, id, filename):
+    model = get_object_or_404(ConvertedStorage, id=id, success=True)
+    if req.method == 'GET':
+        model.download_count += 1
+        model.save()
+    url = config.DOWNLOAD_URL + urllib.quote(model.key.encode('utf8'))
+    url += '?download/'
+    url = qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT)
+    return HttpResponseRedirect(url)
 
 def downloadfile(req, id, filename):
     return download_preview_file(req, id, filename, True)

@@ -74,6 +74,12 @@ def callback(req):
 def persistent_callback(req):
     data = json.loads(req.body)
     source = get_object_or_404(Storage, persistentId=data['id'])
+    persistents = get_persistents(source)
+    def find_suffix_desc(cmd):
+        for p in persistents:
+            if cmd.startswith(p[0]):
+                return p[1], p[2]
+        return ('', '')
     for item in data['items']:
         model = ConvertedStorage()
         model.source = source
@@ -81,6 +87,7 @@ def persistent_callback(req):
         model.error_msg = item.get('error', '')
         model.key = item.get('key', '')
         model.cmd = item['cmd']
+        model.suffix, model.description = find_suffix_desc(item['cmd'])
         model.save()
     return JsonResponse({})
 

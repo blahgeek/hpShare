@@ -23,7 +23,14 @@ urlpatterns = patterns('',
 
     # Views
     url(r'^(?P<id>[0-9a-zA-Z]+)/?$', 'hpshare.views.viewfile', name='viewfile'),
-    url(r'^(?P<id>[0-9a-zA-Z]+)/(?P<filename>[^/]+)$', 'hpshare.views.previewfile', name='previewfile'),
-    url(r'^download/(?P<id>[0-9a-zA-Z]+)/(?P<filename>[^/]+)$', 'hpshare.views.downloadfile', name='downloadfile'),
+    url(r'^(?P<id>[0-9a-zA-Z]+)/(?P<filename>[^/]+)$', 
+        'hpshare.views.previewfile', 
+        name='previewfile'),
+    url(r'^download/(?P<id>[0-9a-zA-Z]+)/(?P<filename>[^/]+)$', 
+        'hpshare.views.downloadfile', 
+        name='downloadfile'),
+    url(r'^p_download/(?P<id>[0-9a-zA-Z]+)/(?P<filename>[^/]+)$', 
+        'hpshare.views.downloadfile_persistent', 
+        name='downloadfile_persistent'),
 
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
