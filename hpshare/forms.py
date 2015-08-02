@@ -18,3 +18,4 @@ class CallbackForm(Form):
     mimetype = forms.CharField()
     extension = forms.CharField(required=False)
     size = forms.IntegerField()
+    persistentId = forms.CharField(required=False)

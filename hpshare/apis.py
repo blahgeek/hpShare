@@ -29,13 +29,14 @@ def permit(req):
                                   else config.KEY_LENGTH_PUBLIC)
     model.save()
 
-    token = qn.upload_token(config.BUCKET_NAME, None,
-                            config.UPLOAD_TIME_LIMIT, {
-                                'insertOnly': 1,
-                                'saveKey': model.key_name,
-                                'callbackUrl': req.build_absolute_uri(reverse('callback')),
-                                'callbackBody': "extension=$(ext)&mimetype=$(mimeType)&size=$(fsize)&key=$(key)",
-                            })
+    token = qn.upload_token(config.BUCKET_NAME, None, config.UPLOAD_TIME_LIMIT, {
+                'insertOnly': 1,
+                'saveKey': model.key_name,
+                'callbackUrl': req.build_absolute_uri(reverse('callback')),
+                'callbackBody': "extension=$(ext)&mimetype=$(mimeType)" +
+                                "&size=$(fsize)&key=$(key)" + 
+                                "&persistentId=$(persistentId)",
+            })
     return JsonResponse({'token': token})
 
 @require_POST
@@ -49,7 +50,7 @@ def callback(req):
 
     model = get_object_or_404(Storage, id=id)
     model.uploaded = True
-    for key in ('size', 'mimetype', 'extension'):
+    for key in ('size', 'mimetype', 'extension', 'persistentId'):
         setattr(model, key, form.cleaned_data[key])
     model.save()
 
