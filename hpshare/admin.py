@@ -12,7 +12,8 @@ import qiniu
 
 @admin.register(ConvertedStorage)
 class ConvertedStorageAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('source', 'success', 'cmd', 'complete_time', 'download_count')
+    ordering = ('complete_time', )
 
 @admin.register(Storage)
 class StorageAdmin(admin.ModelAdmin):

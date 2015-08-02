@@ -22,6 +22,9 @@ class Storage(models.Model):
     preview_count = models.IntegerField(default=0)
     download_count = models.IntegerField(default=0)
 
+    def __unicode__(self):
+        return self.key_name
+
     @property
     def key_name(self):
         return '/'.join([self.id, self.filename])

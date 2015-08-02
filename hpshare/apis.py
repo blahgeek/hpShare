@@ -73,7 +73,7 @@ def persistent_callback(req):
         model = ConvertedStorage()
         model.source = source
         model.success = (item['code'] == 0)
-        model.error_msg = item['error']
+        model.error_msg = item.get('error', '')
         model.key = item.get('key', '')
         model.cmd = item['cmd']
         model.save()
