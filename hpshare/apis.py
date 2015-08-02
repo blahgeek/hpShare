@@ -10,10 +10,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
+from django.utils.http import urlsafe_base64_encode
 from .models import Storage, ConvertedStorage
 from .forms import PermitForm, CallbackForm
 from .auth import qn_callback_auth, http_basic_auth
-from .persistent import get_persistent_ops
+from .persistent import get_persistents
 from . import qn, qn_bucket_mng
 
 @require_POST
@@ -39,9 +40,13 @@ def permit(req):
                         "&size=$(fsize)&key=$(key)" + 
                         "&persistentId=$(persistentId)",
     }
-    persistent_ops = get_persistent_ops(model)
-    if persistent_ops:
-        options['persistentOps'] = ';'.join(persistent_ops)
+    persistents = get_persistents(model)
+    if persistents:
+        saveas = config.BUCKET_NAME + ':' + model.key_name.encode('utf8')
+        ops = map(lambda x: '{}|saveas/{}'
+                  .format(x[0], urlsafe_base64_encode(saveas + x[1])), 
+                  persistents)
+        options['persistentOps'] = ';'.join(ops)
         options['persistentNotifyUrl'] = req.build_absolute_uri(reverse('persistent_callback'))
     token = qn.upload_token(config.BUCKET_NAME, None, config.UPLOAD_TIME_LIMIT, 
                             options)
