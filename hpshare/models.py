@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Created by i@BlahGeek.com at 2015-01-29
 
-import uuid
+import shortuuid
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -41,9 +41,12 @@ class Storage(models.Model):
             return '%.2f MB' % (n / 1024.0 / 1024.0)
         return '%.2f GB' % (n / 1024.0 / 1024.0 / 1024.0)
 
+def _uuid():
+    return shortuuid.uuid()
 
 class ConvertedStorage(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    id = models.CharField(primary_key=True, max_length=64, 
+                          default=_uuid)
 
     source = models.ForeignKey(Storage, db_index=True, 
                                related_name='converted_storage')

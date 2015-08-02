@@ -49,7 +49,7 @@
     </p>
     {% if not enable_preview %}
     <a class="download-btn" href="{% url 'downloadfile' model.id model.filename %}">Download</a>
-    {% for p in model.converted_storage %}
+    {% for p in model.converted_storage.all %}
         <a class="download-btn" href="{% url 'downloadfile_persistent' p.id p.filename %}">Download as {{p.description}}</a>
     {% endfor %}
     {% endif %}
