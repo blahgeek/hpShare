@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest, JsonResponse, HttpResponseServerError
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
-from django.utils.http import urlsafe_base64_encode
+from base64 import urlsafe_b64encode
 from .models import Storage, ConvertedStorage
 from .forms import PermitForm, CallbackForm
 from .auth import qn_callback_auth, http_basic_auth
@@ -40,11 +40,11 @@ def permit(req):
                         "&size=$(fsize)&key=$(key)" + 
                         "&persistentId=$(persistentId)",
     }
-    persistents = get_persistents(model)
+    persistents = get_persistents(req, model)
     if persistents:
         saveas = config.BUCKET_NAME + ':' + model.key_name.encode('utf8')
         ops = map(lambda x: '{}|saveas/{}'
-                  .format(x[0], urlsafe_base64_encode(saveas + x[1])), 
+                  .format(x[0], urlsafe_b64encode(saveas + x[1])), 
                   persistents)
         options['persistentOps'] = ';'.join(ops)
         options['persistentNotifyUrl'] = req.build_absolute_uri(reverse('persistent_callback'))
@@ -74,10 +74,10 @@ def callback(req):
 def persistent_callback(req):
     data = json.loads(req.body)
     try:
-        source = Storage.get(persistentId=data['id'])
+        source = Storage.objects.get(persistentId=data['id'])
     except Storage.DoesNotExist:
         return HttpResponseServerError("Not found, try later.")
-    persistents = get_persistents(source)
+    persistents = get_persistents(req, source)
     def find_suffix_desc(cmd):
         for p in persistents:
             if cmd.startswith(p[0]):

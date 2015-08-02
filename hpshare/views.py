@@ -27,6 +27,7 @@ def viewfile(req, id):
                     'model': model,
                     'shortmime': shortmime,
                     "enable_preview": enable_preview,
+                    "persistents": model.converted_storage.filter(success=True),
                   })
 
 def downloadfile_persistent(req, id, filename):
