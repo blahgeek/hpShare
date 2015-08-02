@@ -67,7 +67,10 @@ def callback(req):
         setattr(model, key, form.cleaned_data[key])
     model.save()
 
-    return JsonResponse({'url': req.build_absolute_uri(reverse('viewfile', args=[id,]))})
+    return JsonResponse({
+        'url': req.build_absolute_uri(reverse('viewfile', args=[id,])),
+        'id': id,
+    })
 
 @require_POST
 @csrf_exempt
