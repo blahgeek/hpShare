@@ -66,7 +66,6 @@ def callback(req):
 
 @require_POST
 @csrf_exempt
-@qn_callback_auth
 def persistent_callback(req):
     data = json.loads(req.body)
     source = get_object_or_404(Storage, persistentId=data['id'])
@@ -75,7 +74,7 @@ def persistent_callback(req):
         model.source = source
         model.success = (item['code'] == 0)
         model.error_msg = item['error']
-        model.key = item['key']
+        model.key = item.get('key', '')
         model.cmd = item['cmd']
         model.save()
     return JsonResponse({})

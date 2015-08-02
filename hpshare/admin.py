@@ -5,10 +5,14 @@
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.utils.html import format_html
-from .models import Storage
+from .models import Storage, ConvertedStorage
 from config import BUCKET_NAME
 from . import qn_bucket_mng
 import qiniu
+
+@admin.register(ConvertedStorage)
+class ConvertedStorageAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(Storage)
 class StorageAdmin(admin.ModelAdmin):
