@@ -6,13 +6,15 @@ import config
 from shortuuid import ShortUUID
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from .models import Storage
 from .forms import PermitForm, CallbackForm
 from .auth import qn_callback_auth, http_basic_auth
 from . import qn, qn_bucket_mng
+
+PlainResponse = lambda x: HttpResponse(x, content_type='text/plain')
 
 @require_POST
 @csrf_exempt
@@ -29,11 +31,14 @@ def permit(req):
                                   else config.KEY_LENGTH_PUBLIC)
     model.save()
 
-    token = qn.upload_token(config.BUCKET_NAME, model.key_name.encode('utf8'), config.UPLOAD_TIME_LIMIT, {
+    token = qn.upload_token(config.BUCKET_NAME, model.key_name.encode('utf8'),
+                            config.UPLOAD_TIME_LIMIT, {
+                                'insertOnly': True,
+                                'saveKey': model.key_name,
                                 'callbackUrl': req.build_absolute_uri(reverse('callback')),
                                 'callbackBody': "extension=$(ext)&mimetype=$(mimeType)&size=$(fsize)&key=$(key)",
                             })
-    return JsonResponse({'token': token, 'key': model.key_name})
+    return PlainResponse(token)
 
 @require_POST
 @csrf_exempt
@@ -50,10 +55,7 @@ def callback(req):
         setattr(model, key, form.cleaned_data[key])
     model.save()
 
-    return JsonResponse({
-                            'url': req.build_absolute_uri(reverse('viewfile', args=[id, ])),
-                            'id': id,
-                        })
+    return PlainResponse(req.build_absolute_uri(reverse('viewfile', args=[id,])))
 
 @require_POST
 @csrf_exempt
