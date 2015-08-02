@@ -3,15 +3,17 @@
 # Created by i@BlahGeek.com at 2015-02-24
 
 import config
+import json
 from shortuuid import ShortUUID
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
-from .models import Storage
+from .models import Storage, ConvertedStorage
 from .forms import PermitForm, CallbackForm
 from .auth import qn_callback_auth, http_basic_auth
+from .persistent import get_persistent_ops
 from . import qn, qn_bucket_mng
 
 @require_POST
@@ -29,14 +31,20 @@ def permit(req):
                                   else config.KEY_LENGTH_PUBLIC)
     model.save()
 
-    token = qn.upload_token(config.BUCKET_NAME, None, config.UPLOAD_TIME_LIMIT, {
-                'insertOnly': 1,
-                'saveKey': model.key_name,
-                'callbackUrl': req.build_absolute_uri(reverse('callback')),
-                'callbackBody': "extension=$(ext)&mimetype=$(mimeType)" +
-                                "&size=$(fsize)&key=$(key)" + 
-                                "&persistentId=$(persistentId)",
-            })
+    options = {
+        'insertOnly': 1,
+        'saveKey': model.key_name,
+        'callbackUrl': req.build_absolute_uri(reverse('callback')),
+        'callbackBody': "extension=$(ext)&mimetype=$(mimeType)" +
+                        "&size=$(fsize)&key=$(key)" + 
+                        "&persistentId=$(persistentId)",
+    }
+    persistent_ops = get_persistent_ops(model)
+    if persistent_ops:
+        options['persistentOps'] = ';'.join(persistent_ops)
+        options['persistentNotifyUrl'] = req.build_absolute_uri(reverse('persistent_callback'))
+    token = qn.upload_token(config.BUCKET_NAME, None, config.UPLOAD_TIME_LIMIT, 
+                            options)
     return JsonResponse({'token': token})
 
 @require_POST
@@ -55,6 +63,22 @@ def callback(req):
     model.save()
 
     return JsonResponse({'url': req.build_absolute_uri(reverse('viewfile', args=[id,]))})
+
+@require_POST
+@csrf_exempt
+@qn_callback_auth
+def persistent_callback(req):
+    data = json.loads(req.body)
+    source = get_object_or_404(Storage, persistentId=data['id'])
+    for item in data['items']:
+        model = ConvertedStorage()
+        model.source = source
+        model.success = (item['code'] == 0)
+        model.error_msg = item['error']
+        model.key = item['key']
+        model.cmd = item['cmd']
+        model.save()
+    return JsonResponse({})
 
 @require_POST
 @csrf_exempt

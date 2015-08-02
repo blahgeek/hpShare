@@ -16,7 +16,7 @@ class Storage(models.Model):
     size = models.IntegerField(default=0)  # File size in bytes
     mimetype = models.CharField(max_length=255, default='application/octet-stream')
     extension = models.CharField(max_length=255, default='')
-    persistentId = models.CharField(max_length=255, default='')
+    persistentId = models.CharField(max_length=255, default='', db_index=True)
 
     view_count = models.IntegerField(default=0)
     preview_count = models.IntegerField(default=0)
@@ -36,3 +36,17 @@ class Storage(models.Model):
         elif n / 1024 / 1024 < 1024:
             return '%.2f MB' % (n / 1024.0 / 1024.0)
         return '%.2f GB' % (n / 1024.0 / 1024.0 / 1024.0)
+
+
+class ConvertedStorage(models.Model):
+    source = models.ForeignKey(Storage, db_index=True, 
+                               related_name='converted_storage')
+    success = models.BooleanField()
+    error_msg = models.CharField(max_length=255)
+
+    key = models.CharField(max_length=1024)
+    cmd = models.CharField(max_length=255)
+
+    complete_time = models.DateTimeField(auto_now_add=True)
+
+    download_count = models.IntegerField(default=0)
