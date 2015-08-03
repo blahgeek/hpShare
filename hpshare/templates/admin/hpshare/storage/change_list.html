@@ -22,11 +22,10 @@
             }
         };
 
-        var do_upload = function(file, key, token) {
-            btn.text("Uploading to " + key + "...");
+        var do_upload = function(file, token) {
+            btn.text("Uploading...");
             var data = new FormData();
             data.append("file", file);
-            data.append("key", key);
             data.append("token", token);
             $.ajax({
                 url: "http://up.qiniu.com",
@@ -58,7 +57,7 @@
             $.post("{% url 'permit' %}", {
                 "filename": basename,
             }, function(data) {
-                do_upload(file, data["key"], data["token"]);
+                do_upload(file, data["token"]);
             }).fail(function() {
                 alert("Error: request to upload.");
             });
