@@ -19,15 +19,18 @@ def viewfile(req, id):
     model.view_count += 1
     model.save()
 
-    shortmime = model.mimetype.split('/')[0]
-    enable_preview = (shortmime == "image" or
-                      (shortmime == "video" and model.size < 10e6) or
-                      (shortmime == "audio" and model.size < 5e6))
+    try:
+        preview = model.converted_storage.get(success=True, 
+                                              description="Preview")
+    except ConvertedStorage.DoesNotExist:
+        preview = None
+
     return render(req, 'viewfile.html', {
                     'model': model,
-                    'shortmime': shortmime,
-                    "enable_preview": enable_preview,
-                    "persistents": model.converted_storage.filter(success=True),
+                    'preview': preview,
+                    "persistents": model.converted_storage
+                                   .filter(success=True)
+                                   .exclude(description="Preview"),
                   })
 
 def downloadfile_persistent(req, id, filename):
@@ -36,27 +39,15 @@ def downloadfile_persistent(req, id, filename):
         model.download_count += 1
         model.save()
     url = config.DOWNLOAD_URL + urllib.quote(model.key.encode('utf8'))
-    url += '?download/'
     url = qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT)
     return HttpResponseRedirect(url)
 
 def downloadfile(req, id, filename):
-    return download_preview_file(req, id, filename, True)
-
-def previewfile(req, id, filename):
-    return download_preview_file(req, id, filename, False)
-
-def download_preview_file(req, id, filename, download=True):
     model = get_object_or_404(Storage, id=id, uploaded=True)
-    if req.method == 'GET':  # Do not count 'HEAD'
-        if download:
-            model.download_count += 1
-        else:
-            model.preview_count += 1
+    if req.method == 'GET':
+        model.download_count += 1
         model.save()
-
     url = config.DOWNLOAD_URL + urllib.quote(model.key_name.encode('utf8'))
-    if download:
-        url += '?download/'
-    return HttpResponseRedirect(qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT))
-
+    url += '?download/'
+    url = qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT)
+    return HttpResponseRedirect(url)

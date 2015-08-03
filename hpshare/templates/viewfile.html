@@ -5,35 +5,15 @@
 {% endblock %}
 
 {% block topbar_extra %}
-    {% if enable_preview %}
+    {% if preview %}
         <a class="download-btn" href="{% url 'downloadfile' model.id model.filename %}">Download</a>
     {% endif %}
 {% endblock %}
 
 {% block content %}
-
-    {% if enable_preview %}
+    {% if preview %}
     <div class="file-preview">
-        {% if "image" == shortmime %}
-        <img alt="Preview" src="{% url 'previewfile' model.id model.filename %}">
-        {% else %}
-        <{{shortmime}} controls {% if "video" == shortmime %}autoplay loop{% endif %}>
-            <source src="{% url 'previewfile' model.id model.filename %}" type="{{model.mimetype}}"/>
-            <div class="file-type">
-                <span class="extension">{{model.extension}}</span>
-            </div>
-        </{{shortmime}}>
-
-        <script type="text/javascript">
-        var v = document.getElementsByTagName("{{shortmime}}")[0];
-        if(!v.canPlayType("{{model.mimetype}}")) {
-            var d = document.createElement('div');
-            d.innerHTML = v.innerHTML;
-            v.parentNode.replaceChild(d, v);
-            d.parentNode.classList.remove("file-preview");
-        }
-        </script>
-        {% endif %}
+        <img alt="Preview" src="{% url 'downloadfile_persistent' preview.id preview.filename %}">
     </div>
     {% else %}
     <div class="file-type">
@@ -47,7 +27,7 @@
         &nbsp;•&nbsp;
         <span class="filetime">{{model.permit_time|date:"D, M d Y"}}
     </p>
-    {% if not enable_preview %}
+    {% if not preview %}
     <a class="download-btn" href="{% url 'downloadfile' model.id model.filename %}">Download</a>
     {% for p in persistents %}
         <a class="download-btn" href="{% url 'downloadfile_persistent' p.id p.filename %}">Download as {{p.description}}</a>

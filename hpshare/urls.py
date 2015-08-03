@@ -23,9 +23,6 @@ urlpatterns = patterns('',
 
     # Views
     url(r'^(?P<id>[0-9a-zA-Z]+)/?$', 'hpshare.views.viewfile', name='viewfile'),
-    url(r'^(?P<id>[0-9a-zA-Z]+)/(?P<filename>[^/]+)$', 
-        'hpshare.views.previewfile', 
-        name='previewfile'),
     url(r'^download/(?P<id>[0-9a-zA-Z]+)/(?P<filename>[^/]+)$', 
         'hpshare.views.downloadfile', 
         name='downloadfile'),
