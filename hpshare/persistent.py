@@ -34,8 +34,7 @@ def get_persistents(req, storage):
     if ext in ('avi', 'mp4', 'wmv', 'mkv', 'ts', 'webm', 
                'mov', 'flv', 'ogv', ):
         op = ('vframe/jpg' + 
-              '/offset/3' +  # second
-              '/w/1280')
+              '/offset/3')
         op += '|' + wm_op
         ops.append((op, '.preview.jpg', 'Preview'))
     return ops
