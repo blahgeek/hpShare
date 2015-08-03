@@ -48,6 +48,7 @@ def permit(req):
                   persistents)
         options['persistentOps'] = ';'.join(ops)
         options['persistentNotifyUrl'] = req.build_absolute_uri(reverse('persistent_callback'))
+        options['persistentPipeline'] = config.PERSISTENT_PIPELINE
     token = qn.upload_token(config.BUCKET_NAME, None, config.UPLOAD_TIME_LIMIT, 
                             options)
     return JsonResponse({'token': token})
