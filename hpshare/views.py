@@ -19,11 +19,13 @@ def viewfile(req, id):
     model.view_count += 1
     model.save()
 
-    try:
-        preview = model.converted_storage.get(success=True, 
-                                              description="Preview")
-    except ConvertedStorage.DoesNotExist:
-        preview = None
+    preview = None
+    if 'np' not in req.GET:
+        try:
+            preview = model.converted_storage.get(success=True, 
+                                                  description="Preview")
+        except ConvertedStorage.DoesNotExist:
+            pass
 
     return render(req, 'viewfile.html', {
                     'model': model,

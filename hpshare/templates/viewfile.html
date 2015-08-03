@@ -13,7 +13,9 @@
 {% block content %}
     {% if preview %}
     <div class="file-preview">
-        <img alt="Preview" src="{% url 'downloadfile_persistent' preview.id preview.filename %}">
+        <a title="Click to download original file" href="{% url 'downloadfile' model.id model.filename %}">
+            <img alt="Preview" src="{% url 'downloadfile_persistent' preview.id preview.filename %}">
+        </a>
     </div>
     {% else %}
     <div class="file-type">

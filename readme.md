@@ -8,9 +8,9 @@
 
 ## Demos & Screenshots & GIFs
 
-[blaa.ml/xGD4Ubmj](http://blaa.ml/xGD4Ubmj)
+[blaa.ml/km9MVo](http://blaa.ml/km9MVo)
 
-[blaa.ml/G6DSxy](http://blaa.ml/G6DSxy)
+[blaa.ml/R46ADB](http://blaa.ml/R46ADB)
 
 ![Demo](screenshots/demo.gif)
 
