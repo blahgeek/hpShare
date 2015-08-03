@@ -31,10 +31,10 @@ def get_persistents(req, storage):
               '/interlace/1/')
         op += '|' + wm_op
         ops.append((op, '.preview.jpg', 'Preview'))
-    if ext in ('avi', 'mp4', 'wmv', 'mkv', 'ts', 'webm'):
+    if ext in ('avi', 'mp4', 'wmv', 'mkv', 'ts', 'webm', 'mov'):
         op = ('vframe/jpg' + 
               '/offset/3' +  # second
-              '/w/1280/h/720')
+              '/w/1280')
         op += '|' + wm_op
         ops.append((op, '.preview.jpg', 'Preview'))
     return ops
