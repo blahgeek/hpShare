@@ -11,6 +11,10 @@ def get_persistents(req, storage):
     ext = '' if ('.' not in storage.filename) else storage.filename.split('.')[-1]
     ext = ext.lower()
 
+    wm_op = ('watermark/1/image/' +
+             urlsafe_b64encode(req.build_absolute_uri(STATIC_URL + 'ribbon.png')) +
+             '/gravity/NorthWest/dx/0/dy/0')
+
     if ext in ("doc", "docx", "odt", "rtf", "wps", 
                "ppt", "pptx", "odp", "dps", 
                "xls", "xlsx", "ods", "csv", "et"):
@@ -25,9 +29,12 @@ def get_persistents(req, storage):
         op = ('imageView2/2/w/1280' + 
               '/format/jpg' + 
               '/interlace/1/')
-        op += '|' + ('watermark/2/text/' + urlsafe_b64encode('hpShare') + 
-                     '/font/' + urlsafe_b64encode('微软雅黑') +
-                     '/fontsize/1000/fill/' + urlsafe_b64encode('#00a0de') + 
-                     '/dissolve/60/gravity/NorthWest/dx/20/dy/10')
+        op += '|' + wm_op
+        ops.append((op, '.preview.jpg', 'Preview'))
+    if ext in ('avi', 'mp4', 'wmv', 'mkv', 'ts', 'webm'):
+        op = ('vframe/jpg' + 
+              '/offset/3' +  # second
+              '/w/1280/h/720')
+        op += '|' + wm_op
         ops.append((op, '.preview.jpg', 'Preview'))
     return ops
