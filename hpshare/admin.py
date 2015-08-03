@@ -10,13 +10,14 @@ from .management.commands.purge_storage import batch_delete
 
 @admin.register(ConvertedStorage)
 class ConvertedStorageAdmin(admin.ModelAdmin):
-    list_display = ('source', 'success', 'cmd', 'complete_time', 'download_count')
+    list_display = ('source', 'success', "description", "suffix", 
+                    'complete_time', 'download_count')
     ordering = ('complete_time', )
 
 @admin.register(Storage)
 class StorageAdmin(admin.ModelAdmin):
     list_display = ('key_name', 'link', 'user', 'readable_size', 'permit_time', 
-                    'uploaded', 'view_count', 'preview_count', 'download_count', 'persist')
+                    'uploaded', 'view_count', 'download_count', 'persist')
     actions = ('delete_storage', )
     ordering = ('permit_time', )
 

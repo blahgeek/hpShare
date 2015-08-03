@@ -26,8 +26,8 @@ def get_persistents(req, storage):
               '/format/jpg' + 
               '/interlace/1/')
         op += '|' + ('watermark/2/text/' + urlsafe_b64encode('hpShare') + 
-                     '/font/' + urlsafe_b64encode('times new roman') +
-                     '/fontsize/1000/fill/' + urlsafe_b64encode('white') + 
-                     '/dissolve/50/gravity/NorthWest/dx/20/dy/10')
+                     '/font/' + urlsafe_b64encode('微软雅黑') +
+                     '/fontsize/1000/fill/' + urlsafe_b64encode('#00a0de') + 
+                     '/dissolve/60/gravity/NorthWest/dx/20/dy/10')
         ops.append((op, '.preview.jpg', 'Preview'))
     return ops

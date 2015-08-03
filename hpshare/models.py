@@ -20,7 +20,6 @@ class Storage(models.Model):
     persistentId = models.CharField(max_length=255, default='', db_index=True)
 
     view_count = models.IntegerField(default=0)
-    preview_count = models.IntegerField(default=0)
     download_count = models.IntegerField(default=0)
 
     def __unicode__(self):
