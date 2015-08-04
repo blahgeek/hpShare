@@ -3,6 +3,7 @@
 # Created by i@BlahGeek.com at 2015-01-29
 
 import shortuuid
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -24,6 +25,17 @@ class Storage(models.Model):
 
     def __unicode__(self):
         return self.key_name
+
+    @property
+    def preview(self):
+        ret = None
+        try:
+            ret = self.converted_storage.get(success=True, 
+                                             description="Preview")
+        except ObjectDoesNotExist:
+            pass
+        return ret
+    
 
     @property
     def key_name(self):
@@ -65,3 +77,12 @@ class ConvertedStorage(models.Model):
     def filename(self):
         return self.source.filename + self.suffix
     
+
+class StorageGroup(models.Model):
+    id = models.CharField(max_length=255, primary_key=True)
+    storages = models.ManyToManyField(Storage, related_name='groups')
+
+    create_time = models.DateTimeField(auto_now_add=True)
+    persist = models.BooleanField(default=False)
+
+    view_count = models.IntegerField(default=0)

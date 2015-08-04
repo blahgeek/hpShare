@@ -114,6 +114,51 @@ a {
   margin-top: 75px;
 }
 
+.file-list {
+  overflow: auto;
+  max-width: 480px;
+  margin: 0 auto 20px;
+  padding: 0 0 8px;
+  border: 0;
+  border-bottom: 1px solid #ccc;
+}
+
+@media only screen and (max-width: 533px) {
+  .file-list {
+    max-width: 90%;
+  }
+}
+
+.file-list .file-list-info {
+  width: 280px;
+  float: left;
+}
+
+.file-list .filename {
+  white-space: normal;
+  word-wrap: break-word;
+  text-align: left;
+}
+
+.file-list .download-btn {
+  width: 60px;
+  float: right;
+  margin-left: 8px;
+}
+
+.download-btn.preview-btn {
+  width: 40px;
+  color: #676a6c;
+  background-color: white;
+  border-color: #babec2;
+}
+.download-btn.preview-btn:hover,
+.download-btn.preview-btn:focus{
+  color: #676a6c;
+  background-color: #f2f2f2;
+  border-color: #babec2;
+}
+
 .download-btn {
   margin: 0 auto 10px;
   width: 150px;

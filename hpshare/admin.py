@@ -5,8 +5,17 @@
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.utils.html import format_html
-from .models import Storage, ConvertedStorage
+from .models import Storage, ConvertedStorage, StorageGroup
 from .management.commands.purge_storage import batch_delete
+
+@admin.register(StorageGroup)
+class StorageGroupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'link', 'persist', 'create_time', 'view_count')
+
+    def link(self, obj):
+        url = reverse('viewgroup', args=[obj.id, ])
+        return format_html('<a href="{0}">link</a>', url)
+    link.allow_tags = True
 
 @admin.register(ConvertedStorage)
 class ConvertedStorageAdmin(admin.ModelAdmin):

@@ -4,9 +4,9 @@
 
 from __future__ import absolute_import
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
-from .models import Storage, ConvertedStorage
+from .models import Storage, ConvertedStorage, StorageGroup
 import urllib
 import logging
 import config
@@ -14,19 +14,23 @@ from . import qn
 
 logger = logging.getLogger(__name__)
 
+def viewgroup(req, id):
+    model = get_object_or_404(StorageGroup, id=id)
+    model.view_count += 1
+    model.save()
+    if model.storages.count() == 0:
+        raise Http404("Group {} has no storage.".format(id))
+    return render(req, 'viewgroup.html', {
+                     'storages': model.storages.all(),
+                     'model': model,
+                 })
+
 def viewfile(req, id):
     model = get_object_or_404(Storage, id=id, uploaded=True)
     model.view_count += 1
     model.save()
 
-    preview = None
-    if 'np' not in req.GET:
-        try:
-            preview = model.converted_storage.get(success=True, 
-                                                  description="Preview")
-        except ConvertedStorage.DoesNotExist:
-            pass
-
+    preview = model.preview
     return render(req, 'viewfile.html', {
                     'model': model,
                     'preview': preview,

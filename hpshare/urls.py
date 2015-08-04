@@ -30,4 +30,6 @@ urlpatterns = patterns('',
         'hpshare.views.downloadfile_persistent', 
         name='downloadfile_persistent'),
 
+    url(r'^g/(?P<id>[0-9a-zA-Z]+)/?$', 'hpshare.views.viewgroup', name='viewgroup'),
+
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

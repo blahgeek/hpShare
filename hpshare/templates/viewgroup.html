@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>{{storages|length}} files - hpShare</title>
+{% endblock %}
+
+{% block content %}
+    {% for storage in storages %}
+    <div class="file-list">
+        <div class="file-list-info">
+            <span class="filename">{{ storage.filename }}</span>
+            <span class="extrainfo">{{ storage.readable_size }}</span>
+        </div>
+        <a class="download-btn" href="{% url 'downloadfile' storage.id storage.filename %}">Download</a>
+        <a class="download-btn preview-btn" href="{% url 'viewfile' storage.id %}">View</a>
+    </div>
+    {% endfor %}
+    <p class="filename">{{ storages|length }} Files</p>
+    <p class="extrainfo">
+        <span class="filetime">{{model.create_time|date:"D, M d Y"}}
+    </p>
+{% endblock %}
