@@ -17,6 +17,18 @@ class StorageGroupAdmin(admin.ModelAdmin):
         return format_html('<a href="{0}">link</a>', url)
     link.allow_tags = True
 
+    def get_actions(self, req):
+        actions = super(StorageGroupAdmin, self).get_actions(req)
+        del actions['delete_selected']
+        return actions
+
+    actions = ('delete_safe', )
+    def delete_safe(self, req, models):
+        for model in models:
+            model.delete_safe()
+
+    delete_safe.short_description = 'Remove groups without deleting storage'
+
 @admin.register(ConvertedStorage)
 class ConvertedStorageAdmin(admin.ModelAdmin):
     list_display = ('source', 'success', "description", "suffix", 

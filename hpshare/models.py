@@ -86,3 +86,7 @@ class StorageGroup(models.Model):
     persist = models.BooleanField(default=False)
 
     view_count = models.IntegerField(default=0)
+
+    def delete_safe(self):
+        self.storages.clear()
+        self.delete()

@@ -74,7 +74,7 @@ def newgroup(req):
     for storage in storages:
         model.storages.add(storage)
     return JsonResponse({
-                        'url': req.build_absolute_uri(reverse('viewgroup', model.id)),
+                        'url': req.build_absolute_uri(reverse('viewgroup', args=[model.id,])),
                         'count': len(storages),
                         })
 
