@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-USAGE="Usage: hpshare [OPTIONS] file.ext
+USAGE="Usage: hpshare [OPTIONS] file1 file2 ...
     -u, --user:    username
     -p, --private: use longer URL
     -s, --server:  server host name, default to blaa.ml"

@@ -36,7 +36,3 @@
 Goto `http://your.domain.com/`
 
 Run `./manage.py purge_storage` to delete expired files. Add it to a cron job!
-
-# TODO
-
-- Upload directory (Zip it first) via DropZone
