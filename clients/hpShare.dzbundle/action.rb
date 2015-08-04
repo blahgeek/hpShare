@@ -75,11 +75,11 @@ def upload_one(filepath, private_)
   filepath = filepath.gsub('"', '\"')
   $dz.begin("Uploading #{filename}...")
 
-  permit = curl_it("-u #{ENV['username']}:#{ENV['password']}" \ 
-                   " -F \"filename=#{filename}\" -F private=#{private_}" \ 
+  permit = curl_it("-u #{ENV['username']}:#{ENV['password']}"\
+                   " -F \"filename=#{filename}\" -F private=#{private_}"\
                    " http://#{ENV['server']}/permit/", false)
   $dz.determinate(true)
-  ret = curl_it("-F token=#{permit['token']} -F \"file=@#{file_path}\"" \ 
+  ret = curl_it("-F token=#{permit['token']} -F \"file=@#{filepath}\""\
                 " http://up.qiniu.com")
   $dz.determinate(false)
   return ret
@@ -99,8 +99,8 @@ def dragged
     $dz.url(ret["url"])
   else
     ids = results.map{|x| x['id']}.join(',')
-    ret = curl_it("-u #{ENV['username']}:#{ENV['password']}" \
-                  " -F ids=#{ids} -F private=#{private_}" \
+    ret = curl_it("-u #{ENV['username']}:#{ENV['password']}"\
+                  " -F ids=#{ids} -F private=#{private_}"\
                   " http://#{ENV['server']}/newgroup/", false)
     $dz.finish("Done, #{ret['count']} files uploaded, URL Copied.")
     $dz.url(ret["url"])
