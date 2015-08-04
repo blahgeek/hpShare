@@ -7,7 +7,7 @@
 # URL: https://github.com/blahgeek/hpShare
 # OptionsNIB: ExtendedLogin
 # KeyModifiers: Option
-# Version: 1.4
+# Version: 2.0
 # RunsSandboxed: Yes
 # MinDropzoneVersion: 3.0
 
@@ -69,29 +69,45 @@ def curl_it(cmd, progress=true)
 
 end
 
-def dragged
-
+def upload_one(filepath, private_)
   $dz.determinate(false)
-  file_path = $items[0]
-  filename = File.basename(file_path)
-  file_path = file_path.gsub('"', '\"')
+  filename = File.basename(filepath)
+  filepath = filepath.gsub('"', '\"')
   $dz.begin("Uploading #{filename}...")
 
+  permit = curl_it("-u #{ENV['username']}:#{ENV['password']}" \ 
+                   " -F \"filename=#{filename}\" -F private=#{private_}" \ 
+                   " http://#{ENV['server']}/permit/", false)
+  $dz.determinate(true)
+  ret = curl_it("-F token=#{permit['token']} -F \"file=@#{file_path}\"" \ 
+                " http://up.qiniu.com")
+  $dz.determinate(false)
+  return ret
+end
+
+def dragged
   private_ = false
   if ENV["KEY_MODIFIERS"] == "Option"
     private_ = true
   end
+  results = $items.map do |item|
+    upload_one(item, private_)
+  end
 
-  permit = curl_it("-u #{ENV['username']}:#{ENV['password']} -F \"filename=#{filename}\" -F private=#{private_} http://#{ENV['server']}/permit/", false)
-  $dz.determinate(true)
-  ret = curl_it("-F token=#{permit['token']} -F \"file=@#{file_path}\" http://up.qiniu.com")
-  $dz.determinate(false)
-
-  $dz.finish("Done, ID=#{ret['id']}, URL Copied.")
-  $dz.url(ret["url"])
+  if results.length == 1
+    $dz.finish("Done, ID=#{results[0]['id']}, URL Copied.")
+    $dz.url(ret["url"])
+  else
+    ids = results.map{|x| x['id']}.join(',')
+    ret = curl_it("-u #{ENV['username']}:#{ENV['password']}" \
+                  " -F ids=#{ids} -F private=#{private_}" \
+                  " http://#{ENV['server']}/newgroup/", false)
+    $dz.finish("Done, #{ret['count']} files uploaded, URL Copied.")
+    $dz.url(ret["url"])
+  end
 end
 
 
 def clicked
-  `open http://#{ENV['server']}/admin/hpshare/storage/`
+  `open http://#{ENV['server']}/`
 end

@@ -11,8 +11,8 @@ from django.http import HttpResponseBadRequest, JsonResponse, HttpResponseServer
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from base64 import urlsafe_b64encode
-from .models import Storage, ConvertedStorage
-from .forms import PermitForm, CallbackForm
+from .models import Storage, ConvertedStorage, StorageGroup
+from .forms import PermitForm, CallbackForm, NewgroupForm
 from .auth import qn_callback_auth, http_basic_auth
 from .persistent import get_persistents
 from . import qn, qn_bucket_mng
@@ -52,6 +52,31 @@ def permit(req):
     token = qn.upload_token(config.BUCKET_NAME, None, config.UPLOAD_TIME_LIMIT, 
                             options)
     return JsonResponse({'token': token})
+
+@require_POST
+@csrf_exempt
+@http_basic_auth
+def newgroup(req):
+    form = NewgroupForm(req.POST)
+    if not form.is_valid():
+        return HttpResponseBadRequest()
+    ids = form.cleaned_data['ids'].split(',')
+    if not ids:
+        return HttpResponseBadRequest()
+
+    model = StorageGroup()
+    model.id = ShortUUID().random(config.KEY_LENGTH_PRIVATE 
+                                  if form.cleaned_data['private'] 
+                                  else config.KEY_LENGTH_PUBLIC)
+    model.save()
+
+    storages = Storage.objects.filter(id__in=ids).all()
+    for storage in storages:
+        model.storages.add(storage)
+    return JsonResponse({
+                        'url': req.build_absolute_uri(reverse('viewgroup', model.id)),
+                        'count': len(storages),
+                        })
 
 @require_POST
 @csrf_exempt

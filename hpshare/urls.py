@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     # APIs
     url(r'^admin/', include(admin.site.urls)),
     url(r'^permit/', 'hpshare.apis.permit', name='permit'), 
+    url(r'^newgroup/', 'hpshare.apis.newgroup', name='newgroup'), 
     url(r'^callback/', 'hpshare.apis.callback', name='callback'),
     url(r'^p_callback/', 'hpshare.apis.persistent_callback', name='persistent_callback'),
     url(r'^delete/', 'hpshare.apis.deletefile', name='deletefile'),

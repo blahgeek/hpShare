@@ -13,6 +13,11 @@ class PermitForm(Form):
         return self.cleaned_data['filename'].split('/')[-1]
 
 
+class NewgroupForm(Form):
+    private = forms.BooleanField(required=False)
+    ids = forms.CharField()
+
+
 class CallbackForm(Form):
     key = forms.CharField()
     mimetype = forms.CharField()
