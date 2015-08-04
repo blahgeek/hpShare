@@ -3,7 +3,7 @@
 # Created by i@BlahGeek.com at 2015-01-31
 
 from django.core.management.base import BaseCommand
-from hpshare.models import Storage
+from hpshare.models import Storage, StorageGroup
 from hpshare import qn_bucket_mng
 from django.utils import timezone
 import qiniu
@@ -31,4 +31,12 @@ class Command(BaseCommand):
             return
         ret, info = batch_delete(models)
         print info
+
+        groups = StorageGroup.objects.filter(create_time__lt=timezone.now()-STORAGE_EXPIRE,
+                                             persist=False).all()
+        for group in groups:
+            print 'Removing group', group.id
+            group.delete_safe()
+        if len(groups) == 0:
+            print "No group to delete"
 
