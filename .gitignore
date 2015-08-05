@@ -87,4 +87,5 @@ Temporary Items
 /static/
 
 config.py
+GeoIP.dat
 

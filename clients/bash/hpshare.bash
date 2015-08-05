@@ -57,13 +57,14 @@ do
                     -d "filename=$FILE" \
                     -d "private=$PRIVATE")
     TOKEN=$(echo $PERMIT_OUTPUT | jsawk "return this.token")
+    UPLOAD_DOMAIN=$(echo $PERMIT_OUTPUT | jsawk "return this.upload_domain")
 
     if [[ -z $TOKEN ]]; then
         echo "Permit error."
         continue
     fi
 
-    UPLOAD_OUTPUT=$(curl --progress-bar "http://up.qiniu.com" \
+    UPLOAD_OUTPUT=$(curl "http://$UPLOAD_DOMAIN" \
                     -F token="$TOKEN" \
                     -F "file=@$FILE")
     URL=$(echo $UPLOAD_OUTPUT | jsawk "return this.url")

@@ -10,12 +10,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest, JsonResponse, HttpResponseServerError
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
+from django.contrib.gis.geoip import GeoIP
 from base64 import urlsafe_b64encode
 from .models import Storage, ConvertedStorage, StorageGroup
 from .forms import PermitForm, CallbackForm, NewgroupForm
 from .auth import qn_callback_auth, http_basic_auth
 from .persistent import get_persistents
 from . import qn, qn_bucket_mng
+
+geoip = GeoIP()
 
 @require_POST
 @csrf_exempt
@@ -51,7 +54,13 @@ def permit(req):
         options['persistentPipeline'] = config.PERSISTENT_PIPELINE
     token = qn.upload_token(config.BUCKET_NAME, None, config.UPLOAD_TIME_LIMIT, 
                             options)
-    return JsonResponse({'token': token})
+
+    country = geoip.country_code(req.META.get('REMOTE_ADDR', ''))
+    if country == 'CN' or country is None:
+        upload_domain = 'upload.qiniu.com'
+    else:
+        upload_domain = 'up.qiniug.com'
+    return JsonResponse({'token': token, 'upload_domain': upload_domain})
 
 @require_POST
 @csrf_exempt

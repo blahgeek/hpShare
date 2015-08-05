@@ -80,7 +80,7 @@ def upload_one(filepath, private_)
                    " http://#{ENV['server']}/permit/", false)
   $dz.determinate(true)
   ret = curl_it("-F token=#{permit['token']} -F \"file=@#{filepath}\""\
-                " http://up.qiniu.com")
+                " http://#{permit['upload_domain']}")
   $dz.determinate(false)
   return ret
 end
@@ -96,7 +96,7 @@ def dragged
 
   if results.length == 1
     $dz.finish("Done, ID=#{results[0]['id']}, URL Copied.")
-    $dz.url(ret["url"])
+    $dz.url(results[0]["url"])
   else
     ids = results.map{|x| x['id']}.join(',')
     ret = curl_it("-u #{ENV['username']}:#{ENV['password']}"\
