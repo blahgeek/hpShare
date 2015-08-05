@@ -49,7 +49,7 @@ if [[ ${#FILES[*]} -eq 0 ]]; then
     exit 1
 fi
 
-for FILE in ${FILES[*]}
+for FILE in "${FILES[@]}"
 do
     echo "Uploading $FILE..."
     PERMIT_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
