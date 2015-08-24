@@ -26,5 +26,5 @@ class CallbackForm(Form):
     persistentId = forms.CharField(required=False)
 
     def clean_extension(self):
-        if self.cleaned_data['extension'][0] == '.':
-            return self.cleaned_data['extension'][1:]
+        orig = self.cleaned_data['extension']
+        return '' if len(orig) <= 1 else orig[1:]
