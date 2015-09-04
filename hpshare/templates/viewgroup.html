@@ -17,6 +17,6 @@
     {% endfor %}
     <p class="filename">{{ storages|length }} Files</p>
     <p class="extrainfo">
-        <span class="filetime">{{model.create_time|date:"D, M d Y"}}
+        <span class="filetime">{{model.create_time|date:"y/m/d P e"}}
     </p>
 {% endblock %}

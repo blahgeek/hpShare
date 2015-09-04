@@ -25,12 +25,12 @@ def viewgroup(req, id):
                      'model': model,
                  })
 
-def viewfile(req, id):
+def viewfile(req, id, disable_preview=False):
     model = get_object_or_404(Storage, id=id, uploaded=True)
     model.view_count += 1
     model.save()
 
-    preview = model.preview
+    preview = model.preview if not disable_preview else None
     return render(req, 'viewfile.html', {
                     'model': model,
                     'preview': preview,
