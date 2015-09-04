@@ -39,9 +39,7 @@ def permit(req):
         'insertOnly': 1,
         'saveKey': model.key_name,
         'callbackUrl': req.build_absolute_uri(reverse('callback')),
-        'callbackBody': "extension=$(ext)&mimetype=$(mimeType)" +
-                        "&size=$(fsize)&key=$(key)" + 
-                        "&persistentId=$(persistentId)",
+        'callbackBody': CallbackForm.getCallbackBody(),
     }
     persistents = get_persistents(req, model)
     if persistents:
@@ -100,6 +98,7 @@ def callback(req):
     model.uploaded = True
     for key in ('size', 'mimetype', 'extension', 'persistentId'):
         setattr(model, key, form.cleaned_data[key])
+    model.extrainfo = '\n'.join(form.extrainfo())
     model.save()
 
     return JsonResponse({
