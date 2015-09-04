@@ -27,7 +27,7 @@
     <p class="extrainfo">
         <span class="filesize">{{model.readable_size}}</span> 
         &nbsp;•&nbsp;
-        <span class="filetime">{{model.permit_time|date:"y/m/d P e"}}
+        <span class="filetime">{{model.permit_time|date:"d/m/Y P e"}}
     </p>
     {% if not preview %}
     <a class="download-btn" href="{% url 'downloadfile' model.id model.filename %}">Download</a>
