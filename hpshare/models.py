@@ -13,6 +13,7 @@ class Storage(models.Model):
     filename = models.CharField(max_length=1024)
 
     permit_time = models.DateTimeField(auto_now_add=True)
+    last_access_time = models.DateTimeField(auto_now=True)
     persist = models.BooleanField(default=False)
     uploaded = models.BooleanField(default=False)
     size = models.IntegerField(default=0)  # File size in bytes
@@ -84,6 +85,7 @@ class StorageGroup(models.Model):
     storages = models.ManyToManyField(Storage, related_name='groups')
 
     create_time = models.DateTimeField(auto_now_add=True)
+    last_access_time = models.DateTimeField(auto_now=True)
     persist = models.BooleanField(default=False)
 
     view_count = models.IntegerField(default=0)

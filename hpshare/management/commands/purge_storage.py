@@ -20,7 +20,7 @@ def batch_delete(storages):
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        models = Storage.objects.filter(permit_time__lt=timezone.now()-STORAGE_EXPIRE,
+        models = Storage.objects.filter(last_access_time__lt=timezone.now()-STORAGE_EXPIRE,
                                         persist=False).all()
         for model in models:
             key_name = model.key_name.encode('utf8')
@@ -32,7 +32,7 @@ class Command(BaseCommand):
         ret, info = batch_delete(models)
         print info
 
-        groups = StorageGroup.objects.filter(create_time__lt=timezone.now()-STORAGE_EXPIRE,
+        groups = StorageGroup.objects.filter(last_access_time__lt=timezone.now()-STORAGE_EXPIRE,
                                              persist=False).all()
         for group in groups:
             print 'Removing group', group.id

@@ -10,7 +10,7 @@ from .management.commands.purge_storage import batch_delete
 
 @admin.register(StorageGroup)
 class StorageGroupAdmin(admin.ModelAdmin):
-    list_display = ('id', 'link', 'persist', 'create_time', 'view_count')
+    list_display = ('id', 'link', 'persist', 'create_time', 'last_access_time', 'view_count')
 
     def link(self, obj):
         url = reverse('viewgroup', args=[obj.id, ])
@@ -37,7 +37,7 @@ class ConvertedStorageAdmin(admin.ModelAdmin):
 
 @admin.register(Storage)
 class StorageAdmin(admin.ModelAdmin):
-    list_display = ('key_name', 'link', 'user', 'readable_size', 'permit_time', 
+    list_display = ('key_name', 'link', 'user', 'readable_size', 'permit_time', 'last_access_time',
                     'uploaded', 'view_count', 'download_count', 'persist')
     actions = ('delete_storage', )
     ordering = ('permit_time', )
