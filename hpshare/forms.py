@@ -19,12 +19,18 @@ class NewgroupForm(Form):
 
 
 class CallbackForm(Form):
-    key = forms.CharField()
-    mimetype = forms.CharField()
-    extension = forms.CharField(required=False)
-    size = forms.IntegerField()
-    persistentId = forms.CharField(required=False)
+    key = forms.CharField(label='key')
+    mimetype = forms.CharField(label='mimeType')
+    extension = forms.CharField(required=False, label='ext')
+    size = forms.IntegerField(label='fsize')
+    persistentId = forms.CharField(required=False, label='persistentId')
 
     def clean_extension(self):
         orig = self.cleaned_data['extension']
         return '' if len(orig) <= 1 else orig[1:]
+
+    @classmethod
+    def getCallbackBody(cls):
+        params = ['{}=$({})'.format(key, field.label) 
+                  for (key, field) in cls.declared_fields.iteritems()]
+        return '&'.join(params)
