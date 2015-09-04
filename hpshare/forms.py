@@ -48,11 +48,11 @@ class CallbackForm(Form):
         if v('imginfo_width'):
             ret.append('Image: {}x{} @ {}'.format(v('imginfo_width'), v('imginfo_height'), v('imginfo_colormodel')))
             return ret
+        if v('avinfo_a_codec'):
+            ret.append('Audio: {} {}Hz'.format(v('avinfo_a_codec'), v('avinfo_a_rate')))
         if v('avinfo_v_codec'):
             ret.append('Video: {}({}) {}x{} @ {}fps'.format(v('avinfo_v_codec'),
                        v('avinfo_v_pixfmt'), v('avinfo_v_width'), v('avinfo_v_height'), v('avinfo_v_fps')))
-        if v('avinfo_a_codec'):
-            ret.append('Audio: {} {}Hz'.format(v('avinfo_a_codec'), v('avinfo_a_rate')))
         return ret
 
     @classmethod
