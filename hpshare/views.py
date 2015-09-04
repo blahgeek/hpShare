@@ -34,6 +34,7 @@ def viewfile(req, id, disable_preview=False):
     return render(req, 'viewfile.html', {
                     'model': model,
                     'preview': preview,
+                    'extrainfo': filter(len, model.extrainfo.split('\n')),
                     "persistents": model.converted_storage
                                    .filter(success=True)
                                    .exclude(description="Preview"),
