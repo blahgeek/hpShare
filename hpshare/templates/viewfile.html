@@ -24,10 +24,10 @@
     {% endif %}
 
     <p class="filename">{{model.filename}}</p>
-    {% for info in extrainfo %}
-        <p class="extrainfo">{{ info }}</p>
-    {% endfor %}
     <p class="extrainfo">
+        {% for info in extrainfo %}
+        {{ info }}<br/>
+        {% endfor %}
         <span class="filesize">{{model.readable_size}}</span> 
         &nbsp;•&nbsp;
         <span class="filetime">{{model.permit_time|date:"d/m/Y P e"}}
