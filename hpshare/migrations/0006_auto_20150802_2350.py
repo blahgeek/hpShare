@@ -2,7 +2,9 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import hpshare.models
+
+def _uuid():
+    return 0
 
 
 class Migration(migrations.Migration):
@@ -15,6 +17,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='convertedstorage',
             name='id',
-            field=models.CharField(default=hpshare.models._uuid, max_length=64, serialize=False, primary_key=True),
+            field=models.CharField(default=_uuid, max_length=64, serialize=False, primary_key=True),
         ),
     ]

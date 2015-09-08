@@ -4,7 +4,7 @@
 
 import config
 import json
-from shortuuid import ShortUUID
+import hashids
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest, JsonResponse, HttpResponseServerError
@@ -12,13 +12,21 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from django.contrib.gis.geoip import GeoIP
 from base64 import urlsafe_b64encode
-from .models import Storage, ConvertedStorage, StorageGroup
+from .settings import SECRET_KEY
+from .models import Storage, ConvertedStorage, StorageGroup, Counter
 from .forms import PermitForm, CallbackForm, NewgroupForm
 from .auth import qn_callback_auth, http_basic_auth
 from .persistent import get_persistents
 from . import qn, qn_bucket_mng
 
 geoip = GeoIP()
+
+public_hash = hashids.Hashids(SECRET_KEY, config.KEY_LENGTH_PUBLIC)
+private_hash = hashids.Hashids(SECRET_KEY, config.KEY_LENGTH_PRIVATE)
+
+def gen_hashid(private=False):
+    uid = Counter.get_newid()
+    return private_hash(uid) if private else public_hash(uid)
 
 @require_POST
 @csrf_exempt
@@ -30,9 +38,7 @@ def permit(req):
     model = Storage()
     model.filename = form.cleaned_data['filename']
     model.user = req.user
-    model.id = ShortUUID().random(config.KEY_LENGTH_PRIVATE 
-                                  if form.cleaned_data['private'] 
-                                  else config.KEY_LENGTH_PUBLIC)
+    model.id = gen_hashid(form.cleaned_data['private'])
     model.save()
 
     options = {
@@ -72,9 +78,7 @@ def newgroup(req):
         return HttpResponseBadRequest()
 
     model = StorageGroup()
-    model.id = ShortUUID().random(config.KEY_LENGTH_PRIVATE 
-                                  if form.cleaned_data['private'] 
-                                  else config.KEY_LENGTH_PUBLIC)
+    model.id = gen_hashid(form.cleaned_data['private'])
     model.save()
 
     storages = Storage.objects.filter(id__in=ids).all()
@@ -122,6 +126,7 @@ def persistent_callback(req):
         return ('', '')
     for item in data['items']:
         model = ConvertedStorage()
+        model.id = gen_hashid(True)
         model.source = source
         model.success = (item['code'] == 0)
         model.error_msg = item.get('error', '')
