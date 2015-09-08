@@ -77,7 +77,7 @@ def upload_one(filepath, private_)
 
   permit = curl_it("-u #{ENV['username']}:#{ENV['password']}"\
                    " -F \"filename=#{filename}\" -F private=#{private_}"\
-                   " http://#{ENV['server']}/permit/", false)
+                   " http://#{ENV['server']}/~api/permit/", false)
   $dz.determinate(true)
   ret = curl_it("-F token=#{permit['token']} -F \"file=@#{filepath}\""\
                 " http://#{permit['upload_domain']}")
@@ -101,7 +101,7 @@ def dragged
     ids = results.map{|x| x['id']}.join(',')
     ret = curl_it("-u #{ENV['username']}:#{ENV['password']}"\
                   " -F ids=#{ids} -F private=#{private_}"\
-                  " http://#{ENV['server']}/newgroup/", false)
+                  " http://#{ENV['server']}/~api/newgroup/", false)
     $dz.finish("Done, #{ret['count']} files uploaded, URL Copied.")
     $dz.url(ret["url"])
   end

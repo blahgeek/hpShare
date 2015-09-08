@@ -53,7 +53,7 @@ for FILE in "${FILES[@]}"
 do
     echo "Uploading $FILE..."
     PERMIT_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
-                    "http://$SERVER/permit/" \
+                    "http://$SERVER/~api/permit/" \
                     -d "filename=$FILE" \
                     -d "private=$PRIVATE")
     TOKEN=$(echo $PERMIT_OUTPUT | jsawk "return this.token")
@@ -83,7 +83,7 @@ IDS=${IDS:1:${#IDS}}
 if [[ ${#FILES[*]} -gt 1 ]]; then
     echo "Grouping..."
     GROUP_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
-                   "http://$SERVER/newgroup/" \
+                   "http://$SERVER/~api/newgroup/" \
                    -d "ids=$IDS" -d "private=$PRIVATE")
     URL=$(echo $GROUP_OUTPUT | jsawk "return this.url")
     COUNT=$(echo $GROUP_OUTPUT | jsawk "return this.count")

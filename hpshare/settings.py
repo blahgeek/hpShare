@@ -120,7 +120,7 @@ STATICFILES_DIRS = (
         ('clients', os.path.join(BASE_DIR, 'clients')),
     )
 
-STATIC_URL = '/static/'
+STATIC_URL = '/~static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 GEOIP_PATH = BASE_DIR

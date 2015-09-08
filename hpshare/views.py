@@ -49,7 +49,7 @@ def downloadfile_persistent(req, id, filename):
     url = qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT)
     return HttpResponseRedirect(url)
 
-def downloadfile(req, id, filename):
+def downloadfile(req, id, filename=''):
     model = get_object_or_404(Storage, id=id, uploaded=True)
     if req.method == 'GET':
         model.download_count += 1
