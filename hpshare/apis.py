@@ -26,7 +26,7 @@ private_hash = hashids.Hashids(SECRET_KEY, config.KEY_LENGTH_PRIVATE)
 
 def gen_hashid(private=False):
     uid = Counter.get_newid()
-    return private_hash(uid) if private else public_hash(uid)
+    return private_hash.encode(uid) if private else public_hash.encode(uid)
 
 @require_POST
 @csrf_exempt
