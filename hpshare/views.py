@@ -6,7 +6,7 @@ from __future__ import absolute_import
 
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
-from django.db.model import F
+from django.db.models import F
 from .models import Storage, ConvertedStorage, StorageGroup
 import urllib
 import logging
