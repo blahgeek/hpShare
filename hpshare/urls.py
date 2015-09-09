@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     url(r'^~404$', TemplateView.as_view(template_name='404.html')),
 
     # Views
+    url(r'^\^(?P<last_n>[0-9]+)/?$', 'hpshare.views.viewlastfile', name='viewlastfile'),
+
     url(r'^(?P<id>[0-9a-zA-Z]+)/?$', 'hpshare.views.viewfile', name='viewfile'),
     url(r'^_(?P<id>[0-9a-zA-Z]+)/?$', 'hpshare.views.viewfile', {'disable_preview': True}),
     url(r'^(?P<id>[0-9a-zA-Z]+)_/?$', 'hpshare.views.viewfile', {'disable_preview': True}),

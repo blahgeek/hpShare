@@ -7,8 +7,14 @@ import base64
 import hmac
 from hashlib import sha1
 import config
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse
 from django.contrib.auth import authenticate
+
+class HttpResponseUnauthorized(HttpResponse):
+    status_code = 401
+    def __init__(self, realm):
+        super(HttpResponseUnauthorized, self).__init__('Basic auth required')
+        self['WWW-Authenticate'] = 'Basic realm="{}"'.format(realm)
 
 def qn_callback_auth(func):
     @functools.wraps(func)
@@ -18,7 +24,7 @@ def qn_callback_auth(func):
         data = req.path + '\n' + req.body
         verify_data = hmac.new(config.SECRET_KEY, data, sha1).digest()
         if base64.urlsafe_b64encode(verify_data) != encoded_data:
-            return HttpResponseForbidden()
+            return HttpResponseUnauthorized("Qiniu callback auth")
         return func(req, *args, **kwargs)
     return wrap
 
@@ -33,6 +39,6 @@ def http_basic_auth(func):
             if user:
                 req.user = user
         if not req.user.is_authenticated():
-            return HttpResponseForbidden()
+            return HttpResponseUnauthorized("User login")
         return func(req, *args, **kwargs)
     return wrap

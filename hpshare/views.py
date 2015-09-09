@@ -5,9 +5,10 @@
 from __future__ import absolute_import
 
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.db.models import F
 from .models import Storage, ConvertedStorage, StorageGroup
+from .auth import http_basic_auth
 import urllib
 import logging
 import config
@@ -27,8 +28,18 @@ def viewgroup(req, id):
                      'model': model,
                  })
 
+@http_basic_auth
+def viewlastfile(req, last_n):
+    q = Storage.objects.filter(user=req.user, uploaded=True) \
+                        .order_by('-permit_time')
+    try:
+        q = q[int(last_n)]
+    except IndexError:
+        raise Http404('Last %d file not found' % int(last_n))
+    return redirect('viewfile', q.id)
+
 def viewfile(req, id, disable_preview=False):
-    model = get_object_or_404(Storage, id=id, uploaded=True)
+    model = get_object_or_404(Storage, id=id)
     model.view_count = F('view_count') + 1
     model.save()
 
