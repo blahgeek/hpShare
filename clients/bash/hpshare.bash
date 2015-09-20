@@ -1,12 +1,14 @@
 #!/bin/bash -e
 
 USAGE="Usage: hpshare [OPTIONS] file1 file2 ...
-    -u, --user:    username
-    -p, --private: use longer URL
-    -s, --server:  server host name, default to blaa.ml"
+    -u, --user:        username
+    -p, --private:     use longer URL
+    -n, --no-checksum: do not check sha1sum during upload
+    -s, --server:      server host name, default to blaa.ml"
 
 SERVER="blaa.ml"
 USERNAME="$(whoami | tr [:upper:] [:lower:])"
+DO_CHECKSUM="yes"
 
 hash jsawk 2>/dev/null || { echo "jsawk(https://github.com/micha/jsawk) not installed."; exit 1; }
 
@@ -23,6 +25,9 @@ do
         -p|--private)
             PRIVATE=true
             ;;
+        -n|--no-checksum)
+            DO_CHECKSUM="no"
+            ;;
         -s|--server)
             SERVER="$2"
             shift
@@ -38,6 +43,12 @@ do
     shift
 done
 
+if [[ $DO_CHECKSUM = "yes" ]]; then
+    SHA1SUM="sha1sum"
+    hash $SHA1SUM 2>/dev/null || SHA1SUM="shasum"
+    hash $SHA1SUM 2>/dev/null || { echo "sha1sum/shasum not installed."; exit 1; }
+fi
+
 echo -n "Password for $USERNAME@$SERVER:"
 read -s PASSWORD
 echo
@@ -51,10 +62,17 @@ fi
 
 for FILE in "${FILES[@]}"
 do
+    CHECKSUM=""
+    if [[ $DO_CHECKSUM = "yes" ]]; then
+        echo "Calculating checksum of $FILE..."
+        CHECKSUM=$($SHA1SUM $FILE | cut -c 1-40)
+        echo "sha1sum: $CHECKSUM"
+    fi
     echo "Uploading $FILE..."
     PERMIT_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
                     "http://$SERVER/~api/permit/" \
                     -d "filename=$FILE" \
+                    -d "sha1sum=$CHECKSUM" \
                     -d "private=$PRIVATE")
     TOKEN=$(echo $PERMIT_OUTPUT | jsawk "return this.token")
     UPLOAD_DOMAIN=$(echo $PERMIT_OUTPUT | jsawk "return this.upload_domain")
