@@ -31,6 +31,9 @@
         <span class="filesize">{{model.readable_size}}</span> 
         &nbsp;•&nbsp;
         <span class="filetime">{{model.permit_time|date:"d/m/Y P e"}}
+        {% if model.sha1sum %}
+        SHA1: {{model.sha1sum}} <br/>
+        {% endif %}
     </p>
     {% if not preview %}
     <a class="download-btn" href="{% url 'downloadfile' model.id model.filename %}">Download</a>

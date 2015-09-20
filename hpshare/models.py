@@ -27,6 +27,7 @@ class Storage(models.Model):
     mimetype = models.CharField(max_length=255, default='application/octet-stream')
     extension = models.CharField(max_length=255, default='')
     extrainfo = models.CharField(max_length=255, default='')
+    sha1sum = models.CharField(max_length=40, default='')
     persistentId = models.CharField(max_length=255, default='', db_index=True)
 
     view_count = models.IntegerField(default=0)

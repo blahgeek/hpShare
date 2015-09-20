@@ -37,6 +37,7 @@ def permit(req):
         return HttpResponseBadRequest()
     model = Storage()
     model.filename = form.cleaned_data['filename']
+    model.sha1sum = form.cleaned_data['sha1sum'].strip()
     model.user = req.user
     model.id = gen_hashid(form.cleaned_data['private'])
     model.save()
@@ -47,6 +48,8 @@ def permit(req):
         'callbackUrl': req.build_absolute_uri(reverse('callback')),
         'callbackBody': CallbackForm.getCallbackBody(),
     }
+    if model.sha1sum:
+        options['checksum'] = 'SHA1:{}'.format(model.sha1sum),
     persistents = get_persistents(req, model)
     if persistents:
         saveas = config.BUCKET_NAME + ':' + model.key_name.encode('utf8')
