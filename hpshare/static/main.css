@@ -215,12 +215,15 @@ a {
 }
 
 .extrainfo {
+  white-space: nowrap;
   font-size: 12px;
   line-height: 20px;
   font-weight: 200;
   color: #babec2;
   text-align: center;
-  margin-top: 0px;
-  margin-bottom: 30px;
+  margin: 0px auto 30px;
+  max-width: 90%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
