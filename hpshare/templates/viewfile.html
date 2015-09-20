@@ -30,9 +30,9 @@
         {% endfor %}
         <span class="filesize">{{model.readable_size}}</span> 
         &nbsp;•&nbsp;
-        <span class="filetime">{{model.permit_time|date:"d/m/Y P e"}}
+        <span class="filetime">{{model.permit_time|date:"d/m/Y P e"}}<br/>
         {% if model.sha1sum %}
-        SHA1: {{model.sha1sum}} <br/>
+        SHA1: {{model.sha1sum}}<br/>
         {% endif %}
     </p>
     {% if not preview %}

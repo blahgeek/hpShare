@@ -49,7 +49,7 @@ def permit(req):
         'callbackBody': CallbackForm.getCallbackBody(),
     }
     if model.sha1sum:
-        options['checksum'] = 'SHA1:{}'.format(model.sha1sum),
+        options['checksum'] = 'SHA1:{}'.format(model.sha1sum)
     persistents = get_persistents(req, model)
     if persistents:
         saveas = config.BUCKET_NAME + ':' + model.key_name.encode('utf8')
