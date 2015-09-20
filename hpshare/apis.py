@@ -48,8 +48,6 @@ def permit(req):
         'callbackUrl': req.build_absolute_uri(reverse('callback')),
         'callbackBody': CallbackForm.getCallbackBody(),
     }
-    if model.sha1sum:
-        options['checksum'] = 'SHA1:{}'.format(model.sha1sum)
     persistents = get_persistents(req, model)
     if persistents:
         saveas = config.BUCKET_NAME + ':' + model.key_name.encode('utf8')
@@ -102,13 +100,16 @@ def callback(req):
     id, filename = form.cleaned_data['key'].split('/')
 
     model = get_object_or_404(Storage, id=id)
+    if model.sha1sum and model.sha1sum != form.cleaned_data['sha1sum']:
+        return JsonResponse({'success': False, 'reason': 'Invalid checksum.'})
     model.uploaded = True
-    for key in ('size', 'mimetype', 'extension', 'persistentId'):
+    for key in ('size', 'mimetype', 'extension', 'persistentId', 'sha1sum'):
         setattr(model, key, form.cleaned_data[key])
     model.extrainfo = '\n'.join(form.extrainfo())
     model.save()
 
     return JsonResponse({
+        'success': True,
         'url': req.build_absolute_uri(reverse('viewfile', args=[id,])),
         'id': id,
     })

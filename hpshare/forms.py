@@ -24,6 +24,7 @@ class CallbackForm(Form):
     mimetype = forms.CharField(label='mimeType')
     extension = forms.CharField(required=False, label='ext')
     size = forms.IntegerField(label='fsize')
+    sha1sum = forms.CharField(label='bodySha1')
     persistentId = forms.CharField(required=False, label='persistentId')
 
     avinfo_v_codec = forms.CharField(required=False, label='avinfo.video.codec_name')
