@@ -8,6 +8,7 @@ from django import forms
 class PermitForm(Form):
     private = forms.BooleanField(required=False)
     filename = forms.CharField()
+    sha1sum = forms.CharField(required=False)
 
     def clean_filename(self):
         return self.cleaned_data['filename'].split('/')[-1]
