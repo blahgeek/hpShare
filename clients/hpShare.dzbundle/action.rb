@@ -7,7 +7,7 @@
 # URL: https://github.com/blahgeek/hpShare
 # OptionsNIB: ExtendedLogin
 # KeyModifiers: Option
-# Version: 2.0
+# Version: 2.1
 # RunsSandboxed: Yes
 # MinDropzoneVersion: 3.0
 
@@ -73,10 +73,14 @@ def upload_one(filepath, private_)
   $dz.determinate(false)
   filename = File.basename(filepath)
   filepath = filepath.gsub('"', '\"')
+
+  $dz.begin("Calculating checksum for #{filename}...")
+  sha1sum = `shasum -a 1 "#{filepath}" | cut -c 1-40`
+  sha1sum.strip!
   $dz.begin("Uploading #{filename}...")
 
   permit = curl_it("-u #{ENV['username']}:#{ENV['password']}"\
-                   " -F \"filename=#{filename}\" -F private=#{private_}"\
+                   " -F \"filename=#{filename}\" -F private=#{private_} -F sha1sum=#{sha1sum}"\
                    " http://#{ENV['server']}/~api/permit/", false)
   $dz.determinate(true)
   ret = curl_it("-F token=#{permit['token']} -F \"file=@#{filepath}\""\
@@ -95,10 +99,14 @@ def dragged
   end
 
   if results.length == 1
-    $dz.finish("Done, ID=#{results[0]['id']}, URL Copied.")
-    $dz.url(results[0]["url"])
+    if results[0].has_key?("id")
+      $dz.finish("Done, ID=#{results[0]['id']}, URL Copied.")
+      $dz.url(results[0]["url"])
+    else
+      $dz.fail(results[0]["error"])
+    end
   else
-    ids = results.map{|x| x['id']}.join(',')
+    ids = results.select{|x| x.has_key?("id")}.map{|x| x['id']}.join(',')
     ret = curl_it("-u #{ENV['username']}:#{ENV['password']}"\
                   " -F ids=#{ids} -F private=#{private_}"\
                   " http://#{ENV['server']}/~api/newgroup/", false)
