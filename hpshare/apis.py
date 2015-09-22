@@ -60,7 +60,7 @@ def permit(req):
         options['persistentNotifyUrl'] = req.build_absolute_uri(reverse('persistent_callback'))
         options['persistentPipeline'] = config.PERSISTENT_PIPELINE
     token = qn.upload_token(config.BUCKET_NAME, None, config.UPLOAD_TIME_LIMIT, 
-                            options)
+                            options, False)  # strict_policy: false
 
     country = geoip.country_code(req.META.get('REMOTE_ADDR', ''))
     if country == 'CN' or country is None:

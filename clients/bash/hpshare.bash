@@ -92,7 +92,12 @@ do
         echo
         IDS="$IDS,$ID"
     else
-        echo "Upload error: $UPLOAD_OUTPUT"
+        ERR_MSG=$(echo $UPLOAD_OUTPUT | jsawk "return this.error")
+        if [[ -n $ERR_MSG ]]; then
+            echo "Upload error: $ERR_MSG"
+        else
+            echo "Unknow error: $UPLOAD_OUTPUT"
+        fi
     fi
 done
 
