@@ -77,10 +77,12 @@ def upload_one(filepath, private_)
   $dz.begin("Calculating checksum for #{filename}...")
   sha1sum = `shasum -a 1 "#{filepath}" | cut -c 1-40`
   sha1sum.strip!
-  $dz.begin("Uploading #{filename}...")
+  filesize = `stat -f "%z" "#{filepath}"`
+  filesize.strip!
+  $dz.begin("Uploading #{filename} (#{filesize} bytes)...")
 
   permit = curl_it("-u #{ENV['username']}:#{ENV['password']}"\
-                   " -F \"filename=#{filename}\" -F private=#{private_} -F sha1sum=#{sha1sum}"\
+                   " -F \"filename=#{filename}\" -F private=#{private_} -F sha1sum=#{sha1sum} -F fsize=#{filesize}"\
                    " http://#{ENV['server']}/~api/permit/", false)
   $dz.determinate(true)
   ret = curl_it("-F token=#{permit['token']} -F \"file=@#{filepath}\""\

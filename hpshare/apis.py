@@ -38,6 +38,7 @@ def permit(req):
     model = Storage()
     model.filename = form.cleaned_data['filename']
     model.sha1sum = form.cleaned_data['sha1sum'].strip()
+    model.size = form.cleaned_data['fsize']
     model.user = req.user
     model.id = gen_hashid(form.cleaned_data['private'])
     model.save()
@@ -45,6 +46,7 @@ def permit(req):
     options = {
         'insertOnly': 1,
         'saveKey': model.key_name,
+        'fsizeLimit': model.size,
         'callbackUrl': req.build_absolute_uri(reverse('callback')),
         'callbackBody': CallbackForm.getCallbackBody(),
     }

@@ -65,15 +65,17 @@ do
     CHECKSUM=""
     if [[ $DO_CHECKSUM = "yes" ]]; then
         echo "Calculating checksum of $FILE..."
-        CHECKSUM=$($SHA1SUM $FILE | cut -c 1-40)
+        CHECKSUM=$($SHA1SUM "$FILE" | cut -c 1-40)
         echo "sha1sum: $CHECKSUM"
     fi
-    echo "Uploading $FILE..."
+    FILESIZE=$(stat -f "%z" "$FILE")
+    echo "Uploading $FILE ($FILESIZE bytes)..."
     PERMIT_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
                     "http://$SERVER/~api/permit/" \
                     -d "filename=$FILE" \
                     -d "sha1sum=$CHECKSUM" \
-                    -d "private=$PRIVATE")
+                    -d "private=$PRIVATE" \
+                    -d "fsize=$FILESIZE")
     TOKEN=$(echo $PERMIT_OUTPUT | jsawk "return this.token")
     UPLOAD_DOMAIN=$(echo $PERMIT_OUTPUT | jsawk "return this.upload_domain")
 
