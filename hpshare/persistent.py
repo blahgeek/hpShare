@@ -37,15 +37,14 @@ def get_persistents(req, storage):
               '/format/jpg' + 
               '/interlace/1/')
         op += '|' + wm_op
-        ops.append((op, '.preview.jpg', 'Preview'))
+        ops.append((op, '.preview.jpg', 'Preview:<img src="{}">'))
 
-    # Video, generate gif or jpg(one frame) depends on file size
+    # Video, convert to mp4(h.264) without audio, 30 second at most
     if ext in ('avi', 'mp4', 'wmv', 'mkv', 'ts', 'webm', 
                'mov', 'flv', 'ogv', ):
-        if storage.size > 32 * 1024 * 1024: # 32MB
-            op = 'vframe/jpg/offset/3' + '|' + wm_op
-            ops.append((op, '.preview.jpg', 'Preview'))
-        else:
-            op = 'avthumb/gif/an/1/r/5/' + wm_video_op
-            ops.append((op, '.preview.gif', 'Preview'))
+        op = ('avthumb/mp4/an/1/vcodec/libx264/' + 
+              't/30/s/1080x720/autoscale/1/stripmeta/1/' +
+              wm_video_op)
+        ops.append((op, '.preview.mp4', 
+                    'Preview:<video autoplay><source src="{}" type="video/mp4"></video>'))
     return ops

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # Created by i@BlahGeek.com at 2015-01-29
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -35,17 +34,6 @@ class Storage(models.Model):
 
     def __unicode__(self):
         return self.key_name
-
-    @property
-    def preview(self):
-        ret = None
-        try:
-            ret = self.converted_storage.get(success=True, 
-                                             description="Preview")
-        except ObjectDoesNotExist:
-            pass
-        return ret
-    
 
     @property
     def key_name(self):

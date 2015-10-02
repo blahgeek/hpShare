@@ -7,6 +7,8 @@ from __future__ import absolute_import
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.db.models import F
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 from .models import Storage, ConvertedStorage, StorageGroup
 from .auth import http_basic_auth
 import urllib
@@ -43,14 +45,26 @@ def viewfile(req, id, disable_preview=False):
     model.view_count = F('view_count') + 1
     model.save()
 
-    preview = model.preview if not disable_preview else None
+    preview = None
+    if not disable_preview:
+        preview_model = model.converted_storage\
+            .filter(success=True, description__startswith='Preview:')[0:1]
+        try:
+            preview_model = preview_model.get()
+        except ObjectDoesNotExist:
+            pass
+        else:
+            preview_url = reverse('downloadfile_persistent', 
+                                  args=(preview_model.id, preview_model.filename))
+            preview = preview_model.description.partition(':')[-1].replace('{}', preview_url)
+
     return render(req, 'viewfile.html', {
                     'model': model,
                     'preview': preview,
                     'extrainfo': filter(len, model.extrainfo.split('\n')),
                     "persistents": model.converted_storage
                                    .filter(success=True)
-                                   .exclude(description="Preview"),
+                                   .exclude(description__startswith="Preview:"),
                   })
 
 def downloadfile_persistent(req, id, filename):
