@@ -11,6 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from .models import Storage, ConvertedStorage, StorageGroup
 from .auth import http_basic_auth
+from .persistent import get_preview_html
 import urllib
 import logging
 import config
@@ -56,7 +57,7 @@ def viewfile(req, id, disable_preview=False):
         else:
             preview_url = reverse('downloadfile_persistent', 
                                   args=(preview_model.id, preview_model.filename))
-            preview = preview_model.description.partition(':')[-1].replace('{}', preview_url)
+            preview = get_preview_html(preview_model.description, preview_url)
 
     return render(req, 'viewfile.html', {
                     'model': model,

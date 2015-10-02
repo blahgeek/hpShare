@@ -37,7 +37,7 @@ def get_persistents(req, storage):
               '/format/jpg' + 
               '/interlace/1/')
         op += '|' + wm_op
-        ops.append((op, '.preview.jpg', 'Preview:<img src="{}">'))
+        ops.append((op, '.preview.jpg', 'Preview:image'))
 
     # Video, convert to mp4(h.264) without audio, 30 second at most
     if ext in ('avi', 'mp4', 'wmv', 'mkv', 'ts', 'webm', 
@@ -45,6 +45,18 @@ def get_persistents(req, storage):
         op = ('avthumb/mp4/an/1/vcodec/libx264/' + 
               't/30/s/1080x720/autoscale/1/stripmeta/1/' +
               wm_video_op)
-        ops.append((op, '.preview.mp4', 
-                    'Preview:<video autoplay><source src="{}" type="video/mp4"></video>'))
+        ops.append((op, '.preview.mp4', 'Preview:video:mp4'))
     return ops
+
+def get_preview_html(desc, url):
+    if not desc.startswith('Preview:'):
+        return None
+    fmt = desc.partition(':')[-1]
+    if fmt == 'image':
+        return '<img src="{}">'.format(url)
+    elif fmt.startswith('video'):
+        return '''<video autoplay loop muted>
+                  <source src="{}" type="video/mp4">
+                  </video>'''.format(url)
+    else:
+        return None
