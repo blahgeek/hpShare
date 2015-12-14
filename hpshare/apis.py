@@ -66,7 +66,7 @@ def permit(req):
 
     country = geoip.country_code(req.META.get('REMOTE_ADDR', ''))
     if country == 'CN' or country is None:
-        upload_domain = 'upload.qiniu.com'
+        upload_domain = 'up.qiniu.com'
     else:
         upload_domain = 'up.qiniug.com'
     return JsonResponse({'token': token, 'upload_domain': upload_domain})
