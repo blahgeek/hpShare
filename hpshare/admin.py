@@ -10,10 +10,10 @@ from .management.commands.purge_storage import batch_delete
 
 @admin.register(StorageGroup)
 class StorageGroupAdmin(admin.ModelAdmin):
-    list_display = ('id', 'link', 'persist', 'create_time', 'last_access_time', 'view_count')
+    list_display = ('hashid', 'link', 'persist')
 
     def link(self, obj):
-        url = reverse('viewgroup', args=[obj.id, ])
+        url = reverse('hpshare:viewgroup', args=[obj.hashid.hashid, ])
         return format_html('<a href="{0}">link</a>', url)
     link.allow_tags = True
 
@@ -32,15 +32,15 @@ class StorageGroupAdmin(admin.ModelAdmin):
 @admin.register(ConvertedStorage)
 class ConvertedStorageAdmin(admin.ModelAdmin):
     list_display = ('source', 'success', "description", "suffix", 
-                    'complete_time', 'download_count')
-    ordering = ('complete_time', )
+                    'download_count')
+    ordering = ('hashid__create_time', )
 
 @admin.register(Storage)
 class StorageAdmin(admin.ModelAdmin):
-    list_display = ('key_name', 'link', 'user', 'readable_size', 'permit_time', 'last_access_time',
-                    'uploaded', 'view_count', 'download_count', 'persist')
+    list_display = ('key_name', 'link', 'readable_size', 
+                    'uploaded', 'download_count', 'persist')
     actions = ('delete_storage', )
-    ordering = ('permit_time', )
+    ordering = ('hashid__create_time', )
 
     def get_actions(self, req):
         actions = super(StorageAdmin, self).get_actions(req)
@@ -48,7 +48,7 @@ class StorageAdmin(admin.ModelAdmin):
         return actions
 
     def link(self, obj):
-        url = reverse('viewfile', args=[obj.id, ])
+        url = reverse('hpshare:viewfile', args=[obj.hashid.hashid, ])
         return format_html('<a href="{0}">link</a>', url)
     link.allow_tags = True
 

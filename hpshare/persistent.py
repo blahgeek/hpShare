@@ -3,7 +3,7 @@
 # Created by i@BlahGeek.com at 2015-08-02
 
 from base64 import urlsafe_b64encode
-from .settings import STATIC_URL
+from hpurl.settings import STATIC_URL
 
 def get_persistents(req, storage):
     ''' return list of: [OP, Filename_suffix, Description] '''

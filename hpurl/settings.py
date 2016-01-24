@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'hashid',
     'hpshare',
 )
 
@@ -49,9 +50,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'hpshare.urls'
+ROOT_URLCONF = 'hpurl.urls'
 
-WSGI_APPLICATION = 'hpshare.wsgi.application'
+WSGI_APPLICATION = 'hpurl.wsgi.application'
 
 LOGGING = {
     'version': 1,

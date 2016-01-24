@@ -3,23 +3,12 @@
 # Created by i@BlahGeek.com at 2015-01-29
 
 from django.db import models
-from django.contrib.auth.models import User
-
-class Counter(models.Model):
-    id = models.AutoField(primary_key=True)
-    @staticmethod
-    def get_newid():
-        m = Counter()
-        m.save()
-        return m.id
+from hashid.models import HashID
 
 class Storage(models.Model):
-    id = models.CharField(max_length=255, primary_key=True)
-    user = models.ForeignKey(User)
+    hashid = models.OneToOneField(HashID, on_delete=models.CASCADE, related_name='hpshare_storage')
     filename = models.CharField(max_length=1024)
 
-    permit_time = models.DateTimeField(auto_now_add=True)
-    last_access_time = models.DateTimeField(auto_now=True)
     persist = models.BooleanField(default=False)
     uploaded = models.BooleanField(default=False)
     size = models.IntegerField(default=0)  # File size in bytes
@@ -29,7 +18,6 @@ class Storage(models.Model):
     sha1sum = models.CharField(max_length=40, default='')
     persistentId = models.CharField(max_length=255, default='', db_index=True)
 
-    view_count = models.IntegerField(default=0)
     download_count = models.IntegerField(default=0)
 
     def __unicode__(self):
@@ -37,7 +25,7 @@ class Storage(models.Model):
 
     @property
     def key_name(self):
-        return '/'.join([self.id, self.filename])
+        return '/'.join([self.hashid.hashid, self.filename])
 
     @property
     def readable_size(self):
@@ -51,8 +39,8 @@ class Storage(models.Model):
         return '%.2f GB' % (n / 1024.0 / 1024.0 / 1024.0)
 
 class ConvertedStorage(models.Model):
-    id = models.CharField(primary_key=True, max_length=64)
-
+    hashid = models.OneToOneField(HashID, on_delete=models.CASCADE,
+                                  related_name='hpshare_converted_storage')
     source = models.ForeignKey(Storage, db_index=True, 
                                related_name='converted_storage')
     success = models.BooleanField()
@@ -61,7 +49,6 @@ class ConvertedStorage(models.Model):
     key = models.CharField(max_length=1024)
     cmd = models.CharField(max_length=255)
 
-    complete_time = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255, default='')
     suffix = models.CharField(max_length=255, default='')
 
@@ -73,14 +60,11 @@ class ConvertedStorage(models.Model):
     
 
 class StorageGroup(models.Model):
-    id = models.CharField(max_length=255, primary_key=True)
+    hashid = models.OneToOneField(HashID, on_delete=models.CASCADE,
+                                  related_name='hpshare_storage_group')
     storages = models.ManyToManyField(Storage, related_name='groups')
 
-    create_time = models.DateTimeField(auto_now_add=True)
-    last_access_time = models.DateTimeField(auto_now=True)
     persist = models.BooleanField(default=False)
-
-    view_count = models.IntegerField(default=0)
 
     def delete_safe(self):
         self.storages.clear()

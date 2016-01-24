@@ -54,7 +54,7 @@
 
             btn.text("Requesting...");
 
-            $.post("{% url 'permit' %}", {
+            $.post("{% url 'hpshare_api:permit' %}", {
                 "filename": basename,
             }, function(data) {
                 do_upload(file, data["token"]);

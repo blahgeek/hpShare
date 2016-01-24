@@ -6,14 +6,14 @@
 
 {% block topbar_extra %}
     {% if preview %}
-        <a class="download-btn" href="{% url 'downloadfile' model.id model.filename %}">Download</a>
+        <a class="download-btn" href="{% url 'hpshare:downloadfile' model.hashid.hashid model.filename %}">Download</a>
     {% endif %}
 {% endblock %}
 
 {% block content %}
     {% if preview %}
     <div class="file-preview">
-        <a title="Click to download original file" href="{% url 'downloadfile' model.id model.filename %}">
+        <a title="Click to download original file" href="{% url 'hpshare:downloadfile' model.id model.filename %}">
         {{ preview|safe }}
         </a>
     </div>
@@ -30,15 +30,15 @@
         {% endfor %}
         <span class="filesize">{{model.readable_size}}</span> 
         &nbsp;•&nbsp;
-        <span class="filetime">{{model.permit_time|date:"d/m/Y P e"}}<br/>
+        <span class="filetime">{{model.hashid.create_time|date:"d/m/Y P e"}}<br/>
         {% if model.sha1sum %}
         SHA1: {{model.sha1sum}}<br/>
         {% endif %}
     </p>
     {% if not preview %}
-    <a class="download-btn" href="{% url 'downloadfile' model.id model.filename %}">Download</a>
+    <a class="download-btn" href="{% url 'hpshare:downloadfile' model.hashid.hashid model.filename %}">Download</a>
     {% for p in persistents %}
-        <a class="download-btn" href="{% url 'downloadfile_persistent' p.id p.filename %}">Download as {{p.description}}</a>
+        <a class="download-btn" href="{% url 'hpshare:downloadfile_persistent' p.id p.filename %}">Download as {{p.description}}</a>
     {% endfor %}
     {% endif %}
 {% endblock %}

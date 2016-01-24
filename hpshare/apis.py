@@ -4,29 +4,20 @@
 
 import config
 import json
-import hashids
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest, JsonResponse, HttpResponseServerError
 from django.views.decorators.http import require_POST
-from django.shortcuts import get_object_or_404
 from django.contrib.gis.geoip import GeoIP
 from base64 import urlsafe_b64encode
-from .settings import SECRET_KEY
-from .models import Storage, ConvertedStorage, StorageGroup, Counter
+from hashid.models import HashID
+from .models import Storage, ConvertedStorage, StorageGroup
 from .forms import PermitForm, CallbackForm, NewgroupForm
 from .auth import qn_callback_auth, http_basic_auth
 from .persistent import get_persistents
-from . import qn, qn_bucket_mng
+from . import qn
 
 geoip = GeoIP()
-
-public_hash = hashids.Hashids(SECRET_KEY, config.KEY_LENGTH_PUBLIC)
-private_hash = hashids.Hashids(SECRET_KEY, config.KEY_LENGTH_PRIVATE)
-
-def gen_hashid(private=False):
-    uid = Counter.get_newid()
-    return private_hash.encode(uid) if private else public_hash.encode(uid)
 
 @require_POST
 @csrf_exempt
@@ -36,18 +27,17 @@ def permit(req):
     if not form.is_valid():
         return HttpResponseBadRequest()
     model = Storage()
+    model.hashid = HashID.new(private=form.cleaned_data['private'])
     model.filename = form.cleaned_data['filename']
     model.sha1sum = form.cleaned_data['sha1sum'].strip()
     model.size = form.cleaned_data['fsize']
-    model.user = req.user
-    model.id = gen_hashid(form.cleaned_data['private'])
     model.save()
 
     options = {
         'insertOnly': 1,
         'saveKey': model.key_name,
         'fsizeLimit': model.size,
-        'callbackUrl': req.build_absolute_uri(reverse('callback')),
+        'callbackUrl': req.build_absolute_uri(reverse('hpshare_api:callback')),
         'callbackBody': CallbackForm.getCallbackBody(),
     }
     if model.sha1sum:
@@ -59,7 +49,7 @@ def permit(req):
                   .format(x[0], urlsafe_b64encode(saveas + x[1])), 
                   persistents)
         options['persistentOps'] = ';'.join(ops)
-        options['persistentNotifyUrl'] = req.build_absolute_uri(reverse('persistent_callback'))
+        options['persistentNotifyUrl'] = req.build_absolute_uri(reverse('hpshare_api:persistent_callback'))
         options['persistentPipeline'] = config.PERSISTENT_PIPELINE
     token = qn.upload_token(config.BUCKET_NAME, None, config.UPLOAD_TIME_LIMIT, 
                             options, False)  # strict_policy: false
@@ -83,15 +73,14 @@ def newgroup(req):
         return HttpResponseBadRequest()
 
     model = StorageGroup()
-    model.id = gen_hashid(form.cleaned_data['private'])
+    model.hashid = HashID.new(private=form.cleaned_data['private'])
     model.save()
 
-    storages = Storage.objects.filter(id__in=ids).all()
-    for storage in storages:
-        model.storages.add(storage)
+    for id in ids:
+        model.storages.add(HashID.get(id).hpshare_storage.get())
     return JsonResponse({
-                        'url': req.build_absolute_uri(reverse('viewgroup', args=[model.id,])),
-                        'count': len(storages),
+                        'url': req.build_absolute_uri(reverse('hpshare_viewgroup', args=[model.hashid.hashid,])),
+                        'count': len(ids),
                         })
 
 @require_POST
@@ -103,7 +92,8 @@ def callback(req):
         return HttpResponseBadRequest()
     id, filename = form.cleaned_data['key'].split('/')
 
-    model = get_object_or_404(Storage, id=id)
+    hashid = HashID.get(id)
+    model = hashid.hpshare_storage
     model.uploaded = True
     for key in ('size', 'mimetype', 'extension', 'persistentId'):
         setattr(model, key, form.cleaned_data[key])
@@ -111,7 +101,7 @@ def callback(req):
     model.save()
 
     return JsonResponse({
-        'url': req.build_absolute_uri(reverse('viewfile', args=[id,])),
+        'url': req.build_absolute_uri(reverse('hpshare:viewfile', args=[id,])),
         'id': id,
     })
 
@@ -131,7 +121,7 @@ def persistent_callback(req):
         return ('', '')
     for item in data['items']:
         model = ConvertedStorage()
-        model.id = gen_hashid(True)
+        model.hashid = HashID.new(private=True)
         model.source = source
         model.success = (item['code'] == 0)
         model.error_msg = item.get('error', '')
@@ -141,13 +131,13 @@ def persistent_callback(req):
         model.save()
     return JsonResponse({})
 
-@require_POST
-@csrf_exempt
-@http_basic_auth
-def deletefile(req):
-    model = get_object_or_404(Storage, id=req.POST.get('id', ''))
-    ret, info = qn_bucket_mng.delete(config.BUCKET_NAME, model.key_name.encode('utf8'))
-    model.delete()
-    return JsonResponse({
-                            'success': ret is None,
-                        })
+
+from django.conf.urls import url
+
+# app_name = 'hpshare'
+urlpatterns = [
+    url(r'^permit/', permit, name='permit'),
+    url(r'^newgroup/', newgroup, name='newgroup'),
+    url(r'^callback/', callback, name='callback'),
+    url(r'^p-callback/', persistent_callback, name='persistent_callback'),
+]
