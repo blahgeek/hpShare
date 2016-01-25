@@ -71,7 +71,7 @@ do
     FILESIZE=$(stat -f "%z" "$FILE")
     echo "Uploading $FILE ($FILESIZE bytes)..."
     PERMIT_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
-                    "http://$SERVER/~api/permit/" \
+                    "http://$SERVER/~api/hpshare/permit/" \
                     -d "filename=$FILE" \
                     -d "sha1sum=$CHECKSUM" \
                     -d "private=$PRIVATE" \
@@ -108,7 +108,7 @@ IDS=${IDS:1:${#IDS}}
 if [[ ${#FILES[*]} -gt 1 ]]; then
     echo "Grouping..."
     GROUP_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
-                   "http://$SERVER/~api/newgroup/" \
+                   "http://$SERVER/~api/hpshare/newgroup/" \
                    -d "ids=$IDS" -d "private=$PRIVATE")
     URL=$(echo $GROUP_OUTPUT | jsawk "return this.url")
     COUNT=$(echo $GROUP_OUTPUT | jsawk "return this.count")
