@@ -4,9 +4,9 @@ USAGE="Usage: hpshare [OPTIONS] file1 file2 ...
     -u, --user:        username
     -p, --private:     use longer URL
     -n, --no-checksum: do not check sha1sum during upload
-    -s, --server:      server host name, default to blaa.ml"
+    -s, --server:      server host name, default to z1k.co"
 
-SERVER="blaa.ml"
+SERVER="z1k.co"
 USERNAME="$(whoami | tr [:upper:] [:lower:])"
 DO_CHECKSUM="yes"
 

@@ -40,7 +40,7 @@ def viewfile(req, id, disable_preview=False):
         except ObjectDoesNotExist:
             pass
         else:
-            preview_url = reverse('downloadfile_persistent', 
+            preview_url = reverse('hpshare:downloadfile_persistent', 
                                   args=(preview_model.hashid.hashid, preview_model.filename))
             preview = get_preview_html(preview_model.description, preview_url)
 

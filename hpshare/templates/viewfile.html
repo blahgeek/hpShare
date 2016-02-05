@@ -13,7 +13,7 @@
 {% block content %}
     {% if preview %}
     <div class="file-preview">
-        <a title="Click to download original file" href="{% url 'hpshare:downloadfile' model.id model.filename %}">
+        <a title="Click to download original file" href="{% url 'hpshare:downloadfile' model.hashid.hashid model.filename %}">
         {{ preview|safe }}
         </a>
     </div>
@@ -38,7 +38,7 @@
     {% if not preview %}
     <a class="download-btn" href="{% url 'hpshare:downloadfile' model.hashid.hashid model.filename %}">Download</a>
     {% for p in persistents %}
-        <a class="download-btn" href="{% url 'hpshare:downloadfile_persistent' p.id p.filename %}">Download as {{p.description}}</a>
+        <a class="download-btn" href="{% url 'hpshare:downloadfile_persistent' p.hashid.hashid p.filename %}">Download as {{p.description}}</a>
     {% endfor %}
     {% endif %}
 {% endblock %}
