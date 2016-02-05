@@ -7,7 +7,8 @@ from hashid.models import HashID
 import uuid
 
 class Storage(models.Model):
-    hashid = models.OneToOneField(HashID, on_delete=models.CASCADE, related_name='hpshare_storage')
+    hashid = models.OneToOneField(HashID, on_delete=models.PROTECT, 
+                                  related_name='hpshare_storage')
     filename = models.CharField(max_length=1024)
     uid = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
 
@@ -41,7 +42,7 @@ class Storage(models.Model):
         return '%.2f GB' % (n / 1024.0 / 1024.0 / 1024.0)
 
 class ConvertedStorage(models.Model):
-    hashid = models.OneToOneField(HashID, on_delete=models.CASCADE,
+    hashid = models.OneToOneField(HashID, on_delete=models.PROTECT,
                                   related_name='hpshare_converted_storage')
     source = models.ForeignKey(Storage, db_index=True, 
                                related_name='converted_storage')
@@ -62,7 +63,7 @@ class ConvertedStorage(models.Model):
     
 
 class StorageGroup(models.Model):
-    hashid = models.OneToOneField(HashID, on_delete=models.CASCADE,
+    hashid = models.OneToOneField(HashID, on_delete=models.PROTECT,
                                   related_name='hpshare_storage_group')
     storages = models.ManyToManyField(Storage, related_name='groups')
 
