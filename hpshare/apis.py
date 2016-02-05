@@ -79,7 +79,7 @@ def newgroup(req):
     model.save()
 
     for id in ids:
-        model.storages.add(HashID.get(id).hpshare_storage.get())
+        model.storages.add(HashID.get(id).hpshare_storage)
     return JsonResponse({
                         'url': req.build_absolute_uri(reverse('hpshare_viewgroup', args=[model.hashid.hashid,])),
                         'count': len(ids),

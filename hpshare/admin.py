@@ -37,7 +37,7 @@ class ConvertedStorageAdmin(admin.ModelAdmin):
 
 @admin.register(Storage)
 class StorageAdmin(admin.ModelAdmin):
-    list_display = ('key_name', 'link', 'readable_size', 
+    list_display = ('hashid', 'filename', 'link', 'readable_size', 
                     'uploaded', 'download_count', 'persist')
     actions = ('delete_storage', )
     ordering = ('hashid__create_time', )
