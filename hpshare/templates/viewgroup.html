@@ -11,7 +11,7 @@
             <span class="filename">{{ storage.filename }}</span>
             <span class="extrainfo">{{ storage.readable_size }}</span>
         </div>
-        <a class="download-btn" href="{% url 'hpshare:downloadfile' storage.hashid.hashid storage.filename %}">Download</a>
+        <a class="download-btn" href="{% url 'hpshare:downloadfile' storage.hashid.hashid %}">Download</a>
         <a class="download-btn preview-btn" href="{% url 'hpshare:viewfile' storage.hashid.hashid %}">View</a>
     </div>
     {% endfor %}
