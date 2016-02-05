@@ -4,10 +4,12 @@
 
 from django.db import models
 from hashid.models import HashID
+import uuid
 
 class Storage(models.Model):
     hashid = models.OneToOneField(HashID, on_delete=models.CASCADE, related_name='hpshare_storage')
     filename = models.CharField(max_length=1024)
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
 
     persist = models.BooleanField(default=False)
     uploaded = models.BooleanField(default=False)
@@ -21,11 +23,11 @@ class Storage(models.Model):
     download_count = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return self.key_name
+        return '/'.join([self.hashid.hashid, self.filename])
 
     @property
     def key_name(self):
-        return '/'.join([self.hashid.hashid, self.filename])
+        return '/'.join([str(self.uid), self.filename])
 
     @property
     def readable_size(self):

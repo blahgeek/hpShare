@@ -3,7 +3,9 @@
 # Created by i@BlahGeek.com at 2015-02-24
 
 import config
+import uuid
 import json
+from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest, JsonResponse, HttpResponseServerError
@@ -90,10 +92,9 @@ def callback(req):
     form = CallbackForm(req.POST)
     if not form.is_valid():
         return HttpResponseBadRequest()
-    id, filename = form.cleaned_data['key'].split('/')
+    uid, filename = form.cleaned_data['key'].split('/')
 
-    hashid = HashID.get(id)
-    model = hashid.hpshare_storage
+    model = get_object_or_404(Storage, uid=uuid.UUID(uid))
     model.uploaded = True
     for key in ('size', 'mimetype', 'extension', 'persistentId'):
         setattr(model, key, form.cleaned_data[key])
@@ -101,8 +102,8 @@ def callback(req):
     model.save()
 
     return JsonResponse({
-        'url': req.build_absolute_uri(reverse('hpshare:viewfile', args=[id,])),
-        'id': id,
+        'url': req.build_absolute_uri(reverse('hpshare:viewfile', args=[model.hashid.hashid,])),
+        'id': model.hashid.hashid,
     })
 
 @require_POST
