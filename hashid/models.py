@@ -5,6 +5,7 @@ from hpurl.settings import SECRET_KEY
 from django.db import models
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 
 import hashids
 
@@ -44,6 +45,15 @@ class HashID(models.Model):
         model.view_count = models.F("view_count") + 1
         model.save()
         return model
+
+    @classmethod
+    def get_related(cls, hashid, key):
+        model = cls.get(hashid)
+        try:
+            ret = getattr(model, key)
+        except ObjectDoesNotExist:
+            raise Http404("Hashid {} not found".format(hashid))
+        return ret
 
     @classmethod
     def new(cls, private):

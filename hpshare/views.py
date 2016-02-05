@@ -19,7 +19,7 @@ from . import qn
 logger = logging.getLogger(__name__)
 
 def viewgroup(req, id):
-    model = HashID.get(id).hpshare_storage_group
+    model = HashID.get_related(id, 'hpshare_storage_group')
     storages = list(model.storages.all())
     if len(storages) == 0:
         raise Http404("Group {} has no storage.".format(id))
@@ -29,7 +29,7 @@ def viewgroup(req, id):
                   })
 
 def viewfile(req, id, disable_preview=False):
-    model = HashID.get(id).hpshare_storage
+    model = HashID.get_related(id, 'hpshare_storage')
 
     preview = None
     if not disable_preview:
@@ -54,7 +54,7 @@ def viewfile(req, id, disable_preview=False):
                   })
 
 def downloadfile_persistent(req, id, filename):
-    model = HashID.get(id).hpshare_converted_storage
+    model = HashID.get_related(id, 'hpshare_converted_storage')
     if not model.success:
         raise Http404("File {} is not ready".format(filename))
     if req.method == 'GET':
@@ -65,7 +65,7 @@ def downloadfile_persistent(req, id, filename):
     return HttpResponseRedirect(url)
 
 def downloadfile(req, id, filename=''):
-    model = HashID.get(id).hpshare_storage
+    model = HashID.get_related(id, 'hpshare_storage')
     if not model.uploaded:
         raise Http404("File {} is not ready".format(filename))
     if req.method == 'GET':
