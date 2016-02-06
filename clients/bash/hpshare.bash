@@ -4,11 +4,12 @@ USAGE="Usage: hpshare [OPTIONS] file1 file2 ...
     -u, --user:        username
     -p, --private:     use longer URL
     -n, --no-checksum: do not check sha1sum during upload
-    -s, --server:      server host name, default to blaa.ml"
+    -s, --server:      server host name, default to z1k.co"
 
-SERVER="blaa.ml"
+SERVER="z1k.co"
 USERNAME="$(whoami | tr [:upper:] [:lower:])"
 DO_CHECKSUM="yes"
+UNAMESTR=`uname`
 
 hash jsawk 2>/dev/null || { echo "jsawk(https://github.com/micha/jsawk) not installed."; exit 1; }
 
@@ -68,10 +69,14 @@ do
         CHECKSUM=$($SHA1SUM "$FILE" | cut -c 1-40)
         echo "sha1sum: $CHECKSUM"
     fi
-    FILESIZE=$(stat -f "%z" "$FILE")
+    if [[ "$UNAMESTR" == "Darwin" ]]; then
+        FILESIZE=$(stat -f "%z" "$FILE")
+    else
+        FILESIZE=$(stat --format "%s" "$FILE")
+    fi
     echo "Uploading $FILE ($FILESIZE bytes)..."
     PERMIT_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
-                    "http://$SERVER/~api/permit/" \
+                    "http://$SERVER/~api/hpshare/permit/" \
                     -d "filename=$FILE" \
                     -d "sha1sum=$CHECKSUM" \
                     -d "private=$PRIVATE" \
@@ -108,7 +113,7 @@ IDS=${IDS:1:${#IDS}}
 if [[ ${#FILES[*]} -gt 1 ]]; then
     echo "Grouping..."
     GROUP_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
-                   "http://$SERVER/~api/newgroup/" \
+                   "http://$SERVER/~api/hpshare/newgroup/" \
                    -d "ids=$IDS" -d "private=$PRIVATE")
     URL=$(echo $GROUP_OUTPUT | jsawk "return this.url")
     COUNT=$(echo $GROUP_OUTPUT | jsawk "return this.count")

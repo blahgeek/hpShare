@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hpshare', '0002_storage_preview_count'),
+        ('hashid', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='storage',
-            name='persistentId',
-            field=models.CharField(default=b'', max_length=255),
+            model_name='hashid',
+            name='enabled',
+            field=models.BooleanField(default=True),
         ),
     ]

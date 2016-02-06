@@ -5,13 +5,12 @@
 from __future__ import absolute_import
 
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import render
 from django.db.models import F
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from .models import Storage, ConvertedStorage, StorageGroup
-from .auth import http_basic_auth
 from .persistent import get_preview_html
+from hashid.models import HashID
 import urllib
 import logging
 import config
@@ -20,31 +19,17 @@ from . import qn
 logger = logging.getLogger(__name__)
 
 def viewgroup(req, id):
-    model = get_object_or_404(StorageGroup, id=id)
-    model.view_count = F('view_count') + 1
-    model.save()
+    model = HashID.get_related(id, 'hpshare_storage_group')
     storages = list(model.storages.all())
     if len(storages) == 0:
         raise Http404("Group {} has no storage.".format(id))
     return render(req, 'viewgroup.html', {
                      'storages': storages,
                      'model': model,
-                 })
-
-@http_basic_auth
-def viewlastfile(req, last_n):
-    q = Storage.objects.filter(user=req.user, uploaded=True) \
-                        .order_by('-permit_time')
-    try:
-        q = q[int(last_n)]
-    except IndexError:
-        raise Http404('Last %d file not found' % int(last_n))
-    return redirect('viewfile', q.id)
+                  })
 
 def viewfile(req, id, disable_preview=False):
-    model = get_object_or_404(Storage, id=id)
-    model.view_count = F('view_count') + 1
-    model.save()
+    model = HashID.get_related(id, 'hpshare_storage')
 
     preview = None
     if not disable_preview:
@@ -55,8 +40,8 @@ def viewfile(req, id, disable_preview=False):
         except ObjectDoesNotExist:
             pass
         else:
-            preview_url = reverse('downloadfile_persistent', 
-                                  args=(preview_model.id, preview_model.filename))
+            preview_url = reverse('hpshare:downloadfile_persistent', 
+                                  args=(preview_model.hashid.hashid, ))
             preview = get_preview_html(preview_model.description, preview_url)
 
     return render(req, 'viewfile.html', {
@@ -68,8 +53,10 @@ def viewfile(req, id, disable_preview=False):
                                    .exclude(description__startswith="Preview:"),
                   })
 
-def downloadfile_persistent(req, id, filename):
-    model = get_object_or_404(ConvertedStorage, id=id, success=True)
+def downloadfile_persistent(req, id):
+    model = HashID.get_related(id, 'hpshare_converted_storage')
+    if not model.success:
+        raise Http404("File {} is not ready".format(id))
     if req.method == 'GET':
         model.download_count = F('download_count') + 1
         model.save()
@@ -77,8 +64,10 @@ def downloadfile_persistent(req, id, filename):
     url = qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT)
     return HttpResponseRedirect(url)
 
-def downloadfile(req, id, filename=''):
-    model = get_object_or_404(Storage, id=id, uploaded=True)
+def downloadfile(req, id):
+    model = HashID.get_related(id, 'hpshare_storage')
+    if not model.uploaded:
+        raise Http404("File {} is not ready".format(id))
     if req.method == 'GET':
         model.download_count = F('download_count') + 1
         model.save()
@@ -86,3 +75,22 @@ def downloadfile(req, id, filename=''):
     url += '?download/'
     url = qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT)
     return HttpResponseRedirect(url)
+
+
+from django.conf.urls import url
+
+# app_name = 'hpshare'
+urlpatterns = [
+    url(r'^(?P<id>[0-9a-zA-Z]+)/?$', viewfile, name='viewfile'),
+    url(r'^(?P<id>[0-9a-zA-Z]+)_/?$', viewfile, {'disable_preview': True}),
+
+    url(r'^(?P<id>[0-9a-zA-Z]+)/download/?$', 
+        downloadfile, name='downloadfile'),
+    # url(r'^(?P<id>[0-9a-zA-Z]+)/download/(?P<filename>[^/]+)$', 
+    #     downloadfile, name='downloadfile'),
+
+    url(r'^(?P<id>[0-9a-zA-Z]+)/download2/?$', 
+        downloadfile_persistent, name='downloadfile_persistent'),
+    # url(r'^(?P<id>[0-9a-zA-Z]+)/download2/(?P<filename>[^/]+)$', 
+    #     downloadfile_persistent, name='downloadfile_persistent'),
+]
