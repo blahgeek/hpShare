@@ -60,6 +60,9 @@ class ConvertedStorage(models.Model):
     @property
     def filename(self):
         return self.source.filename + self.suffix
+
+    def __unicode__(self):
+        return unicode(self.source) + self.suffix
     
 
 class StorageGroup(models.Model):

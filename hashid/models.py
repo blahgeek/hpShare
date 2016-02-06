@@ -18,13 +18,18 @@ class HashID(models.Model):
     id = models.AutoField(primary_key=True)
     private = models.BooleanField(default=False)
 
+    enabled = models.BooleanField(default=True)
+
     create_time = models.DateTimeField(auto_now_add=True)
     last_access_time = models.DateTimeField(auto_now=True)
 
     view_count = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return '{} ({} Hits)'.format(self.hashid, self.view_count)
+        ret = '{} ({} Hits)'.format(self.hashid, self.view_count)
+        if not self.enabled:
+            ret += ' [DISABLED]'
+        return ret
 
     @property
     def hashid(self):
@@ -41,7 +46,7 @@ class HashID(models.Model):
             uid = uid[0]
         except IndexError:
             raise Http404("Hashid {} not found".format(hashid))
-        model = get_object_or_404(cls, id=uid)
+        model = get_object_or_404(cls, id=uid, enabled=True)
         model.view_count = models.F("view_count") + 1
         model.save()
         return model
