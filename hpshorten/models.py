@@ -11,6 +11,9 @@ class Redirection(models.Model):
     url = models.CharField(max_length=4096)
     permanent = models.BooleanField(default=False)  # Use HTTP 301
 
+    def __unicode__(self):
+        return '[{}]({})'.format(self.hashid.hashid, self.url)
+
 
 class StaticRedirection(models.Model):
     id = models.CharField(primary_key=True, max_length=255)
