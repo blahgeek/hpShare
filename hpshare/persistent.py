@@ -17,11 +17,20 @@ def get_persistents(req, storage):
     wm_video_op = ('wmImage/' + urlsafe_b64encode(req.build_absolute_uri(STATIC_URL + 'ribbon.png')) + 
                    '/wmGravity/NorthWest')
 
+    pdf_preview_op = 'yifangyun_preview/v2/format=jpg/page_number=0'
+    pdf_preview_op += '|' + wm_op
+
     # Office document to PDF
     if ext in ("doc", "docx", "odt", "rtf", "wps", 
                "ppt", "pptx", "odp", "dps", 
                "xls", "xlsx", "ods", "csv", "et"):
         ops.append(('yifangyun_preview', '.pdf', 'PDF'))
+        ops.append(('yifangyun_preview' + '|' + pdf_preview_op, 
+                    '.pdf.jpg', 'Preview:PDF2JPG'))
+
+    # Preview PDF
+    if ext in ('pdf', ):
+        ops.append((pdf_preview_op, '.yf_preview.jpg', 'Preview:PDF2JPG'))
 
     # Markdown to HTML
     if ext in ('markdown', 'md', 'mkd'):
