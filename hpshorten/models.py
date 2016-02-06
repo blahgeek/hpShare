@@ -13,5 +13,5 @@ class Redirection(models.Model):
 
 
 class StaticRedirection(models.Model):
-    id = models.CharField(primary_key=True, max_length=256)
+    id = models.CharField(primary_key=True, max_length=255)
     redirection = models.ForeignKey(Redirection, on_delete=models.PROTECT)
