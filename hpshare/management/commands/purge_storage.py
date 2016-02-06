@@ -25,7 +25,7 @@ class Command(BaseCommand):
         for model in models:
             key_name = model.key_name.encode('utf8')
             print 'Deleting', key_name, 
-            print (timezone.now() - model.permit_time).days, 'days old'
+            print (timezone.now() - model.hashid.create_time).days, 'days old'
         if len(models) == 0:
             print 'Nothing to delete'
             return
