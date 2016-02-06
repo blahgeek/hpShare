@@ -9,6 +9,7 @@ USAGE="Usage: hpshare [OPTIONS] file1 file2 ...
 SERVER="z1k.co"
 USERNAME="$(whoami | tr [:upper:] [:lower:])"
 DO_CHECKSUM="yes"
+UNAMESTR=`uname`
 
 hash jsawk 2>/dev/null || { echo "jsawk(https://github.com/micha/jsawk) not installed."; exit 1; }
 
@@ -68,7 +69,11 @@ do
         CHECKSUM=$($SHA1SUM "$FILE" | cut -c 1-40)
         echo "sha1sum: $CHECKSUM"
     fi
-    FILESIZE=$(stat -f "%z" "$FILE")
+    if [[ "$UNAMESTR" == "Darwin" ]]; then
+        FILESIZE=$(stat -f "%z" "$FILE")
+    else
+        FILESIZE=$(stat -c "%z" "$FILE")
+    fi
     echo "Uploading $FILE ($FILESIZE bytes)..."
     PERMIT_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
                     "http://$SERVER/~api/hpshare/permit/" \
