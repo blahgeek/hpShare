@@ -17,7 +17,7 @@ def get_persistents(req, storage):
     wm_video_op = ('wmImage/' + urlsafe_b64encode(req.build_absolute_uri(STATIC_URL + 'ribbon.png')) + 
                    '/wmGravity/NorthWest')
 
-    pdf_preview_op = 'yifangyun_preview/v2/format=jpg/page_number=0'
+    pdf_preview_op = 'yifangyun_preview/v2/ext=pdf/format=jpg/page_number=1'
     pdf_preview_op += '|' + wm_op
 
     # Office document to PDF
@@ -26,11 +26,11 @@ def get_persistents(req, storage):
                "xls", "xlsx", "ods", "csv", "et"):
         ops.append(('yifangyun_preview', '.pdf', 'PDF'))
         ops.append(('yifangyun_preview' + '|' + pdf_preview_op, 
-                    '.pdf.jpg', 'Preview:PDF2JPG'))
+                    '.pdf.jpg', 'Preview:image'))
 
     # Preview PDF
     if ext in ('pdf', ):
-        ops.append((pdf_preview_op, '.yf_preview.jpg', 'Preview:PDF2JPG'))
+        ops.append((pdf_preview_op, '.yf_preview.jpg', 'Preview:image'))
 
     # Markdown to HTML
     if ext in ('markdown', 'md', 'mkd'):
@@ -54,7 +54,7 @@ def get_persistents(req, storage):
         op = ('avthumb/mp4/an/1/vcodec/libx264/' + 
               't/30/s/1080x720/autoscale/1/stripmeta/1/' +
               wm_video_op)
-        ops.append((op, '.preview.mp4', 'Preview:video:mp4'))
+        ops.append((op, '.preview.mp4', 'Preview:video/mp4'))
     return ops
 
 def get_preview_html(desc, url):

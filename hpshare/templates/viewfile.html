@@ -37,8 +37,8 @@
     </p>
     {% if not preview %}
     <a class="download-btn" href="{% url 'hpshare:downloadfile' model.hashid.hashid %}">Download</a>
+    {% endif %}
     {% for p in persistents %}
         <a class="download-btn" href="{% url 'hpshare:downloadfile_persistent' p.hashid.hashid %}">Download as {{p.description}}</a>
     {% endfor %}
-    {% endif %}
 {% endblock %}

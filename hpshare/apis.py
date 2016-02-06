@@ -116,8 +116,9 @@ def persistent_callback(req):
         return HttpResponseServerError("Not found, try later.")
     persistents = get_persistents(req, source)
     def find_suffix_desc(cmd):
+        cmd = cmd.rpartition('|')[0]  # strip 'saveas'
         for p in persistents:
-            if cmd.startswith(p[0]):
+            if cmd == p[0]:
                 return p[1], p[2]
         return ('', '')
     for item in data['items']:
