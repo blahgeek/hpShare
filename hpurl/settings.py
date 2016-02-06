@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'hashid',
     'hpshare',
+    'hpshorten',
 )
 
 MIDDLEWARE_CLASSES = (

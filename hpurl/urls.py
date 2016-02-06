@@ -18,4 +18,10 @@ urlpatterns = patterns('',
     url(r'^F', include('hpshare.views', 'hpshare')),
     url(r'^G(?P<id>[0-9a-zA-Z]+)/?$', 'hpshare.views.viewgroup', name='hpshare_viewgroup'),
 
+    # hpShorten
+    url(r'^R(?P<id>[0-9a-zA-Z+])/?$', 'hpshorten.views.redirect', name='hpshorten_redirect'),
+
+    # fallback to static redirect
+    url(r'^(?P<id>[0-9a-zA-Z+])/?$', 'hpshorten.views.redirect_static', name='hpshorten_redirect_static'),
+
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
