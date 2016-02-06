@@ -72,7 +72,7 @@ do
     if [[ "$UNAMESTR" == "Darwin" ]]; then
         FILESIZE=$(stat -f "%z" "$FILE")
     else
-        FILESIZE=$(stat -c "%z" "$FILE")
+        FILESIZE=$(stat --format "%s" "$FILE")
     fi
     echo "Uploading $FILE ($FILESIZE bytes)..."
     PERMIT_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
