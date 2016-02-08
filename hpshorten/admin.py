@@ -7,7 +7,7 @@ from .models import Redirection, StaticRedirection
 
 @admin.register(Redirection)
 class RedirectionAdmin(admin.ModelAdmin):
-    list_display = ('hashid', 'link', 'url', 'permanent')
+    list_display = ('hashid', 'link', 'url', 'permanent', 'cloak', 'title')
     ordering = ('hashid__create_time', )
 
     def link(self, obj):
