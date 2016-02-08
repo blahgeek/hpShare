@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^G(?P<id>[0-9a-zA-Z]+)/?$', 'hpshare.views.viewgroup', name='hpshare_viewgroup'),
 
     # hpShorten
+    url(r'^~api/hpshorten/', include('hpshorten.apis', 'hpshorten_api')),
     url(r'^R(?P<id>[0-9a-zA-Z]+)/?$', 'hpshorten.views.redirect', name='hpshorten_redirect'),
 
     # fallback to static redirect

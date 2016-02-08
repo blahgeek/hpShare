@@ -15,7 +15,8 @@ from base64 import urlsafe_b64encode
 from hashid.models import HashID
 from .models import Storage, ConvertedStorage, StorageGroup
 from .forms import PermitForm, CallbackForm, NewgroupForm
-from .auth import qn_callback_auth, http_basic_auth
+from .auth import qn_callback_auth
+from hpurl.auth import http_basic_auth
 from .persistent import get_persistents
 from . import qn
 
