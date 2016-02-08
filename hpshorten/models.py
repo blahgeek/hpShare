@@ -11,10 +11,21 @@ class Redirection(models.Model):
     url = models.CharField(max_length=4096)
     permanent = models.BooleanField(default=False)  # Use HTTP 301
 
+    cloak = models.BooleanField(default=False)  # use iframe (conflicts with permanent)
+    title = models.CharField(max_length=255, default="")  # only used when cload == True
+
     def __unicode__(self):
-        return '[{}]({})'.format(self.hashid.hashid, self.url)
+        ret = '[{}]({})'.format(self.hashid.hashid, self.url)
+        if self.permanent:
+            ret += ' [301]'
+        if self.cloak:
+            ret += ' [FRAME]'
+        return ret
 
 
 class StaticRedirection(models.Model):
     id = models.CharField(primary_key=True, max_length=255)
     redirection = models.ForeignKey(Redirection, on_delete=models.PROTECT)
+
+    def __unicode__(self):
+        return self.id
