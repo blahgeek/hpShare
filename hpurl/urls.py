@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'hpshare.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url('^$', RedirectView.as_view(url='/~admin/hpshare/storage/', permanent=False), name='index_redirect'),
+    url('^$', RedirectView.as_view(url='/~admin/', permanent=False), name='index_redirect'),
     url(r'^~cli/hpshare/?$', RedirectView.as_view(url='/~static/clients/bash/hpshare.bash', permanent=False)),
     url(r'^~admin/', include(admin.site.urls)),
 
