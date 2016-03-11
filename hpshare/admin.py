@@ -13,7 +13,7 @@ class StorageGroupAdmin(admin.ModelAdmin):
     list_display = ('hashid', 'link', 'persist')
 
     def link(self, obj):
-        url = reverse('hpshare:viewgroup', args=[obj.hashid.hashid, ])
+        url = reverse('hpshare_viewgroup', args=[obj.hashid.hashid, ])
         return format_html('<a href="{0}">link</a>', url)
     link.allow_tags = True
 
