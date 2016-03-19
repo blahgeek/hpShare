@@ -120,8 +120,8 @@ def persistent_callback(req):
         cmd = cmd.rpartition('|')[0]  # strip 'saveas'
         for p in persistents:
             if cmd == p[0]:
-                return p[1], p[2]
-        return ('', '')
+                return p[1], p[2], p[3]
+        return ('', '', False)
     for item in data['items']:
         model = ConvertedStorage()
         model.hashid = HashID.new(private=True)
@@ -130,7 +130,7 @@ def persistent_callback(req):
         model.error_msg = item.get('error', '')
         model.key = item.get('key', '')
         model.cmd = item['cmd']
-        model.suffix, model.description = find_suffix_desc(item['cmd'])
+        model.suffix, model.description, model.is_preview = find_suffix_desc(item['cmd'])
         model.save()
     return JsonResponse({})
 

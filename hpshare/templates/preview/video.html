@@ -1,0 +1,6 @@
+<a title="Click to download original file" href="{% url 'hpshare:downloadfile' model.hashid.hashid %}">
+    <video autoplay loop muted>
+        <source src="{% url 'hpshare:downloadfile_persistent' preview_model.hashid.hashid %}" type="{{ preview_model.description }}">
+        Video preview not available.
+    </video>
+</a>

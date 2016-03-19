@@ -8,8 +8,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.db.models import F
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
-from .persistent import get_preview_html
+from .persistent import get_preview_template
 from hashid.models import HashID
 import urllib
 import logging
@@ -31,26 +30,25 @@ def viewgroup(req, id):
 def viewfile(req, id, disable_preview=False):
     model = HashID.get_related(id, 'hpshare_storage')
 
-    preview = None
+    preview_template = None
+    preview_model = None
     if not disable_preview:
         preview_model = model.converted_storage\
-            .filter(success=True, description__startswith='Preview:')[0:1]
+            .filter(success=True, is_preview=True)[0:1]
         try:
             preview_model = preview_model.get()
         except ObjectDoesNotExist:
             pass
         else:
-            preview_url = reverse('hpshare:downloadfile_persistent', 
-                                  args=(preview_model.hashid.hashid, ))
-            preview = get_preview_html(preview_model.description, preview_url)
+            preview_template = get_preview_template(preview_model.description)
 
     return render(req, 'viewfile.html', {
                     'model': model,
-                    'preview': preview,
+                    'preview_model': preview_model,
+                    'preview_template': preview_template,
                     'extrainfo': filter(len, model.extrainfo.split('\n')),
                     "persistents": model.converted_storage
-                                   .filter(success=True)
-                                   .exclude(description__startswith="Preview:"),
+                                   .filter(success=True, is_preview=False)
                   })
 
 def downloadfile_persistent(req, id):

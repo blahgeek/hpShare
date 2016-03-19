@@ -54,6 +54,7 @@ class ConvertedStorage(models.Model):
 
     description = models.CharField(max_length=255, default='')
     suffix = models.CharField(max_length=255, default='')
+    is_preview = models.BooleanField(default=False)
 
     download_count = models.IntegerField(default=0)
 

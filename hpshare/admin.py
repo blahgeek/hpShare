@@ -31,7 +31,7 @@ class StorageGroupAdmin(admin.ModelAdmin):
 
 @admin.register(ConvertedStorage)
 class ConvertedStorageAdmin(admin.ModelAdmin):
-    list_display = ('source', 'success', "description", "suffix", 
+    list_display = ('source', 'success', "description", "suffix", "is_preview",
                     'download_count')
     ordering = ('hashid__create_time', )
 
