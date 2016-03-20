@@ -13,7 +13,7 @@ class HightLightOP(BaseFop):
     require_content = True
 
     def __init__(self):
-        self.formatter = pygments.formatters.get_formatter_by_name('html')
+        self.formatter = pygments.formatters.get_formatter_by_name('html', linenos='inline')
 
     def process(self, cmd, options, content):
         try:
