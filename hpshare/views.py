@@ -42,13 +42,17 @@ def viewfile(req, id, disable_preview=False):
         else:
             preview_template = get_preview_template(preview_model.description)
 
+    persistents = model.converted_storage.filter(success=True, is_preview=False)
+    if preview_template is None:
+        persistents = list(persistents) + [preview_model, ]
+        preview_model = None
+
     return render(req, 'viewfile.html', {
                     'model': model,
                     'preview_model': preview_model,
                     'preview_template': preview_template,
                     'extrainfo': filter(len, model.extrainfo.split('\n')),
-                    "persistents": model.converted_storage
-                                   .filter(success=True, is_preview=False)
+                    "persistents": persistents,
                   })
 
 def downloadfile_persistent(req, id):

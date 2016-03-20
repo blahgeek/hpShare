@@ -4,6 +4,7 @@
 
 from base64 import urlsafe_b64encode
 from hpurl.settings import STATIC_URL
+import config
 
 def get_persistents(req, storage):
     ''' return list of: [OP, Filename_suffix, Description, is_preview] '''
@@ -55,6 +56,12 @@ def get_persistents(req, storage):
               't/30/s/1080x720/autoscale/1/stripmeta/1/' +
               wm_video_op)
         ops.append((op, '.preview.mp4', 'video/mp4', True))
+
+    # try highlight if file size is less than 2M
+    if storage.size < 2 * 1024 * 1024:
+        ops.append((config.CUSTOM_FOP_NAME + '/highlight', 
+                    'highlight.html', 'highlight', True))
+
     return ops
 
 

@@ -1,0 +1,5 @@
+image: ubuntu
+build_script:
+    - sudo mv $RESOURCE/* .
+    - sudo easy_install web.py pygments requests
+run: python server.py 0.0.0.0:9100

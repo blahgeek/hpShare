@@ -13,6 +13,9 @@ SECRET_KEY = ''
 # 转码队列名
 PERSISTENT_PIPELINE = ''
 
+# 自定义资源处理名称，上传`qnfop`代码
+CUSTOM_FOP_NAME = 'hpurl'
+
 # Copy from '空间设置 － 域名设置'
 DOWNLOAD_URL = 'http://xxxx.xxx.xx.glb.clouddn.com/'
 

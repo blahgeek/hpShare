@@ -89,3 +89,4 @@ Temporary Items
 config.py
 GeoIP.dat
 
+*.tar
