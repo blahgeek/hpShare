@@ -17,6 +17,14 @@ from . import qn
 
 logger = logging.getLogger(__name__)
 
+
+def _gen_qn_url(key, download=False):
+    url = config.DOWNLOAD_URL + urllib.quote(key.encode('utf8'))
+    if download:
+        url += '?download/'
+    url = qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT)
+    return url
+
 def viewgroup(req, id):
     model = HashID.get_related(id, 'hpshare_storage_group')
     storages = list(model.storages.all())
@@ -51,9 +59,11 @@ def viewfile(req, id, disable_preview=False):
                     'model': model,
                     'preview_model': preview_model,
                     'preview_template': preview_template,
+                    'preview_url': _gen_qn_url(preview_model.key) if preview_model else '',
                     'extrainfo': filter(len, model.extrainfo.split('\n')),
                     "persistents": persistents,
                   })
+
 
 def downloadfile_persistent(req, id):
     model = HashID.get_related(id, 'hpshare_converted_storage')
@@ -62,9 +72,7 @@ def downloadfile_persistent(req, id):
     if req.method == 'GET':
         model.download_count = F('download_count') + 1
         model.save()
-    url = config.DOWNLOAD_URL + urllib.quote(model.key.encode('utf8'))
-    url = qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT)
-    return HttpResponseRedirect(url)
+    return HttpResponseRedirect(_gen_qn_url(model.key))
 
 def downloadfile(req, id):
     model = HashID.get_related(id, 'hpshare_storage')
@@ -73,10 +81,7 @@ def downloadfile(req, id):
     if req.method == 'GET':
         model.download_count = F('download_count') + 1
         model.save()
-    url = config.DOWNLOAD_URL + urllib.quote(model.key_name.encode('utf8'))
-    url += '?download/'
-    url = qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT)
-    return HttpResponseRedirect(url)
+    return HttpResponseRedirect(_gen_qn_url(model.key_name, True))
 
 
 from django.conf.urls import url
