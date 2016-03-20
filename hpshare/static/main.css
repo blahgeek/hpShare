@@ -114,6 +114,13 @@ a {
   margin-top: 75px;
 }
 
+.file-preview #highlight {
+  text-align: left;
+  max-width: 800px;
+  margin: auto;
+  overflow-x: scroll;
+}
+
 .file-list {
   overflow: auto;
   max-width: 480px;

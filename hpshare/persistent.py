@@ -60,7 +60,7 @@ def get_persistents(req, storage):
     # try highlight if file size is less than 2M
     if storage.size < 2 * 1024 * 1024:
         ops.append((config.CUSTOM_FOP_NAME + '/highlight', 
-                    'highlight.html', 'highlight', True))
+                    '.highlight.html', 'highlight', True))
 
     return ops
 
@@ -70,4 +70,6 @@ def get_preview_template(desc):
         return 'preview/image.html'
     if desc.startswith('video'):
         return 'preview/video.html'
+    if desc == 'highlight':
+        return 'preview/highlight.html'
     return None
