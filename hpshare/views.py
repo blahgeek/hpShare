@@ -52,7 +52,7 @@ def viewfile(req, id, disable_preview=False):
 
     persistents = model.converted_storage.filter(success=True, is_preview=False)
     if preview_template is None:
-        persistents = list(persistents) + [preview_model, ]
+        persistents = model.converted_storage.filter(success=True)
         preview_model = None
 
     return render(req, 'viewfile.html', {

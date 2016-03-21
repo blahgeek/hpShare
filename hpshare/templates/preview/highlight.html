@@ -1,22 +1,21 @@
 {% load staticfiles %}
-<div id="highlight"></div>
+<div id="highlight-content"></div>
 <script>
-function loadDoc() {
+(function() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
       if (xhttp.readyState == 4 && xhttp.status == 200) {
-           document.getElementById("highlight").innerHTML = xhttp.responseText;
+           document.getElementById("highlight-content").innerHTML = xhttp.responseText;
       }
   };
   xhttp.open("GET", "{{ preview_url|safe }}", true);
   xhttp.send();
-}
 
-var link = document.createElement( "link" );
-link.href = "{% static "highlight.css" %}";
-link.type = "text/css";
-link.rel = "stylesheet";
-document.getElementsByTagName( "head" )[0].appendChild( link );
+  var link = document.createElement( "link" );
+  link.href = "{% static "highlight.css" %}";
+  link.type = "text/css";
+  link.rel = "stylesheet";
+  document.getElementsByTagName( "head" )[0].appendChild( link );
+})()
 
-loadDoc();
 </script>
