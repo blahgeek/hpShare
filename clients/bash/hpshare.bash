@@ -11,7 +11,9 @@ USERNAME="$(whoami | tr [:upper:] [:lower:])"
 DO_CHECKSUM="yes"
 UNAMESTR=`uname`
 
-hash jsawk 2>/dev/null || { echo "jsawk(https://github.com/micha/jsawk) not installed."; exit 1; }
+function getJsonVal () {
+    python -c "import json,sys;sys.stdout.write(json.load(sys.stdin)$1)";
+}
 
 FILES=()
 
@@ -81,8 +83,8 @@ do
                     -d "sha1sum=$CHECKSUM" \
                     -d "private=$PRIVATE" \
                     -d "fsize=$FILESIZE")
-    TOKEN=$(echo $PERMIT_OUTPUT | jsawk "return this.token")
-    UPLOAD_DOMAIN=$(echo $PERMIT_OUTPUT | jsawk "return this.upload_domain")
+    TOKEN=$(echo $PERMIT_OUTPUT | getJsonVal "['token']")
+    UPLOAD_DOMAIN=$(echo $PERMIT_OUTPUT | getJsonVal "['upload_domain']")
 
     if [[ -z $TOKEN ]]; then
         echo "Permit error."
@@ -92,14 +94,14 @@ do
     UPLOAD_OUTPUT=$(curl "http://$UPLOAD_DOMAIN" \
                     -F token="$TOKEN" \
                     -F "file=@$FILE")
-    URL=$(echo $UPLOAD_OUTPUT | jsawk "return this.url")
-    ID=$(echo $UPLOAD_OUTPUT | jsawk "return this.id")
+    URL=$(echo $UPLOAD_OUTPUT | getJsonVal "['url']")
+    ID=$(echo $UPLOAD_OUTPUT | getJsonVal "['id']")
     if [[ -n $URL ]]; then
         echo "Upload done, URL: $URL"
         echo
         IDS="$IDS,$ID"
     else
-        ERR_MSG=$(echo $UPLOAD_OUTPUT | jsawk "return this.error")
+        ERR_MSG=$(echo $UPLOAD_OUTPUT | getJsonVal "['error']")
         if [[ -n $ERR_MSG ]]; then
             echo "Upload error: $ERR_MSG"
         else
@@ -115,7 +117,7 @@ if [[ ${#FILES[*]} -gt 1 ]]; then
     GROUP_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
                    "http://$SERVER/~api/hpshare/newgroup/" \
                    -d "ids=$IDS" -d "private=$PRIVATE")
-    URL=$(echo $GROUP_OUTPUT | jsawk "return this.url")
-    COUNT=$(echo $GROUP_OUTPUT | jsawk "return this.count")
+    URL=$(echo $GROUP_OUTPUT | getJsonVal "['url']")
+    COUNT=$(echo $GROUP_OUTPUT | getJsonVal "['count']")
     echo "$COUNT files in group, URL: $URL"
 fi
