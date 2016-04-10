@@ -27,14 +27,22 @@ class CallbackForm(Form):
     size = forms.IntegerField(label='fsize')
     persistentId = forms.CharField(required=False, label='persistentId')
 
+    avinfo_format_name = forms.CharField(required=False, label='avinfo.format.format_long_name')
+    avinfo_bitrate = forms.IntegerField(required=False, label='avinfo.format.bit_rate')
+    avinfo_duration = forms.FloatField(required=False, label='avinfo.format.duration')
+
     avinfo_v_codec = forms.CharField(required=False, label='avinfo.video.codec_name')
+    avinfo_v_bitrate = forms.IntegerField(required=False, label='avinfo.video.bit_rate')
     avinfo_v_width = forms.IntegerField(required=False, label='avinfo.video.width')
     avinfo_v_height = forms.IntegerField(required=False, label='avinfo.video.height')
+    avinfo_v_aspect_ratio = forms.CharField(required=False, label='avinfo.video.display_aspect_ratio')
     avinfo_v_pixfmt = forms.CharField(required=False, label='avinfo.video.pix_fmt')
     avinfo_v_fps = forms.CharField(required=False, label='avinfo.video.r_frame_rate')
 
     avinfo_a_codec = forms.CharField(required=False, label='avinfo.audio.codec_name')
     avinfo_a_rate = forms.CharField(required=False, label='avinfo.audio.sample_rate')
+    avinfo_a_bitrate = forms.IntegerField(required=False, label='avinfo.audio.bit_rate')
+    avinfo_a_channels = forms.IntegerField(required=False, label='avinfo.audio.channels')
 
     imginfo_width = forms.IntegerField(required=False, label='imageInfo.width')
     imginfo_height = forms.IntegerField(required=False, label='imageInfo.height')
@@ -47,14 +55,27 @@ class CallbackForm(Form):
     def extrainfo(self):
         ret = list()
         v = lambda x: self.cleaned_data[x]
+        def info(s, **kwargs):
+            _dict = self.cleaned_data.copy()
+            _dict.update(kwargs)
+            ret.append(s.format(**_dict))
+
         if v('imginfo_width'):
-            ret.append('Image info: {}x{} @ {}'.format(v('imginfo_width'), v('imginfo_height'), v('imginfo_colormodel')))
+            info('Image info: {imginfo_width}x{imginfo_height} @ {imginfo_colormodel}')
             return ret
-        if v('avinfo_a_codec'):
-            ret.append('Audio stream: {} {}Hz'.format(v('avinfo_a_codec'), v('avinfo_a_rate')))
+            
+        if v('avinfo_format_name'):
+            info('{avinfo_format_name}, duration: {avinfo_duration:.2f}s, bitrate: {avinfo_bitrate_kb:.2f}kb/s',
+                 avinfo_bitrate_kb=v('avinfo_bitrate')/1024.0)
         if v('avinfo_v_codec'):
-            ret.append('Video stream: {}({}) {}x{} @ {}fps'.format(v('avinfo_v_codec'),
-                       v('avinfo_v_pixfmt'), v('avinfo_v_width'), v('avinfo_v_height'), v('avinfo_v_fps')))
+            info('Video stream: {avinfo_v_codec}({avinfo_v_pixfmt}), ' +
+                 '{avinfo_v_width}x{avinfo_v_height} [{avinfo_v_aspect_ratio}] @ {avinfo_v_fps}fps, ' + 
+                 '{avinfo_v_bitrate_kb:.2f}kb/s',
+                 avinfo_v_bitrate_kb=v('avinfo_v_bitrate')/1024.0)
+        if v('avinfo_a_codec'):
+            info('Audio stream: {avinfo_a_codec}, {avinfo_a_rate}Hz, ' +
+                 '{avinfo_a_bitrate_kb:.2f}kb/s, {avinfo_a_channels} channel(s)',
+                 avinfo_a_bitrate_kb=v('avinfo_a_bitrate')/1024.0)
         return ret
 
     @classmethod
