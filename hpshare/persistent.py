@@ -18,8 +18,7 @@ def get_persistents(req, storage):
     wm_video_op = ('wmImage/' + urlsafe_b64encode(req.build_absolute_uri(STATIC_URL + 'ribbon.png')) + 
                    '/wmGravity/NorthWest')
 
-    pdf_preview_op = 'yifangyun_preview/v2/ext=pdf/format=jpg/page_number=1'
-    pdf_preview_op += '|' + wm_op
+    pdf_preview_op = config.CUSTOM_FOP_NAME + '/pdf2htmlex'
 
     # Office document to PDF
     if ext in ("doc", "docx", "odt", "rtf", "wps", 
@@ -27,11 +26,11 @@ def get_persistents(req, storage):
                "xls", "xlsx", "ods", "csv", "et"):
         ops.append(('yifangyun_preview', '.pdf', 'PDF', False))
         ops.append(('yifangyun_preview' + '|' + pdf_preview_op, 
-                    '.pdf.jpg', 'image', True))
+                    '.pdf.html', 'pdf2htmlex', True))
 
     # Preview PDF
     if ext in ('pdf', ):
-        ops.append((pdf_preview_op, '.yf_preview.jpg', 'image', True))
+        ops.append((pdf_preview_op, '.html', 'pdf2htmlex', True))
 
     # Markdown to HTML
     if ext in ('markdown', 'md', 'mkd'):
@@ -72,4 +71,6 @@ def get_preview_template(desc):
         return 'preview/video.html'
     if desc == 'highlight':
         return 'preview/highlight.html'
+    if desc == 'pdf2htmlex':
+        return 'preview/pdf2htmlex.html'
     return None
