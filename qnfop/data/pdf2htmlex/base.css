@@ -23,7 +23,7 @@
   top:0;
   left:0px;
   margin:0; 
-  padding:0;
+  padding:0 10px;
   border:0; /* required for lazy page loading in pdf2htmlEX.js (page visibility test) */
 }
 @media screen {
@@ -35,7 +35,7 @@
      */
     bottom:0;
     right:0;
-    overflow:auto;
+    /*overflow:auto;*/
   }
   .loading-indicator {
     display:none;
