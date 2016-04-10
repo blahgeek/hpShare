@@ -2,4 +2,7 @@ image: ubuntu
 build_script:
     - sudo mv $RESOURCE/* .
     - sudo easy_install web.py pygments requests
+    - sudo apt-add-repository -y ppa:coolwanglu/pdf2htmlex
+    - sudo apt-get -y update
+    - sudo apt-get -y install pdf2htmlex
 run: python server.py 0.0.0.0:9100

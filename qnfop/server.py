@@ -20,11 +20,17 @@ app = web.application(urls, globals())
 _fop_instances = dict()
 
 def find_fop(action):
-    for cls in BaseFop.__subclasses__():
-        if cls.name == action:
-            _fop_instances.setdefault(action, cls())
-            return _fop_instances[action]
-    return None
+    def _find(_classes):
+        for cls in _classes:
+            if cls.name == action:
+                if action not in _fop_instances:
+                    _fop_instances[action] = cls()
+                return _fop_instances[action]
+            res = _find(cls.__subclasses__())
+            if res:
+                return res
+        return None
+    return _find([BaseFop, ])
 
 
 class Uop:
