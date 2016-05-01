@@ -26,6 +26,7 @@
         {% for info in extrainfo %}
         {{ info }}<br/>
         {% endfor %}
+        <br/>
         <span class="filesize">{{model.readable_size}}</span> 
         &nbsp;•&nbsp;
         <span class="filetime">{{model.hashid.create_time|date:"d/m/Y P e"}}<br/>
