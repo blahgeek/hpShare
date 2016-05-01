@@ -64,18 +64,14 @@ class CallbackForm(Form):
             info('Image info: {imginfo_width}x{imginfo_height} @ {imginfo_colormodel}')
             return ret
             
-        if v('avinfo_format_name'):
+        if v('avinfo_format_name') and v('avinfo_v_codec'):
             info('{avinfo_format_name}, duration: {avinfo_duration:.2f}s, bitrate: {avinfo_bitrate_kb:.2f}kb/s',
                  avinfo_bitrate_kb=v('avinfo_bitrate')/1024.0)
-        if v('avinfo_v_codec'):
             info('Video stream: {avinfo_v_codec}({avinfo_v_pixfmt}), ' +
                  '{avinfo_v_width}x{avinfo_v_height} [{avinfo_v_aspect_ratio}] @ {avinfo_v_fps}fps, ' + 
                  '{avinfo_v_bitrate_kb:.2f}kb/s',
                  avinfo_v_bitrate_kb=v('avinfo_v_bitrate')/1024.0)
-        if v('avinfo_a_codec'):
-            info('Audio stream: {avinfo_a_codec}, {avinfo_a_rate}Hz, ' +
-                 '{avinfo_a_bitrate_kb:.2f}kb/s, {avinfo_a_channels} channel(s)',
-                 avinfo_a_bitrate_kb=v('avinfo_a_bitrate')/1024.0)
+
         return ret
 
     @classmethod

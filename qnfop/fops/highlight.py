@@ -16,8 +16,5 @@ class HightLightOP(BaseFop):
         self.formatter = pygments.formatters.get_formatter_by_name('html', linenos='table')
 
     def process(self, cmd, options, content):
-        try:
-            l = pygments.lexers.get_lexer_for_filename(options.get('key', ''))
-        except pygments.lexers.ClassNotFound:
-            l = pygments.lexers.guess_lexer(content)
+        l = pygments.lexers.guess_lexer_for_filename(options.get('key', ''), content)
         return pygments.highlight(content, l, self.formatter)
