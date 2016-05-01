@@ -1,1 +1,23 @@
-<iframe src="{{ preview_url|safe }}"></iframe>
+
+<div id="pdf2htmlex-wrapper" style="margin: 0 -10px; overflow: hidden;">
+    <iframe id="pdf2htmlex" src="{{ preview_url|safe }}" style="border: 0; transform-origin: 0 0; -webkit-transform-origin: 0 0;"></iframe>
+</div>
+
+<script type="text/javascript">
+(function(){
+    var resize_frame = function() {
+        var width = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
+        var height = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+        var wrapper = document.getElementById('pdf2htmlex-wrapper');
+        var frame = document.getElementById('pdf2htmlex');
+        wrapper.style.height = height * 0.75 + 'px';
+        wrapper.style.width = width + 'px';
+        frame.style.height = '825px';
+        frame.style.width = width / (height * 0.75) * 825 + 'px';
+        frame.style.transform = 'scale(' + height * 0.75 / 825 + ')';
+        frame.style.webkitTransform = 'scale(' + height * 0.75 / 825 + ')';
+    };
+    window.onresize = resize_frame;
+    resize_frame();
+})();
+</script>
