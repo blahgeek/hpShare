@@ -43,11 +43,14 @@ class Uop:
         if fop is None:
             return web.notfound()
 
-        content = None
+        kwargs = {}
+        kwargs.update(data['src'])
+        for i in range(1, len(cmd) - 1, 2):
+            kwargs[cmd[i]] = cmd[i+1]
         if fop.require_content:
-            content = requests.get(data['src']['url']).content
+            kwargs['content'] = requests.get(data['src']['url']).content
 
-        return fop.process('/'.join(cmd[1:]), data['src'], content)
+        return fop.process(**kwargs)
 
 
 if __name__ == "__main__":

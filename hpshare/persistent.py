@@ -18,7 +18,7 @@ def get_persistents(req, storage):
     wm_video_op = ('wmImage/' + urlsafe_b64encode(req.build_absolute_uri(STATIC_URL + 'ribbon.png')) + 
                    '/wmGravity/NorthWest')
 
-    pdf_preview_op = config.CUSTOM_FOP_NAME + '/pdf2htmlex'
+    pdf_preview_op = config.CUSTOM_FOP_NAME + '/pdf2htmlex/height/800/start_page/1/end_page/5'
 
     # Office document to PDF
     if ext in ("doc", "docx", "odt", "rtf", "wps", 
@@ -38,10 +38,13 @@ def get_persistents(req, storage):
         css = urlsafe_b64encode(css)
         ops.append(('md2html/0/css/' + css, '.html', 'HTML', False))
 
-    # Image preview (with watermark)
-    if ext in ('bmp', 'cr2', 'crw', 'dot', 'eps', 'gif',
-               'ico', 'jpeg', 'jpg', 'png', 'ps', 'psd',
-               'psb', 'tga', 'ttf', ):
+    # Image preview (original format) (with watermark)
+    if ext in ('gif', 'jped', 'jpg', 'png'):
+        op = 'imageView2/2/w/1280' + '|' + wm_op
+        ops.append((op, '.preview.' + ext, 'image', True))
+    # Image preview (convert to jpg) (with watermark)
+    if ext in ('bmp', 'cr2', 'crw', 'dot', 'eps',
+               'ico', 'ps', 'psd', 'psb', 'tga', 'ttf',):
         op = ('imageView2/2/w/1280' + 
               '/format/jpg' + 
               '/interlace/1/')
