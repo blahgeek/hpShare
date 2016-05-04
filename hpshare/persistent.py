@@ -41,7 +41,7 @@ def get_persistents(req, storage):
     # Image preview (original format) (with watermark)
     if ext in ('gif', 'jped', 'jpg', 'png'):
         op = 'imageView2/2/w/1280' + '|' + wm_op
-        ops.append((op, '.preview.' + ext, 'image', True))
+        ops.append((op, '.preview.' + ext.encode('utf8'), 'image', True))
     # Image preview (convert to jpg) (with watermark)
     if ext in ('bmp', 'cr2', 'crw', 'dot', 'eps',
                'ico', 'ps', 'psd', 'psb', 'tga', 'ttf',):
