@@ -52,9 +52,10 @@ def get_persistents(req, storage):
 
     if ext in ('avi', 'mp4', 'wmv', 'mkv', 'ts', 'webm', 
                'mov', 'flv', 'ogv', 'm4v', "rm", "m2v"):
-        op = ('avthumb/mp4/vcodec/libx264/vb/2m/r/30/' + 
-              's/1280x720/autoscale/1/stripmeta/1/')
-        ops.append((op, '.preview.mp4', 'video/full-mp4', True))
+        ops.append(('avthumb/mp4/vcodec/libx264/vb/2m/r/30/s/1280x720/autoscale/1/stripmeta/1/',
+                    '.preview.mp4', 'video/full-mp4', True))
+        ops.append(('vframe/jpg/offset/3|imageView2/2/w/1280/h/720/format/jpg',
+                    '.poster.jpg', 'video-poster', False))
 
     # try highlight if file size is less than 2M
     if storage.size < 2 * 1024 * 1024:

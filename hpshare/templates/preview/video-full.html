@@ -1,8 +1,15 @@
+{% load qn_url %}
 <a title="Click to download original file" 
     href="{% url 'hpshare:downloadfile' model.hashid.hashid %}"
       id="video-container">
-    <video controls webkit-playsinline id="video-content">
-        <source src="{{ preview_url|safe }}" type="video/mp4">
+    <video controls webkit-playsinline id="video-content"
+            {% for p in persistents %}
+                {% if p.description == "video-poster" %}
+                poster="{% url 'hpshare:downloadfile_persistent' p.hashid.hashid %}"
+                {% endif %}
+            {% endfor %}
+            preload="none">
+        <source src="{{ preview_model.key|qn_url|safe }}" type="video/mp4">
         Video preview not available.
     </video>
     <div id="video-desc">

@@ -10,20 +10,10 @@ from django.db.models import F
 from django.core.exceptions import ObjectDoesNotExist
 from .persistent import get_preview_template
 from hashid.models import HashID
-import urllib
+from .templatetags.qn_url import gen_qn_url
 import logging
-import config
-from . import qn
 
 logger = logging.getLogger(__name__)
-
-
-def _gen_qn_url(key, download=False):
-    url = config.DOWNLOAD_URL + urllib.quote(key.encode('utf8'))
-    if download:
-        url += '?download/'
-    url = qn.private_download_url(url, expires=config.DOWNLOAD_TIME_LIMIT)
-    return url
 
 def viewgroup(req, id):
     model = HashID.get_related(id, 'hpshare_storage_group')
@@ -38,6 +28,7 @@ def viewgroup(req, id):
 def viewfile(req, id, disable_preview=False):
     model = HashID.get_related(id, 'hpshare_storage')
 
+    persistents = model.converted_storage.filter(success=True, is_preview=False)
     preview_template = None
     preview_model = None
     if not disable_preview:
@@ -50,16 +41,10 @@ def viewfile(req, id, disable_preview=False):
         else:
             preview_template = get_preview_template(preview_model.description)
 
-    persistents = model.converted_storage.filter(success=True, is_preview=False)
-    if preview_template is None:
-        persistents = model.converted_storage.filter(success=True)
-        preview_model = None
-
     return render(req, 'viewfile.html', {
                     'model': model,
                     'preview_model': preview_model,
                     'preview_template': preview_template,
-                    'preview_url': _gen_qn_url(preview_model.key) if preview_model else '',
                     'extrainfo': filter(len, model.extrainfo.split('\n')),
                     "persistents": persistents,
                   })
@@ -72,7 +57,7 @@ def downloadfile_persistent(req, id):
     if req.method == 'GET':
         model.download_count = F('download_count') + 1
         model.save()
-    return HttpResponseRedirect(_gen_qn_url(model.key))
+    return HttpResponseRedirect(gen_qn_url(model.key, True))
 
 def downloadfile(req, id):
     model = HashID.get_related(id, 'hpshare_storage')
@@ -81,7 +66,7 @@ def downloadfile(req, id):
     if req.method == 'GET':
         model.download_count = F('download_count') + 1
         model.save()
-    return HttpResponseRedirect(_gen_qn_url(model.key_name, True))
+    return HttpResponseRedirect(gen_qn_url(model.key_name, True))
 
 
 from django.conf.urls import url

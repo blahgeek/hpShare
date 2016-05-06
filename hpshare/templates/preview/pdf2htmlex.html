@@ -1,6 +1,7 @@
+{% load qn_url %}
 
 <div id="pdf2htmlex-wrapper" style="margin: 0 -10px; overflow: hidden;">
-    <iframe id="pdf2htmlex" src="{{ preview_url|safe }}" style="border: 0; transform-origin: 0 0; -webkit-transform-origin: 0 0;"></iframe>
+    <iframe id="pdf2htmlex" src="{{ preview_model.key|qn_url|safe }}" style="border: 0; transform-origin: 0 0; -webkit-transform-origin: 0 0;"></iframe>
 </div>
 
 <script type="text/javascript">

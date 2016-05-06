@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load qn_url %}
 
 {% block title %}
     <title>{{model.filename}} - hpShare</title>
@@ -38,8 +39,8 @@
     </p>
     {% if not preview_model %}
     <a class="download-btn" href="{% url 'hpshare:downloadfile' model.hashid.hashid %}">Download</a>
-    {% endif %}
     {% for p in persistents %}
-        <a class="download-btn" href="{% url 'hpshare:downloadfile_persistent' p.hashid.hashid %}">Download as {{p.description}}</a>
+        <a class="download-btn" href="{{ p.key|qn_url|safe }}">Download as {{p.description}}</a>
     {% endfor %}
+    {% endif %}
 {% endblock %}

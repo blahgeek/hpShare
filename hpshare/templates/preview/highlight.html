@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load qn_url %}
 <div id="highlight-content"></div>
 <script>
 (function() {
@@ -8,7 +9,7 @@
            document.getElementById("highlight-content").innerHTML = xhttp.responseText;
       }
   };
-  xhttp.open("GET", "{{ preview_url|safe }}", true);
+  xhttp.open("GET", "{{ preview_model.key|qn_url|safe }}", true);
   xhttp.send();
 
   var link = document.createElement( "link" );

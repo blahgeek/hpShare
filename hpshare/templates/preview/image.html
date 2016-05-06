@@ -1,3 +1,4 @@
+{% load qn_url %}
 <a title="Click to download original file" href="{% url 'hpshare:downloadfile' model.hashid.hashid %}">
-    <img src="{{ preview_url|safe }}">
+    <img src="{{ preview_model.key|qn_url|safe }}">
 </a>
