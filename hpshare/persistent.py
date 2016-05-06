@@ -40,7 +40,7 @@ def get_persistents(req, storage):
 
     # Image preview (original format) (with watermark)
     if ext in ('gif', 'jped', 'jpg', 'png'):
-        op = 'imageView2/2/w/1280' + '|' + wm_op
+        op = 'imageView2/2/w/1280'
         ops.append((op, '.preview.' + ext.encode('utf8'), 'image', True))
     # Image preview (convert to jpg) (with watermark)
     if ext in ('bmp', 'cr2', 'crw', 'dot', 'eps',
@@ -48,16 +48,13 @@ def get_persistents(req, storage):
         op = ('imageView2/2/w/1280' + 
               '/format/jpg' + 
               '/interlace/1/')
-        op += '|' + wm_op
         ops.append((op, '.preview.jpg', 'image', True))
 
-    # Video, convert to mp4(h.264) without audio, 30 second at most
     if ext in ('avi', 'mp4', 'wmv', 'mkv', 'ts', 'webm', 
-               'mov', 'flv', 'ogv', ):
-        op = ('avthumb/mp4/an/1/vcodec/libx264/' + 
-              't/30/s/1080x720/autoscale/1/stripmeta/1/' +
-              wm_video_op)
-        ops.append((op, '.preview.mp4', 'video/mp4', True))
+               'mov', 'flv', 'ogv', 'm4v', "rm", "m2v"):
+        op = ('avthumb/mp4/vcodec/libx264/vb/2m/r/30/' + 
+              's/1280x720/autoscale/1/stripmeta/1/')
+        ops.append((op, '.preview.mp4', 'video/full-mp4', True))
 
     # try highlight if file size is less than 2M
     if storage.size < 2 * 1024 * 1024:
@@ -70,8 +67,10 @@ def get_persistents(req, storage):
 def get_preview_template(desc):
     if desc.startswith('image'):
         return 'preview/image.html'
-    if desc.startswith('video'):
+    if desc == 'video/mp4':
         return 'preview/video.html'
+    if desc == 'video/full-mp4':
+        return 'preview/video-full.html'
     if desc == 'highlight':
         return 'preview/highlight.html'
     if desc == 'pdf2htmlex':

@@ -1,0 +1,20 @@
+<a title="Click to download original file" 
+    href="{% url 'hpshare:downloadfile' model.hashid.hashid %}"
+      id="video-container">
+    <video controls webkit-playsinline id="video-content">
+        <source src="{{ preview_url|safe }}" type="video/mp4">
+        Video preview not available.
+    </video>
+    <div id="video-desc">
+        <p> Preview Video (Transcoded) </p>
+    </div>
+</a>
+
+<script>
+(function(){
+    var v = document.getElementById("video-content");
+    var d = document.getElementById("video-desc");
+    v.onplay = function() { d.classList.add("fade"); };
+    v.onpause = function() { d.classList.remove("fade"); };
+})();
+</script>

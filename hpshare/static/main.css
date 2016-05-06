@@ -83,7 +83,7 @@ a {
   margin-bottom: 33px;
   padding-top: 70px;
   text-transform: uppercase;
-  text-shadow: 0 -1px #d3d6d9; 
+  text-shadow: 0 -1px #d3d6d9;
   text-align: center;
 }
 
@@ -119,6 +119,33 @@ a {
   max-width: 800px;
   margin: auto;
   overflow-x: scroll;
+}
+
+.file-preview #video-container {
+  display: inline-block;
+  position: relative;
+}
+
+.file-preview #video-desc {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0));
+  opacity: 1;
+  transition: opacity 1s; 
+}
+
+.file-preview #video-desc.fade {
+  opacity: 0;
+}
+
+.file-preview #video-desc p {
+  display: inline-block;
+  margin: 10px auto 15px;
+  color: white;
+  font-size: .8em;
 }
 
 .file-list {
