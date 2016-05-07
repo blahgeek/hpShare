@@ -40,7 +40,10 @@
     {% if not preview_template %}
     <a class="download-btn" href="{% url 'hpshare:downloadfile' model.hashid.hashid %}">Download</a>
     {% endif %}
+
     {% for p in persistents %}
+        {% if not p.description|slice:":1" == "." %}
         <a class="download-btn" href="{{ p.key|qn_url|safe }}">Download as {{p.description}}</a>
+        {% endif %}
     {% endfor %}
 {% endblock %}

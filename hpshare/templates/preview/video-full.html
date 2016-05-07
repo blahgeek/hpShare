@@ -5,7 +5,7 @@
     <video controls webkit-playsinline id="video-content"
             {% for p in persistents %}
                 {% if p.description == ".video-full-poster" %}
-                poster="{% url 'hpshare:downloadfile_persistent' p.hashid.hashid %}"
+                   poster="{{ p.key|qn_url|safe }}"
                 {% endif %}
             {% endfor %}
             preload="none">
