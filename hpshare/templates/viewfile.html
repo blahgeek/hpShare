@@ -25,10 +25,7 @@
     <p class="filename">{{model.filename}}</p>
     <p class="extrainfo">
         {% if extrainfo %}
-            {% for info in extrainfo %}
-            {{ info }}<br/>
-            {% endfor %}
-            <br/>
+            {% for info in extrainfo %} {{ info }}<br/> {% endfor %} <br/>
         {% endif %}
         <span class="filesize">{{model.readable_size}}</span> 
         &nbsp;•&nbsp;
