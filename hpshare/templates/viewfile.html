@@ -6,13 +6,13 @@
 {% endblock %}
 
 {% block topbar_extra %}
-    {% if preview_model %}
+    {% if preview_template %}
         <a class="download-btn" href="{% url 'hpshare:downloadfile' model.hashid.hashid %}">Download</a>
     {% endif %}
 {% endblock %}
 
 {% block content %}
-    {% if preview_model %}
+    {% if preview_template %}
     <div class="file-preview">
         {% include preview_template %}
     </div>
@@ -37,10 +37,10 @@
         SHA1: {{model.sha1sum}}<br/>
         {% endif %}
     </p>
-    {% if not preview_model %}
+    {% if not preview_template %}
     <a class="download-btn" href="{% url 'hpshare:downloadfile' model.hashid.hashid %}">Download</a>
+    {% endif %}
     {% for p in persistents %}
         <a class="download-btn" href="{{ p.key|qn_url|safe }}">Download as {{p.description}}</a>
     {% endfor %}
-    {% endif %}
 {% endblock %}

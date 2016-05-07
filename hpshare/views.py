@@ -28,7 +28,9 @@ def viewgroup(req, id):
 def viewfile(req, id, disable_preview=False):
     model = HashID.get_related(id, 'hpshare_storage')
 
-    persistents = model.converted_storage.filter(success=True, is_preview=False)
+    persistents = model.converted_storage\
+                    .filter(success=True, is_preview=False)\
+                    .exclude(description__startswith=".")
     preview_template = None
     preview_model = None
     if not disable_preview:

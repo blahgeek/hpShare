@@ -53,9 +53,9 @@ def get_persistents(req, storage):
     if ext in ('avi', 'mp4', 'wmv', 'mkv', 'ts', 'webm', 
                'mov', 'flv', 'ogv', 'm4v', "rm", "m2v"):
         ops.append(('avthumb/mp4/vcodec/libx264/vb/2m/r/30/s/1280x720/autoscale/1/stripmeta/1/',
-                    '.preview.mp4', 'video/full-mp4', True))
+                    '.preview.mp4', 'video-full', True))
         ops.append(('vframe/jpg/offset/3|imageView2/2/w/1280/h/720/format/jpg',
-                    '.poster.jpg', 'video-poster', False))
+                    '.poster.jpg', '.video-full-poster', False))
 
     # try highlight if file size is less than 2M
     if storage.size < 2 * 1024 * 1024:
@@ -68,10 +68,10 @@ def get_persistents(req, storage):
 def get_preview_template(desc):
     if desc.startswith('image'):
         return 'preview/image.html'
+    if desc == 'video-full':
+        return 'preview/video-full.html'
     if desc == 'video/mp4':
         return 'preview/video.html'
-    if desc == 'video/full-mp4':
-        return 'preview/video-full.html'
     if desc == 'highlight':
         return 'preview/highlight.html'
     if desc == 'pdf2htmlex':
