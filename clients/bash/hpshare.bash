@@ -4,12 +4,14 @@ USAGE="Usage: hpshare [OPTIONS] file1 file2 ...
     -u, --user:        username
     -p, --private:     use longer URL
     -n, --no-checksum: do not check sha1sum during upload
+    -i, --insecure:    use insecure `http` protocal
     -s, --server:      server host name, default to z1k.co"
 
 SERVER="z1k.co"
 USERNAME="$(whoami | tr [:upper:] [:lower:])"
 DO_CHECKSUM="yes"
 UNAMESTR=`uname`
+PROTOCAL="https"
 
 function getJsonVal () {
     python -c "import json,sys;sys.stdout.write(json.load(sys.stdin)$1)";
@@ -34,6 +36,9 @@ do
         -s|--server)
             SERVER="$2"
             shift
+            ;;
+        -i|--insecure)
+            PROTOCAL="http"
             ;;
         -h|--help)
             echo "$USAGE"
@@ -78,7 +83,7 @@ do
     fi
     echo "Uploading $FILE ($FILESIZE bytes)..."
     PERMIT_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
-                    "http://$SERVER/~api/hpshare/permit/" \
+                    "$PROTOCAL://$SERVER/~api/hpshare/permit/" \
                     -d "filename=$FILE" \
                     -d "sha1sum=$CHECKSUM" \
                     -d "private=$PRIVATE" \
@@ -115,7 +120,7 @@ IDS=${IDS:1:${#IDS}}
 if [[ ${#FILES[*]} -gt 1 ]]; then
     echo "Grouping..."
     GROUP_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
-                   "http://$SERVER/~api/hpshare/newgroup/" \
+                   "$PROTOCAL://$SERVER/~api/hpshare/newgroup/" \
                    -d "ids=$IDS" -d "private=$PRIVATE")
     URL=$(echo $GROUP_OUTPUT | getJsonVal "['url']")
     COUNT=$(echo $GROUP_OUTPUT | getJsonVal "['count']")

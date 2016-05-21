@@ -12,7 +12,7 @@
 # MinDropzoneVersion: 3.0
 
 require 'rubygems'
- 
+
 def handle_errors(line)
   if line[0..4] == "curl:"
     if line[6..-1] =~ /Couldn't resolve/
@@ -83,7 +83,7 @@ def upload_one(filepath, private_)
 
   permit = curl_it("-u #{ENV['username']}:#{ENV['password']}"\
                    " -F \"filename=#{filename}\" -F private=#{private_} -F sha1sum=#{sha1sum} -F fsize=#{filesize}"\
-                   " http://#{ENV['server']}/~api/hpshare/permit/", false)
+                   " #{ENV['server']}/~api/hpshare/permit/", false)
   $dz.determinate(true)
   ret = curl_it("-F token=#{permit['token']} -F \"file=@#{filepath}\""\
                 " http://#{permit['upload_domain']}")
@@ -111,7 +111,7 @@ def dragged
     ids = results.select{|x| x.has_key?("id")}.map{|x| x['id']}.join(',')
     ret = curl_it("-u #{ENV['username']}:#{ENV['password']}"\
                   " -F ids=#{ids} -F private=#{private_}"\
-                  " http://#{ENV['server']}/~api/hpshare/newgroup/", false)
+                  " #{ENV['server']}/~api/hpshare/newgroup/", false)
     $dz.finish("Done, #{ret['count']} files uploaded, URL Copied.")
     $dz.url(ret["url"])
   end
@@ -119,5 +119,5 @@ end
 
 
 def clicked
-  `open http://#{ENV['server']}/`
+  `open #{ENV['server']}/`
 end
