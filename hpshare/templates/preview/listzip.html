@@ -1,5 +1,51 @@
 {% load staticfiles %}
 {% load qn_url %}
-<pre><code>
-    {{ preview_model.key|qn_url|safe }}
-</code></pre>
+<div class="file-type">
+    <span class="extension">ZIP</span>
+</div>
+
+<div class="preview-content">
+    <a id="listzip-toggle" href="#" style="display: none; text-align: center; color: #7c7c7c; text-decoration: underline;">Show Contents</a>
+    <table id="listzip-table" style="display: none">
+        <tr>
+            <th>Filename</th>
+            <th>Time</th>
+            <th>File Size</th>
+        </tr>
+    </table>
+</div>
+
+<script>
+(function() {
+  var toggle = document.getElementById('listzip-toggle');
+  var table = document.getElementById('listzip-table');
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      var format_datetime = function(t) {
+          return '' + t[0] + '/' + t[1] + '/' + t[2] + ' ' + t[3] + ':' + t[4];
+      };
+      if (xhttp.readyState == 4 && xhttp.status == 200) {
+          var filelist = JSON.parse(xhttp.responseText);
+          for(var i = 0 ; i < filelist.length ; i ++) {
+             var file = filelist[i];
+             table.innerHTML +=
+                '<tr>' +
+                    '<td>' + file.filename + '</td>' +
+                    '<td>' + format_datetime(file.date_time) + '</td>' +
+                    '<td>' + file.file_size + '</td>' +
+                '</tr>';
+          }
+          toggle.style.display = 'block';
+      }
+  };
+  xhttp.open("GET", "{{ preview_model.key|qn_url|safe }}", true);
+  xhttp.send();
+
+  toggle.onclick = function() {
+      toggle.style.display = 'none';
+      table.style.display = 'block';
+  };
+
+})()
+
+</script>
