@@ -114,10 +114,26 @@ a {
   margin-top: 75px;
 }
 
-.file-preview #highlight-content {
+.file-preview .preview-content {
   text-align: left;
   max-width: 800px;
   margin: auto;
+  overflow-x: scroll;
+}
+
+.file-preview table th {
+  vertical-align: bottom;
+  padding: 8px;
+  line-height: 1.42857143;
+}
+.file-preview table td {
+  padding: 8px;
+  line-height: 1.42857143;
+  vertical-align: top;
+  border-top: 1px solid #ddd;
+}
+
+.file-preview #highlight-content {
   overflow-x: scroll;
 }
 
