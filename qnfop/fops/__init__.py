@@ -54,4 +54,4 @@ class SubprocessBaseFop(BaseFop):
         return ret
 
 
-__all__ = ['highlight', 'pdf2htmlex', ]
+__all__ = ['highlight', 'pdf2htmlex', 'listzip']
