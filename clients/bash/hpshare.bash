@@ -4,7 +4,7 @@ USAGE="Usage: hpshare [OPTIONS] file1 file2 ...
     -u, --user:        username
     -p, --private:     use longer URL
     -n, --no-checksum: do not check sha1sum during upload
-    -i, --insecure:    use insecure `http` protocal
+    -i, --insecure:    use insecure http protocal
     -s, --server:      server host name, default to z1k.co"
 
 SERVER="z1k.co"
