@@ -4,7 +4,7 @@ USAGE="Usage: hpshare [OPTIONS] file1 file2 ...
     -u, --user:        username
     -p, --private:     use longer URL
     -n, --no-checksum: do not check sha1sum during upload
-    -i, --insecure:    use insecure http protocal
+    -i, --insecure:    use insecure http protocol
     -s, --server:      server host name, default to z1k.co"
 
 SERVER="z1k.co"
@@ -84,7 +84,7 @@ do
     echo "Uploading $FILE ($FILESIZE bytes)..."
     PERMIT_OUTPUT=$(curl -s -X POST -u "$USERNAME:$PASSWORD" \
                     "$PROTOCAL://$SERVER/~api/hpshare/permit/" \
-                    -d "filename=$FILE" \
+                    --data-urlencode "filename=$FILE" \
                     -d "sha1sum=$CHECKSUM" \
                     -d "private=$PRIVATE" \
                     -d "fsize=$FILESIZE")

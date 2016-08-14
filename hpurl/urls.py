@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 
     url('^$', RedirectView.as_view(url='/~admin/', permanent=False), name='index_redirect'),
     url(r'^~cli/hpshare/?$', RedirectView.as_view(url='/~static/clients/bash/hpshare.bash', permanent=False)),
+    url(r'^~cli/hpshorten/?$', RedirectView.as_view(url='/~static/clients/bash/hpshorten.bash', permanent=False)),
     url(r'^~admin/', include(admin.site.urls)),
 
     # hpShare
