@@ -12,6 +12,9 @@
   link.rel = "stylesheet";
   document.getElementsByTagName( "head" )[0].appendChild( link );
 
-  asciinema.player.js.CreatePlayer('asciinema-player', '{{ model.key|qn_url|safe }}');
+  asciinema.player.js.CreatePlayer('asciinema-player',
+                                   '{{ model.key_name|qn_url|safe }}', {
+                                       'theme': 'solarized-dark',
+                                   });
 })()
 </script>

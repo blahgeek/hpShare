@@ -37,7 +37,7 @@ def viewfile(req, id, disable_preview=False):
         try:
             preview_model = preview_model.get()
         except ObjectDoesNotExist:
-            pass
+            preview_model = None
         preview_template = get_preview_template(preview_model, model)
 
     return render(req, 'viewfile.html', {
