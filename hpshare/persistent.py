@@ -28,9 +28,9 @@ def get_persistents(req, storage):
         ops.append(('yifangyun_preview' + '|' + pdf_preview_op,
                     '.pdf.html', 'pdf2htmlex', True))
 
-    # Preview PDF
-    if ext in ('pdf', ):
-        ops.append((pdf_preview_op, '.html', 'pdf2htmlex', True))
+    # # Preview PDF
+    # if ext in ('pdf', ):
+    #     ops.append((pdf_preview_op, '.html', 'pdf2htmlex', True))
 
     # Markdown to HTML
     if ext in ('markdown', 'md', 'mkd'):
