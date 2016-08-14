@@ -68,7 +68,9 @@ def get_persistents(req, storage):
     return ops
 
 
-def get_preview_template(desc):
+def get_preview_template(preview_model, model):
+    desc = preview_model.description if preview_model is not None else ''
+
     if desc.startswith('image'):
         return 'preview/image.html'
     if desc == 'video-full':
@@ -81,4 +83,8 @@ def get_preview_template(desc):
         return 'preview/pdf2htmlex.html'
     if desc == 'listzip':
         return 'preview/listzip.html'
+
+    if model.filename.endswith('asciinema'):
+        return 'preview/asciinema.html'
+        
     return None

@@ -1,0 +1,17 @@
+{% load staticfiles %}
+{% load qn_url %}
+
+<div id="asciinema-player"></div>
+
+<script src="{% static "asciinema-player.js" %}"></script>
+<script>
+(function() {
+  var link = document.createElement( "link" );
+  link.href = "{% static "asciinema-player.css" %}";
+  link.type = "text/css";
+  link.rel = "stylesheet";
+  document.getElementsByTagName( "head" )[0].appendChild( link );
+
+  asciinema.player.js.CreatePlayer('asciinema-player', '{{ model.key|qn_url|safe }}');
+})()
+</script>

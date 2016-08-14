@@ -38,8 +38,7 @@ def viewfile(req, id, disable_preview=False):
             preview_model = preview_model.get()
         except ObjectDoesNotExist:
             pass
-        else:
-            preview_template = get_preview_template(preview_model.description)
+        preview_template = get_preview_template(preview_model, model)
 
     return render(req, 'viewfile.html', {
                     'model': model,
@@ -76,13 +75,13 @@ urlpatterns = [
     url(r'^(?P<id>[0-9a-zA-Z]+)/?$', viewfile, name='viewfile'),
     url(r'^(?P<id>[0-9a-zA-Z]+)_/?$', viewfile, {'disable_preview': True}),
 
-    url(r'^(?P<id>[0-9a-zA-Z]+)/download/?$', 
+    url(r'^(?P<id>[0-9a-zA-Z]+)/download/?$',
         downloadfile, name='downloadfile'),
-    # url(r'^(?P<id>[0-9a-zA-Z]+)/download/(?P<filename>[^/]+)$', 
+    # url(r'^(?P<id>[0-9a-zA-Z]+)/download/(?P<filename>[^/]+)$',
     #     downloadfile, name='downloadfile'),
 
-    url(r'^(?P<id>[0-9a-zA-Z]+)/download2/?$', 
+    url(r'^(?P<id>[0-9a-zA-Z]+)/download2/?$',
         downloadfile_persistent, name='downloadfile_persistent'),
-    # url(r'^(?P<id>[0-9a-zA-Z]+)/download2/(?P<filename>[^/]+)$', 
+    # url(r'^(?P<id>[0-9a-zA-Z]+)/download2/(?P<filename>[^/]+)$',
     #     downloadfile_persistent, name='downloadfile_persistent'),
 ]
