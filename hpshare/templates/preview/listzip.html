@@ -4,9 +4,8 @@
     <span class="extension">ZIP</span>
 </div>
 
-<div class="preview-content">
-    <a id="listzip-toggle" href="#" style="display: none; text-align: center; color: #7c7c7c; text-decoration: underline;">Show Contents</a>
-    <table id="listzip-table" style="display: none">
+<div class="preview-content" style="text-align: center;">
+    <table id="listzip-table" style="display: none; text-align: left; white-space: nowrap;">
         <tr>
             <th>Filename</th>
             <th>Time</th>
@@ -17,7 +16,6 @@
 
 <script>
 (function() {
-  var toggle = document.getElementById('listzip-toggle');
   var table = document.getElementById('listzip-table');
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -35,16 +33,11 @@
                     '<td>' + file.file_size + '</td>' +
                 '</tr>';
           }
-          toggle.style.display = 'block';
+          table.style.display = 'inline-table';
       }
   };
   xhttp.open("GET", "{{ preview_model.key|qn_url|safe }}", true);
   xhttp.send();
-
-  toggle.onclick = function() {
-      toggle.style.display = 'none';
-      table.style.display = 'block';
-  };
 
 })()
 

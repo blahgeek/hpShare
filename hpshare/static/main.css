@@ -119,14 +119,15 @@ a {
   max-width: 800px;
   margin: auto;
   overflow-x: scroll;
+  color: #6a6f75;
 }
 
-.file-preview table th {
+.file-preview table#listzip-table th {
   vertical-align: bottom;
   padding: 8px;
   line-height: 1.42857143;
 }
-.file-preview table td {
+.file-preview table#listzip-table td {
   padding: 8px;
   line-height: 1.42857143;
   vertical-align: top;
