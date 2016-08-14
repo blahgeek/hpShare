@@ -4,21 +4,19 @@
 # @Author: BlahGeek
 # @Date:   2016-08-09
 # @Last Modified by:   BlahGeek
-# @Last Modified time: 2016-08-09
+# @Last Modified time: 2016-08-14
 
 import zipfile
 import json
-from StringIO import StringIO
-from . import BaseFop
+import os
+from . import FileBaseFop
 
 
-class ListzipOp(BaseFop):
+class ListzipOp(FileBaseFop):
     name = 'listzip'
-    require_content = True
 
-    def process(self, key, content, **kwargs):
-        content_f = StringIO(content)
-        with zipfile.ZipFile(content_f, 'r') as f:
+    def process_file(self, tempdir, input_filename, **kwargs):
+        with zipfile.ZipFile(os.path.join(tempdir, input_filename), 'r') as f:
             return json.dumps([{
                 'filename': x.filename,
                 'date_time': x.date_time,

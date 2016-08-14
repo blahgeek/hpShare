@@ -9,8 +9,11 @@ from . import SubprocessBaseFop
 class PDF2HTMLex(SubprocessBaseFop):
     name = 'pdf2htmlex'
 
-    def _get_io_filename(self, **kwargs):
-        return 'content.pdf', 'content.html'
+    def _get_input_filename(self, **kwargs):
+        return 'content.pdf'
+
+    def _get_output_filename(self, **kwargs):
+        return 'content.html'
 
     def _get_cmd(self, input_filename, output_filename, 
                  height='800', start_page='1', end_page='5', vdpi='72',
@@ -22,4 +25,3 @@ class PDF2HTMLex(SubprocessBaseFop):
                 '--fit-height', str(height),
                 '--data-dir', os.path.join(os.getcwd(), 'data/pdf2htmlex'),
                 input_filename]
-
