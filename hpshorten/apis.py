@@ -38,7 +38,7 @@ def modify(req, id):
     form = ShortenForm(req.POST)
     if not form.is_valid():
         return HttpResponseBadRequest()
-    model = HashID.get_related(id, 'hpshorten_redirect')
+    model = HashID.get_related(id, 'hpshorten_redirect', inc=False)
     for key in ('url', 'permanent', 'cloak', 'title'):
         setattr(model, key, form.cleaned_data[key])
     model.save()

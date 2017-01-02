@@ -37,7 +37,7 @@ class HashID(models.Model):
                 else public_hash.encode(self.id)
 
     @classmethod
-    def get(cls, hashid):
+    def get(cls, hashid, inc=True):
         if len(hashid) >= config.KEY_LENGTH_PRIVATE:
             uid = private_hash.decode(hashid)
         else:
@@ -47,13 +47,14 @@ class HashID(models.Model):
         except IndexError:
             raise Http404("Hashid {} not found".format(hashid))
         model = get_object_or_404(cls, id=uid, enabled=True)
-        model.view_count = models.F("view_count") + 1
-        model.save()
+        if inc:
+            model.view_count = models.F("view_count") + 1
+            model.save()
         return model
 
     @classmethod
-    def get_related(cls, hashid, key):
-        model = cls.get(hashid)
+    def get_related(cls, hashid, key, inc=True):
+        model = cls.get(hashid, inc)
         try:
             ret = getattr(model, key)
         except ObjectDoesNotExist:

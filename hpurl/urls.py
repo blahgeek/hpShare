@@ -22,6 +22,8 @@ urlpatterns = patterns('',
     # hpShorten
     url(r'^~api/hpshorten/', include('hpshorten.apis', 'hpshorten_api')),
     url(r'^R(?P<id>[0-9a-zA-Z]+)/?$', 'hpshorten.views.redirect', name='hpshorten_redirect'),
+    # extra api entry point
+    url(r'^R(?P<id>[0-9a-zA-Z]+)/modify/?$', 'hpshorten.apis.modify'),
 
     # fallback to static redirect
     url(r'^(?P<id>[0-9a-zA-Z]+)/?$', 'hpshorten.views.redirect_static', name='hpshorten_redirect_static'),
