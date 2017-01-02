@@ -11,6 +11,7 @@ from .forms import ShortenForm
 from hashid.models import HashID
 from .models import Redirection, StaticRedirection
 
+
 @require_POST
 @csrf_exempt
 @http_basic_auth
@@ -30,8 +31,27 @@ def create(req):
     })
 
 
+@require_POST
+@csrf_exempt
+@http_basic_auth
+def modify(req, id):
+    form = ShortenForm(req.POST)
+    if not form.is_valid():
+        return HttpResponseBadRequest()
+    model = HashID.get_related(id, 'hpshorten_redirect')
+    for key in ('url', 'permanent', 'cloak', 'title'):
+        setattr(model, key, form.cleaned_data[key])
+    model.save()
+
+    return JsonResponse({
+        "url": req.build_absolute_uri(reverse('hpshorten_redirect', args=[model.hashid.hashid, ])),
+        "target": model.url
+    })
+
+
 from django.conf.urls import url
 
 urlpatterns = [
     url(r'^create/', create, name='create'),
+    url(r'^modify/R(?P<id>[0-9a-zA-Z]+)/?$', modify, name='modify'),
 ]
