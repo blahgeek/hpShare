@@ -79,8 +79,8 @@ def get_preview_template(preview_model, model):
         return 'preview/video.html'
     if desc == 'highlight':
         return 'preview/highlight.html'
-    if desc == 'pdf2htmlex':
-        return 'preview/pdf2htmlex.html'
+    # if desc == 'pdf2htmlex':
+    #     return 'preview/pdf2htmlex.html'
     if desc == 'listzip':
         return 'preview/listzip.html'
 

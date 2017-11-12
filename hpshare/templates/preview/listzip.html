@@ -24,15 +24,17 @@
       };
       if (xhttp.readyState == 4 && xhttp.status == 200) {
           var filelist = JSON.parse(xhttp.responseText);
+          var content = '';
           for(var i = 0 ; i < filelist.length ; i ++) {
              var file = filelist[i];
-             table.innerHTML +=
+             content +=
                 '<tr>' +
                     '<td>' + file.filename + '</td>' +
                     '<td>' + format_datetime(file.date_time) + '</td>' +
                     '<td>' + file.file_size + '</td>' +
                 '</tr>';
           }
+          table.innerHTML += content;
           table.style.display = 'inline-table';
       }
   };
