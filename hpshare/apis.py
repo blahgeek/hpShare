@@ -99,7 +99,11 @@ def callback(req):
     model.uploaded = True
     for key in ('size', 'mimetype', 'extension', 'persistentId'):
         setattr(model, key, form.cleaned_data[key])
-    model.extrainfo = '\n'.join(form.extrainfo())
+
+    try:
+        model.extrainfo = '\n'.join(form.extrainfo())
+    except:
+        pass
     model.save()
 
     return JsonResponse({
