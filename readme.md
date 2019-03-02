@@ -30,6 +30,19 @@
 - Run it! `uwsgi --module=hpurl.wsgi:application --master --socket=uwsgi.sock --processes=4 --daemonize=uwsgi.log`
 - Modify `nginx.conf` (change `server_name` etc) and run!
 
+---
+
+Or, with docker:
+
+```
+docker run \
+    -v $(pwd)/config.py:/app/config.py \
+    -v $(pwd)/db.sqlite3:/app/db.sqlite3 \
+    -v $(pwd)/static:/app/static \
+    -p 8001:8000 \
+    -it -d blahgeek/hpurl
+```
+
 ## Clients
 
 - CLI: `wget http://your.domain.com/~cli/hpshare`, alternatively see `clients/bash/hpshare.bash`
