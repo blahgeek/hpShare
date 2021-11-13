@@ -12,25 +12,11 @@ def get_persistents(req, storage):
     ext = '' if ('.' not in storage.filename) else storage.filename.split('.')[-1]
     ext = ext.lower()
 
-    wm_op = ('watermark/1/image/' +
-             urlsafe_b64encode(req.build_absolute_uri(STATIC_URL + 'ribbon.png')) +
-             '/gravity/NorthWest/dx/0/dy/0')
-    wm_video_op = ('wmImage/' + urlsafe_b64encode(req.build_absolute_uri(STATIC_URL + 'ribbon.png')) +
-                   '/wmGravity/NorthWest')
-
-    pdf_preview_op = config.CUSTOM_FOP_NAME + '/pdf2htmlex/height/800/start_page/1/end_page/5'
-
     # Office document to PDF
     if ext in ("doc", "docx", "odt", "rtf", "wps",
                "ppt", "pptx", "odp", "dps",
                "xls", "xlsx", "ods", "csv", "et"):
         ops.append(('yifangyun_preview', '.pdf', 'PDF', False))
-        ops.append(('yifangyun_preview' + '|' + pdf_preview_op,
-                    '.pdf.html', 'pdf2htmlex', True))
-
-    # # Preview PDF
-    # if ext in ('pdf', ):
-    #     ops.append((pdf_preview_op, '.html', 'pdf2htmlex', True))
 
     # Markdown to HTML
     if ext in ('markdown', 'md', 'mkd'):
@@ -58,11 +44,11 @@ def get_persistents(req, storage):
                     '.poster.jpg', '.video-full-poster', False))
 
     # try highlight if file size is less than 2M
-    if storage.size < 2 * 1024 * 1024:
+    if storage.size < 2 * 1024 * 1024 and config.CUSTOM_FOP_NAME:
         ops.append((config.CUSTOM_FOP_NAME + '/highlight',
                     '.highlight.html', 'highlight', True))
 
-    if ext == 'zip':
+    if ext == 'zip' and config.CUSTOM_FOP_NAME:
         ops.append((config.CUSTOM_FOP_NAME + '/listzip', '.listzip.json', 'listzip', True))
 
     return ops
@@ -86,5 +72,5 @@ def get_preview_template(preview_model, model):
 
     if model.filename.endswith('asciinema'):
         return 'preview/asciinema.html'
-        
+
     return None

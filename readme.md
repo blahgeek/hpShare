@@ -22,31 +22,25 @@
 
 ## How-To
 
-- Prepare a python2 environment, `pip install -r requirements.txt`
 - Get a [QiNiu](http://qiniu.com) (free) account
 - `mv config.py.sample config.py`, fill it up
-- Modify `hpurl/settings.py` as you need
-- Prepare Django project by running `./manage.py syncdb`, `./manage.py collectstatic`
-- Run it! `uwsgi --module=hpurl.wsgi:application --master --socket=uwsgi.sock --processes=4 --daemonize=uwsgi.log`
-- Modify `nginx.conf` (change `server_name` etc) and run!
-
----
-
-Or, with docker:
+- Finally, run it inside docker:
 
 ```
 docker run \
-    -v $(pwd)/config.py:/app/config.py \
-    -v $(pwd)/db.sqlite3:/app/db.sqlite3 \
-    -v $(pwd)/static:/app/static \
-    -p 8001:8000 \
+    -e DJANGO_SECRET_KEY=some_secret_key_for_django \
+    -e ADMIN_USER=root \
+    -e ADMIN_EMAIL=root@localhost \
+    -e ADMIN_PASSWORD=password \
+    -v /path/to/your/config.py:/app/config.py \
+    -v /path/to/data_dir:/data \
+    -p 8001:80 \
     -it -d blahgeek/hpurl
 ```
 
 ## Clients
 
 - CLI: `wget http://your.domain.com/~cli/hpshare`, alternatively see `clients/bash/hpshare.bash`
-- DropZone script: see `clients/hpShare.dzbundle`, double-click it to install (you need to install `DropZone` first)
 
 ## Admin
 

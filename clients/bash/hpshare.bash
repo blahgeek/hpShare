@@ -14,7 +14,7 @@ UNAMESTR=`uname`
 PROTOCAL="https"
 
 function getJsonVal () {
-    python -c "import json,sys;sys.stdout.write(json.load(sys.stdin)$1)";
+    python -c "import json,sys;sys.stdout.write(str(json.load(sys.stdin)$1))";
 }
 
 FILES=()

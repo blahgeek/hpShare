@@ -1,6 +1,6 @@
 django<1.9
-qiniu
-shortuuid
-hashids
-uwsgi
-requests
+qiniu==7.2.*
+shortuuid==0.5.*
+hashids==1.2.*
+uwsgi==2.*
+requests==2.21.*
