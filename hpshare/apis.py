@@ -62,7 +62,11 @@ def permit(req):
         upload_domain = 'up.qiniu.com'
     else:
         upload_domain = 'up.qiniug.com'
-    return JsonResponse({'token': token, 'upload_domain': upload_domain})
+    return JsonResponse({
+        'token': token,
+        'upload_domain': upload_domain,
+        '_qn_options': options,
+    })
 
 @require_POST
 @csrf_exempt

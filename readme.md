@@ -23,7 +23,7 @@
 ## How-To
 
 - Get a [QiNiu](http://qiniu.com) (free) account
-- `mv config.py.sample config.py`, fill it up
+- `mv config.py.sample /path/to/volumn/config.py`, fill it up
 - Finally, run it inside docker:
 
 ```
@@ -32,8 +32,7 @@ docker run \
     -e ADMIN_USER=root \
     -e ADMIN_EMAIL=root@localhost \
     -e ADMIN_PASSWORD=password \
-    -v /path/to/your/config.py:/app/config.py \
-    -v /path/to/data_dir:/data \
+    -v /path/to/volumn_dir:/data \
     -p 8001:80 \
     -it -d blahgeek/hpurl
 ```

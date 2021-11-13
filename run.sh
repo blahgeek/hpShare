@@ -9,6 +9,7 @@ run_purge_storage () {
     done
 }
 
+cp /data/config.py ./
 python manage.py collectstatic --noinput
 python manage.py syncdb --noinput
 python manage.py shell <<EOF
