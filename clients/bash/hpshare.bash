@@ -5,9 +5,11 @@ USAGE="Usage: hpshare [OPTIONS] file1 file2 ...
     -p, --private:     use longer URL
     -n, --no-checksum: do not check sha1sum during upload
     -i, --insecure:    use insecure http protocol
-    -s, --server:      server host name, default to z1k.co"
+    -s, --server:      server host name, default to z1k.co
+    -d, --debug:       debug mode"
 
-SERVER="z1k.co"
+DEBUG="no"
+SERVER="share.z1k.dev"
 USERNAME="$(whoami | tr [:upper:] [:lower:])"
 DO_CHECKSUM="yes"
 UNAMESTR=`uname`
@@ -39,6 +41,9 @@ do
             ;;
         -i|--insecure)
             PROTOCAL="http"
+            ;;
+        -d|--debug)
+            DEBUG="yes"
             ;;
         -h|--help)
             echo "$USAGE"
@@ -88,6 +93,9 @@ do
                     -d "sha1sum=$CHECKSUM" \
                     -d "private=$PRIVATE" \
                     -d "fsize=$FILESIZE")
+    if [[ "$DEBUG" = "yes" ]]; then
+        echo "Permit result: $PERMIT_OUTPUT"
+    fi
     TOKEN=$(echo $PERMIT_OUTPUT | getJsonVal "['token']")
     UPLOAD_DOMAIN=$(echo $PERMIT_OUTPUT | getJsonVal "['upload_domain']")
 

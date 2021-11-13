@@ -11,12 +11,12 @@ USAGE="Usage: hpshorten [OPTIONS] URL
     -i, --insecure: use insecure http protocol
     -s, --server:   server hostname, default to z1k.co"
 
-SERVER="z1k.co"
+SERVER="share.z1k.dev"
 USERNAME="$(whoami | tr [:upper:] [:lower:])"
 PROTOCAL="https"
 
 function getJsonVal () {
-    python -c "import json,sys;sys.stdout.write(json.load(sys.stdin)$1)";
+    python -c "import json,sys;sys.stdout.write(str(json.load(sys.stdin)$1))";
 }
 
 while [[ $# > 0 ]]
