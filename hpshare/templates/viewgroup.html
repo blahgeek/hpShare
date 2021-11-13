@@ -8,7 +8,7 @@
     {% for storage in storages %}
     <div class="file-list">
         <div class="file-list-info">
-            <span class="filename">{{ storage.filename }}</span>
+            <span class="filename">{{ storage.filename }}</span>&nbsp;
             <span class="extrainfo">{{ storage.readable_size }}</span>
         </div>
         <a class="download-btn" href="{% url 'hpshare:downloadfile' storage.hashid.hashid %}">Download</a>
