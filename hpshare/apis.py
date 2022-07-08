@@ -38,6 +38,7 @@ def permit(req):
 
     options = {
         'insertOnly': 1,
+        # TODO: forceSaveKey
         'saveKey': model.key_name,
         'fsizeLimit': model.size,
         'callbackUrl': req.build_absolute_uri(reverse('hpshare_api:callback')),
