@@ -58,7 +58,7 @@ def downloadfile_persistent(req, id):
         model.save()
     return HttpResponseRedirect(gen_qn_url(model.key, True))
 
-def downloadfile(req, id):
+def downloadfile(req, id, *args):
     model = HashID.get_related(id, 'hpshare_storage')
     if not model.uploaded:
         raise Http404("File {} is not ready".format(id))
@@ -75,7 +75,7 @@ urlpatterns = [
     url(r'^(?P<id>[0-9a-zA-Z]+)/?$', viewfile, name='viewfile'),
     url(r'^(?P<id>[0-9a-zA-Z]+)_/?$', viewfile, {'disable_preview': True}),
 
-    url(r'^(?P<id>[0-9a-zA-Z]+)/download/?$',
+    url(r'^(?P<id>[0-9a-zA-Z]+)/download(/[^/]*)?$',
         downloadfile, name='downloadfile'),
     # url(r'^(?P<id>[0-9a-zA-Z]+)/download/(?P<filename>[^/]+)$',
     #     downloadfile, name='downloadfile'),
